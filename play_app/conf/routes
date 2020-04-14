@@ -1,0 +1,79 @@
+
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index
+# An example controller showing how to use dependency injection
+GET     /count                      controllers.CountController.count
+# An example controller showing how to write asynchronous code
+GET     /message                    controllers.AsyncController.message
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+
+# Users
+GET         /users                          controllers.UserController.getAll
+GET         /users/:userId                  controllers.UserController.get(userId: String)
+POST        /users                          controllers.UserController.create
+PUT         /users/:userId                  controllers.UserController.update(userId: String)
+DELETE      /users/:userId                  controllers.UserController.delete(userId: String)
+
+# Movies
+GET         /movies                         controllers.MovieController.getAll
+GET         /movies/:movieId                controllers.MovieController.get(movieId: String)
+POST        /movies                         controllers.MovieController.create
+PUT         /movies/:movieId                controllers.MovieController.update(movieId: String)
+DELETE      /movies/:movieId                controllers.MovieController.delete(movieId: String)
+
+# Comments
+POST        /comments                       controllers.CommentController.create
+PUT         /comments/:commentId            controllers.CommentController.update(commentId: String)
+DELETE      /comments/:commentId            controllers.CommentController.delete(commentId: String)
+
+# Ratings
+POST        /ratings                        controllers.RatingController.create
+PUT         /ratings/:ratingId              controllers.CommentController.update(ratingId: String)
+DELETE      /ratings/:ratingId              controllers.CommentController.delete(ratingId: String)
+
+# Actors
+GET         /actors                         controllers.ActorController.getAll
+GET         /actors/:actorId                controllers.ActorController.get(actorId: String)
+POST        /actors                         controllers.ActorController.create
+PUT         /actors/:actorId                controllers.ActorController.update(actorId: String)
+DELETE      /actors/:actorId                controllers.ActorController.delete(actorId: String)
+
+# Directors
+GET         /directors                      controllers.DirectorController.getAll
+GET         /directors/:directorId          controllers.DirectorController.get(directorId: String)
+POST        /directors                      controllers.DirectorController.create
+PUT         /directors/:directorId          controllers.DirectorController.update(directorId: String)
+DELETE      /directors/:directorId          controllers.DirectorController.delete(directorId: String)
+
+# Genres
+GET         /genres                         controllers.GenreController.getAll
+GET         /genres/:genreId                controllers.GenreController.get(genreId: String)
+POST        /genres                         controllers.GenreController.create
+PUT         /genres/:genreId                controllers.GenreController.update(genreId: String)
+DELETE      /genres/:genreId                controllers.GenreController.delete(genreId: String)
+
+# Orders
+GET         /orders/:userId                 controllers.OrderController.get(userId: String)
+POST        /orders                         controllers.OrderController.create
+PUT         /orders/:orderId                controllers.OrderController.update(orderId: String)
+DELETE      /orders/:orderId                controllers.OrderController.delete(orderId: String)
+
+# Order item
+GET         /orders/:orderId/items          controllers.OrderItemController.get(orderId: String)
+GET         /user/:userId/items             controllers.OrderItemController.getForUser(userId: String)
+POST        /order-items                    controllers.OrderItemController.create
+PUT         /order-items/:orderItemId       controllers.OrderItemController.update(orderItemId: String)
+DELETE      /order-items/:orderItemId       controllers.OrderItemController.delete(orderItemId: String)
+
+# Payments
+GET         /payments                       controllers.PaymentController.getAll
+POST        /payment                        controllers.PaymentController.create
+PUT         /payment/:paymentId             controllers.PaymentController.update(paymentId: String)
+DELETE      /payment/:paymentId             controllers.PaymentController.delete(paymentId: String)

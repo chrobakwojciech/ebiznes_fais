@@ -3,8 +3,8 @@ package models
 import play.api.libs.json.Json
 
 case class Order(id: Long,
-                 userId: Long,
-                 paymentId: Long
+                 user: Long,
+                 payment: Long
                 )
 
 object Order {

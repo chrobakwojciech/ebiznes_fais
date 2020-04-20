@@ -4,8 +4,8 @@ import play.api.libs.json.Json
 
 case class Comment(id: Long,
                    content: String,
-                   userId: Long,
-                   movieId: Long
+                   user: Long,
+                   movie: Long
                   )
 
 object Comment {

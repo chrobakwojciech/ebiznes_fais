@@ -3,7 +3,7 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class Movie(id: Long,
+case class Movie(id: String,
                  title: String,
                  description: String,
                  productionYear: String,
@@ -11,7 +11,7 @@ case class Movie(id: Long,
                 )
 
 class MovieTable(tag: Tag) extends Table[Movie](tag, "movie") {
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id = column[String]("id", O.PrimaryKey)
 
   def title = column[String]("title")
 

@@ -3,10 +3,10 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class Comment(id: Long,
+case class Comment(id: String,
                    content: String,
-                   user: Long,
-                   movie: Long
+                   user: String,
+                   movie: String
                   )
 
 class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
@@ -14,15 +14,15 @@ class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
   val _movie = TableQuery[MovieTable]
 
 
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id = column[String]("id", O.PrimaryKey)
 
   def content = column[String]("content")
 
-  def user = column[Long]("user")
+  def user = column[String]("user")
 
   def user_fk = foreignKey("user_fk", user, _user)(_.id)
 
-  def movie = column[Long]("movie")
+  def movie = column[String]("movie")
 
   def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
 

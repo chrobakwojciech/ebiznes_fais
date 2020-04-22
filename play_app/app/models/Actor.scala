@@ -3,14 +3,14 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class Actor(id: Long,
+case class Actor(id: String,
                  firstName: String,
                  lastName: String,
                  img: String
                 )
 
 class ActorTable(tag: Tag) extends Table[Actor](tag, "actor") {
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id = column[String]("id", O.PrimaryKey)
 
   def firstName = column[String]("firstName")
 

@@ -3,25 +3,25 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class Rating(id: Long,
+case class Rating(id: String,
                   value: Int,
-                  user: Long,
-                  movie: Long
+                  user: String,
+                  movie: String
                  )
 
 class RatingTable(tag: Tag) extends Table[Rating](tag, "rating") {
   val _user = TableQuery[UserTable]
   val _movie = TableQuery[MovieTable]
 
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id = column[String]("id", O.PrimaryKey)
 
   def value = column[Int]("value")
 
-  def user = column[Long]("user")
+  def user = column[String]("user")
 
   def user_fk = foreignKey("user_fk", user, _user)(_.id)
 
-  def movie = column[Long]("movie")
+  def movie = column[String]("movie")
 
   def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
 

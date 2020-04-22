@@ -1,7 +1,7 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.{Rating, RatingTable}
+import models.RatingTable
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -15,7 +15,7 @@ class RatingRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, movie
   import profile.api._
 
 
-   val _rating = TableQuery[RatingTable]
+  val _rating = TableQuery[RatingTable]
 
   //
   // methods

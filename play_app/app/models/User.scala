@@ -3,7 +3,7 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class User(id: Long,
+case class User(id: String,
                 firstName: String,
                 lastName: String,
                 email: String,
@@ -11,7 +11,7 @@ case class User(id: Long,
                )
 
 class UserTable(tag: Tag) extends Table[User](tag, "user") {
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id = column[String]("id", O.PrimaryKey)
 
   def firstName = column[String]("firstName")
 

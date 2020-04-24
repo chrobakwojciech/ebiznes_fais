@@ -17,7 +17,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # Users
 GET         /users                          controllers.UserController.getAll
 GET         /users/:userId                  controllers.UserController.get(userId: String)
-POST        /users                          controllers.UserController.create
+GET         /add/users                      controllers.UserController.create
 PUT         /users/:userId                  controllers.UserController.update(userId: String)
 DELETE      /users/:userId                  controllers.UserController.delete(userId: String)
 
@@ -77,3 +77,6 @@ GET         /payments                       controllers.PaymentController.getAll
 POST        /payment                        controllers.PaymentController.create
 PUT         /payment/:paymentId             controllers.PaymentController.update(paymentId: String)
 DELETE      /payment/:paymentId             controllers.PaymentController.delete(paymentId: String)
+
+
+POST        /createUserHandler              controllers.UserController.createUserHandler

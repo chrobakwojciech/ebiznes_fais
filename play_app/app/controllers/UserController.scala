@@ -1,7 +1,6 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.User
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -26,8 +25,11 @@ class UserController @Inject()(userRepository: UserRepository, cc: MessagesContr
     users.map(user => Ok(views.html.user.users(user)))
   }
 
-  def get(userId: String): Action[AnyContent] = Action {
-    Ok("")
+  def get(userId: String): Action[AnyContent] = Action.async { implicit request =>
+    userRepository.getById(userId) map {
+      case Some(u) => Ok(views.html.user.user(u))
+      case None => Redirect(routes.UserController.getAll())
+    }
   }
 
   def create: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
@@ -43,7 +45,7 @@ class UserController @Inject()(userRepository: UserRepository, cc: MessagesContr
 
     val successFunction = { user: CreateUserForm =>
       userRepository.create(user.firstName, user.lastName, user.email, user.password).map {_ =>
-        Redirect(routes.UserController.create()).flashing("success" -> "user.created")};
+        Redirect(routes.UserController.create()).flashing("success" -> "User created!")};
     }
     createUserForm.bindFromRequest.fold(errorFunction, successFunction)
   }

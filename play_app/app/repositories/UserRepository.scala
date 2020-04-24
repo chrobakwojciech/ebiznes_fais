@@ -20,10 +20,15 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
 
   def create(firstName: String, lastName: String, email: String, password: String): Future[Int] = db.run {
     val id: String = UUID.randomUUID().toString()
-    _user += User(id, firstName, lastName, email, password)
+    _user.insertOrUpdate(User(id, firstName, lastName, email, password))
   }
 
   def getAll(): Future[Seq[User]] = db.run {
     _user.result
   }
+
+  def getById(userId: String): Future[Option[User]] = db.run {
+    _user.filter(_.id === userId).result.headOption
+  }
+
 }

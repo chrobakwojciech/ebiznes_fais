@@ -1,7 +1,3 @@
 @import models.User
-@(users: Seq[User])
-<ul>
-    @for(user <- users) {
-        <li>@user.firstName @user.lastName</li>
-    }
-</ul>
+@(user: User)
+@user.firstName @user.lastName

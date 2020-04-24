@@ -1,11 +1,11 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.PaymentTable
+import models.{Payment, PaymentTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
@@ -14,11 +14,14 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
   import dbConfig._
   import profile.api._
 
-
   val _payment = TableQuery[PaymentTable]
 
-  //
-  // methods
-  //
+  def getAll(): Future[Seq[Payment]] = db.run {
+    _payment.result
+  }
+
+  def getById(paymentId: String): Future[Option[Payment]] = db.run {
+    _payment.filter(_.id === paymentId).result.headOption
+  }
 
 }

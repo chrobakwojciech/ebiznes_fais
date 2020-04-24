@@ -1,11 +1,11 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.GenreTable
+import models.{Genre, GenreTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GenreRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
@@ -16,8 +16,12 @@ class GenreRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
 
   val _genre = TableQuery[GenreTable]
 
-  //
-  // methods
-  //
+  def getAll(): Future[Seq[Genre]] = db.run {
+    _genre.result
+  }
+
+  def getById(genreId: String): Future[Option[Genre]] = db.run {
+    _genre.filter(_.id === genreId).result.headOption
+  }
 
 }

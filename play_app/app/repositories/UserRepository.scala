@@ -18,17 +18,17 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
 
   val _user = TableQuery[UserTable]
 
-  def create(firstName: String, lastName: String, email: String, password: String): Future[Int] = db.run {
-    val id: String = UUID.randomUUID().toString()
-    _user.insertOrUpdate(User(id, firstName, lastName, email, password))
-  }
-
   def getAll(): Future[Seq[User]] = db.run {
     _user.result
   }
 
   def getById(userId: String): Future[Option[User]] = db.run {
     _user.filter(_.id === userId).result.headOption
+  }
+
+  def create(firstName: String, lastName: String, email: String, password: String): Future[Int] = db.run {
+    val id: String = UUID.randomUUID().toString()
+    _user.insertOrUpdate(User(id, firstName, lastName, email, password))
   }
 
 }

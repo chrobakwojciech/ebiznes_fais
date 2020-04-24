@@ -1,11 +1,11 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.CommentTable
+import models.{Comment, CommentTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, userRepository: UserRepository, movieRepository: MovieRepository)(implicit ec: ExecutionContext) {
@@ -16,8 +16,12 @@ class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, user
 
   val _comment = TableQuery[CommentTable]
 
-  //
-  // methods
-  //
+  def getAll(): Future[Seq[Comment]] = db.run {
+    _comment.result
+  }
+
+  def getById(commentId: String): Future[Option[Comment]] = db.run {
+    _comment.filter(_.id === commentId).result.headOption
+  }
 
 }

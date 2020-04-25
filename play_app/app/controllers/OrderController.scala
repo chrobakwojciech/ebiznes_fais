@@ -1,10 +1,13 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
+import repositories.OrderRepository
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class OrderController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class OrderController @Inject()(orderRepository: OrderRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def get(userId: String) = Action {
     Ok("")

@@ -7,6 +7,7 @@ case class Movie(id: String,
                  title: String,
                  description: String,
                  productionYear: String,
+                 price: Double,
                  img: String
                 )
 
@@ -19,9 +20,11 @@ class MovieTable(tag: Tag) extends Table[Movie](tag, "movie") {
 
   def productionYear = column[String]("productionYear")
 
+  def price = column[Double]("price")
+
   def img = column[String]("img")
 
-  def * = (id, title, description, productionYear, img) <> ((Movie.apply _).tupled, Movie.unapply)
+  def * = (id, title, description, productionYear, price, img) <> ((Movie.apply _).tupled, Movie.unapply)
 }
 
 

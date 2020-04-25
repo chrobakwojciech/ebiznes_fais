@@ -1,13 +1,17 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
+import repositories.PaymentRepository
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class PaymentController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class PaymentController @Inject()(paymentRepository: PaymentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
-  def getAll = Action {
-    Ok("")
+  def getAll = Action.async { implicit request =>
+    val payments = paymentRepository.getAll();
+    payments.map(payment => Ok(views.html.payment.payments(payment)))
   }
 
   def create = Action {

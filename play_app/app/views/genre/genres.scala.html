@@ -1,0 +1,20 @@
+@import models.Genre
+@(genres: Seq[Genre])
+@main("Gatunki") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Nazwa</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(genre <- genres) {
+            <tr>
+                <th scope="row">@genre.id</th>
+                <td><a href="@controllers.routes.GenreController.get(genre.id)">@genre.name</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

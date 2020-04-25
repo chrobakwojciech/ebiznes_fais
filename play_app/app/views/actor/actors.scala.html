@@ -1,0 +1,22 @@
+@import models.Actor
+@(actors: Seq[Actor])
+@main("Aktorzy") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Imie i nazwisko</th>
+                <th scope="col">img</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(actor <- actors) {
+            <tr>
+                <th scope="row">@actor.id</th>
+                <td><a href="@controllers.routes.ActorController.get(actor.id)">@actor.firstName @actor.lastName</a></td>
+                <td>@actor.img</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

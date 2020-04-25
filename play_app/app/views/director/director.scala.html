@@ -1,0 +1,13 @@
+@import models.Director
+@(director: Director)
+
+@main(director.firstName + " " + director.lastName) {
+    <div class="col-12">
+        <pre>@director</pre>
+    </div>
+    <hr>
+    <div class="col-12 mt-5">
+        <a href="@controllers.routes.DirectorController.getAll()" class="btn btn-outline-dark btn-sm" role="button" aria-disabled="true">Lista reżyserów</a>
+    </div>
+}
+

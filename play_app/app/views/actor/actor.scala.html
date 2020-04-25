@@ -1,0 +1,13 @@
+@import models.Actor
+@(actor: Actor)
+
+@main(actor.firstName + " " + actor.lastName) {
+    <div class="col-12">
+        <pre>@actor</pre>
+    </div>
+    <hr>
+    <div class="col-12 mt-5">
+        <a href="@controllers.routes.ActorController.getAll()" class="btn btn-outline-dark btn-sm" role="button" aria-disabled="true">Lista aktorów</a>
+    </div>
+}
+

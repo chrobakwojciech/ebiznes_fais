@@ -1,7 +1,22 @@
 @import models.User
 @(users: Seq[User])
-<ul>
-    @for(user <- users) {
-        <li>@user.firstName @user.lastName</li>
-    }
-</ul>
+@main("Użytkownicy") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Imie i nazwisko</th>
+                <th scope="col">E-mail</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(user <- users) {
+            <tr>
+                <th scope="row">@user.id</th>
+                <td><a href="@controllers.routes.UserController.get(user.id)">@user.firstName @user.lastName</a></td>
+                <td>@user.email</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

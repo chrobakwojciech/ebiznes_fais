@@ -8,12 +8,11 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OrderItemRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, movieRepository: MovieRepository, orderRepository: OrderRepository)(implicit ec: ExecutionContext) {
+class OrderItemRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
-
 
   val _orderItem = TableQuery[OrderItemTable]
 

@@ -1,0 +1,24 @@
+@import models.Comment
+@(comments: Seq[(Comment, Movie, User)])
+@main("Komentarze") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Użytkownik</th>
+                <th scope="col">Film</th>
+                <th scope="col">Komentarz</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(comment <- comments) {
+            <tr>
+                <th scope="row">@comment._1.id</th>
+                <td><a href="@controllers.routes.UserController.get(comment._3.id)">@comment._3.firstName @comment._3.lastName</a></td>
+                <td><a href="@controllers.routes.MovieController.get(comment._2.id)">@comment._2.title</a></td>
+                <td>@comment._1.content</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

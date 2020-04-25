@@ -1,0 +1,28 @@
+@import models.Rating
+@(ratings: Seq[(Rating, Movie, User)])
+@main("Oceny") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Użytkownik</th>
+                <th scope="col">Film</th>
+                <th scope="col">Ocena</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(rating <- ratings) {
+            <tr>
+                <th scope="row">@rating._1.id</th>
+                <td><a href="@controllers.routes.UserController.get(rating._3.id)">@rating._3.firstName @rating._3.lastName</a></td>
+                <td><a href="@controllers.routes.MovieController.get(rating._2.id)">@rating._2.title</a></td>
+                <td>
+                    <div class="progress">
+                      <div class="progress-bar @if(rating._1.value < 4) {bg-danger} @if(rating._1.value > 7) {bg-success}" role="progressbar" style="width: @(rating._1.value * 10)%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="10">@rating._1.value</div>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

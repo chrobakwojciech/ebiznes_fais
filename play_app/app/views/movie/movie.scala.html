@@ -1,0 +1,37 @@
+@import models.Movie
+@(movie: Movie, comments: Seq[(Comment, User)], ratings: Seq[(Rating, User)])
+
+@main(movie.title) {
+    <div class="col-12">
+        <h4><span class="badge badge-secondary">@movie.productionYear</span><span class="ml-3 badge badge-primary">@movie.price zł</span></h4>
+        <p>@movie.description</p>
+        @if(!comments.isEmpty) {
+            <div class="my-4 py-3">
+                <h5 class="mb-3">Komentarze</h5>
+                <ul class="list-group">
+                @for(comment <- comments) {
+                    <li class="list-group-item"><a href="@controllers.routes.UserController.get(comment._2.id)">@comment._2.firstName @comment._2.lastName</a> : @comment._1.content</li>
+                }
+                </ul>
+            </div>
+        }
+
+        @if(!ratings.isEmpty) {
+            <div class="my-4 py-3">
+                <h5 class="mb-3">Oceny</h5>
+                <ul class="list-group">
+                @for(rating <- ratings) {
+                    <li class="list-group-item"><a href="@controllers.routes.UserController.get(rating._2.id)">@rating._2.firstName @rating._2.lastName</a> : @rating._1.value</li>
+                }
+                </ul>
+            </div>
+        }
+
+
+    </div>
+    <hr>
+    <div class="col-12 mt-5 border-top pt-3">
+        <a href="@controllers.routes.MovieController.getAll()" class="btn btn-outline-dark btn-sm" role="button" aria-disabled="true">Lista filmów</a>
+    </div>
+}
+

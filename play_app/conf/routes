@@ -29,12 +29,14 @@ PUT         /movies/:movieId                controllers.MovieController.update(m
 DELETE      /movies/:movieId                controllers.MovieController.delete(movieId: String)
 
 # Comments
-GET         /comments                       controllers.CommentController.create
+GET         /comments                       controllers.CommentController.getAll
+GET         /add/comments                   controllers.CommentController.create
 PUT         /comments/:commentId            controllers.CommentController.update(commentId: String)
 DELETE      /comments/:commentId            controllers.CommentController.delete(commentId: String)
 
 # Ratings
-GET         /ratings                        controllers.RatingController.create
+GET         /ratings                        controllers.RatingController.getAll
+GET         /add/ratings                    controllers.RatingController.create
 PUT         /ratings/:ratingId              controllers.CommentController.update(ratingId: String)
 DELETE      /ratings/:ratingId              controllers.CommentController.delete(ratingId: String)
 

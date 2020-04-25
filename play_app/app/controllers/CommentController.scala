@@ -1,10 +1,19 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
+import repositories.CommentRepository
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class CommentController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class CommentController @Inject()(commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+
+  def getAll = Action.async { implicit request =>
+    val comments = commentRepository.getAllWithMovieAndUser()
+    comments.map(comment => Ok(views.html.comment.comments(comment)))
+  }
+
   def create = Action {
     Ok("")
   }

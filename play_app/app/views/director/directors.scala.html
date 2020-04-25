@@ -1,0 +1,22 @@
+@import models.Director
+@(directors: Seq[Director])
+@main("Reżyserzy") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Imie i nazwisko</th>
+                <th scope="col">img</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(director <- directors) {
+                <tr>
+                    <th scope="row">@director.id</th>
+                    <td><a href="@controllers.routes.DirectorController.get(director.id)">@director.firstName @director.lastName</a></td>
+                    <td>@director.img</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

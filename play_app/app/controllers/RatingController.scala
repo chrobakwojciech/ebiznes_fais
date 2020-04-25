@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
+import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
 import repositories.RatingRepository
 
 import scala.concurrent.ExecutionContext
@@ -14,6 +14,7 @@ class RatingController @Inject()(ratingRepository: RatingRepository, cc: Message
     val ratings = ratingRepository.getAllWithMovieAndUser()
     ratings.map(rating => Ok(views.html.rating.ratings(rating)))
   }
+
   def create = Action {
     Ok("")
   }

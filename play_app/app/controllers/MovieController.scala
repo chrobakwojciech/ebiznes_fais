@@ -1,9 +1,9 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.{Actor, Comment, Director, Genre, Movie, Rating, User}
-import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
-import repositories.{ActorRepository, CommentRepository, DirectorRepository, GenreRepository, MovieRepository, RatingRepository}
+import models._
+import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
+import repositories._
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
@@ -17,31 +17,31 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
   }
 
   def get(movieId: String) = Action.async { implicit request =>
-    var comments:Seq[(Comment, User)] = Seq[(Comment, User)]()
+    var comments: Seq[(Comment, User)] = Seq[(Comment, User)]()
     commentRepository.getForMovie(movieId).onComplete {
       case Success(c) => comments = c
       case Failure(_) => print("fail")
     }
 
-    var ratings:Seq[(Rating, User)] = Seq[(Rating, User)]()
+    var ratings: Seq[(Rating, User)] = Seq[(Rating, User)]()
     ratingRepository.getForMovie(movieId).onComplete {
       case Success(r) => ratings = r
       case Failure(_) => print("fail")
     }
 
-    var actors:Seq[Actor] = Seq[Actor]()
+    var actors: Seq[Actor] = Seq[Actor]()
     actorRepository.getForMovie(movieId).onComplete {
       case Success(a) => actors = a
       case Failure(_) => print("fail")
     }
 
-    var genres:Seq[Genre] = Seq[Genre]()
+    var genres: Seq[Genre] = Seq[Genre]()
     genreRepository.getForMovie(movieId).onComplete {
       case Success(g) => genres = g
       case Failure(_) => print("fail")
     }
 
-    var directors:Seq[Director] = Seq[Director]()
+    var directors: Seq[Director] = Seq[Director]()
     directorRepository.getForMovie(movieId).onComplete {
       case Success(d) => directors = d
       case Failure(_) => print("fail")

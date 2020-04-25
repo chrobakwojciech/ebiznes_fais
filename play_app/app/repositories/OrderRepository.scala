@@ -1,7 +1,7 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.{Order, OrderTable, Payment, PaymentTable}
+import models.{Order, OrderTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

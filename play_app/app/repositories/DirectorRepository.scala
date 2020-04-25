@@ -1,7 +1,7 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.{Director, DirectorTable, MovieActorTable, MovieDirectorTable}
+import models.{Director, DirectorTable, MovieDirectorTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

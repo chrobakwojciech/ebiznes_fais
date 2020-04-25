@@ -1,13 +1,33 @@
 @import models.Actor
-@(actor: Actor)
+@(actor: Actor, movies: Seq[Movie])
 
 @main(actor.firstName + " " + actor.lastName) {
-    <div class="col-12">
-        <pre>@actor</pre>
-    </div>
-    <hr>
-    <div class="col-12 mt-5">
-        <a href="@controllers.routes.ActorController.getAll()" class="btn btn-outline-dark btn-sm" role="button" aria-disabled="true">Lista aktorów</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Tytul</th>
+                <th scope="col">Opis</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Rok produkcji</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(movie <- movies) {
+            <tr>
+                <th scope="row">@movie.id</th>
+                <td><a href="@controllers.routes.MovieController.get(movie.id)">@movie.title</a></td>
+                <td>@movie.description</td>
+                <td>@movie.price zł</td>
+                <td>@movie.productionYear</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="col-12 mt-5 border-top pt-3">
+        <a href="@controllers.routes.ActorController.getAll()" class="btn btn-outline-dark btn-sm" role="button" aria-disabled="true">
+            Lista aktorów</a>
     </div>
 }
 

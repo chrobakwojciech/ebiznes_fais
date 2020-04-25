@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import play.api.mvc._
 import repositories.UserRepository
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class UserController @Inject()(userRepository: UserRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
@@ -44,8 +44,9 @@ class UserController @Inject()(userRepository: UserRepository, cc: MessagesContr
     }
 
     val successFunction = { user: CreateUserForm =>
-      userRepository.create(user.firstName, user.lastName, user.email, user.password).map {_ =>
-        Redirect(routes.UserController.create()).flashing("success" -> "User created!")};
+      userRepository.create(user.firstName, user.lastName, user.email, user.password).map { _ =>
+        Redirect(routes.UserController.create()).flashing("success" -> "User created!")
+      };
     }
     createUserForm.bindFromRequest.fold(errorFunction, successFunction)
   }

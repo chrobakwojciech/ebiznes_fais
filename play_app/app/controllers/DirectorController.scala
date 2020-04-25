@@ -1,13 +1,15 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
-import repositories.DirectorRepository
+import models.Movie
+import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
+import repositories.{DirectorRepository, MovieRepository}
 
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
 @Singleton
-class DirectorController @Inject()(directorRepository: DirectorRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class DirectorController @Inject()(directorRepository: DirectorRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll = Action.async { implicit request =>
     val directors = directorRepository.getAll()
@@ -15,8 +17,14 @@ class DirectorController @Inject()(directorRepository: DirectorRepository, cc: M
   }
 
   def get(directorId: String) = Action.async { implicit request =>
+    var movies: Seq[Movie] = Seq[Movie]()
+    movieRepository.getForDirector(directorId).onComplete {
+      case Success(m) => movies = m
+      case Failure(_) => print("fail")
+    }
+
     directorRepository.getById(directorId) map {
-      case Some(d) => Ok(views.html.director.director(d))
+      case Some(d) => Ok(views.html.director.director(d, movies))
       case None => Redirect(routes.DirectorController.getAll())
     }
   }

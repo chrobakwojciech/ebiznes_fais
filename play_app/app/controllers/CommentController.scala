@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
+import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
 import repositories.CommentRepository
 
 import scala.concurrent.ExecutionContext

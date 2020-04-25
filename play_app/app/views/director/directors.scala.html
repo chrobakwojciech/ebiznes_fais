@@ -10,13 +10,13 @@
             </tr>
         </thead>
         <tbody>
-            @for(director <- directors) {
-                <tr>
-                    <th scope="row">@director.id</th>
-                    <td><a href="@controllers.routes.DirectorController.get(director.id)">@director.firstName @director.lastName</a></td>
-                    <td>@director.img</td>
-                </tr>
-            }
+        @for(director <- directors) {
+            <tr>
+                <th scope="row">@director.id</th>
+                <td><a href="@controllers.routes.DirectorController.get(director.id)">@director.firstName @director.lastName</a></td>
+                <td>@director.img</td>
+            </tr>
+        }
         </tbody>
     </table>
 }

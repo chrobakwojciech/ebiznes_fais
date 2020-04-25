@@ -16,7 +16,7 @@
             <tr>
                 <th scope="row">@movie.id</th>
                 <td><a href="@controllers.routes.MovieController.get(movie.id)">@movie.title</a></td>
-                <td>@movie.description</td>
+                <td>@(movie.description.substring(0, 64))...</td>
                 <td>@movie.price zł</td>
                 <td>@movie.productionYear</td>
             </tr>

@@ -76,6 +76,30 @@ CREATE TABLE "user" (
     "password" VARCHAR NOT NULL
 );
 
+CREATE TABLE "movie_actor" (
+    "movie" VARCHAR NOT NULL,
+    "actor" VARCHAR NOT NULL,
+    PRIMARY KEY ("movie", "actor"),
+    FOREIGN KEY ("movie") REFERENCES movie("id"),
+    FOREIGN KEY ("actor") REFERENCES actor("id")
+);
+
+CREATE TABLE "movie_director" (
+    "movie" VARCHAR NOT NULL,
+    "director" VARCHAR NOT NULL,
+    PRIMARY KEY ("movie", "director"),
+    FOREIGN KEY ("movie") REFERENCES movie("id"),
+    FOREIGN KEY ("director") REFERENCES director("id")
+);
+
+CREATE TABLE "movie_genre" (
+    "movie" VARCHAR NOT NULL,
+    "genre" VARCHAR NOT NULL,
+    PRIMARY KEY ("movie", "genre"),
+    FOREIGN KEY ("movie") REFERENCES movie("id"),
+    FOREIGN KEY ("genre") REFERENCES genre("id")
+);
+
 INSERT INTO [user] VALUES ('1', 'Jan', 'Kowalski', 'jk@gmail.com', 'admin123');
 INSERT INTO [user] VALUES ('2', 'Piotr', 'Nowak', 'pn@gmail.com', 'admin123');
 
@@ -134,6 +158,27 @@ INSERT INTO rating VALUES ('2', '3', '2', '2');
 INSERT INTO rating VALUES ('3', '6', '1', '2');
 INSERT INTO rating VALUES ('4', '7', '1', '3');
 INSERT INTO rating VALUES ('5', '10', '2', '3');
+
+INSERT INTO movie_actor VALUES ('1', '1');
+INSERT INTO movie_actor VALUES ('1', '2');
+INSERT INTO movie_actor VALUES ('1', '3');
+INSERT INTO movie_actor VALUES ('2', '1');
+INSERT INTO movie_actor VALUES ('2', '4');
+INSERT INTO movie_actor VALUES ('3', '1');
+INSERT INTO movie_actor VALUES ('4', '2');
+INSERT INTO movie_actor VALUES ('4', '3');
+
+INSERT INTO movie_director VALUES ('1', '1');
+INSERT INTO movie_director VALUES ('2', '4');
+INSERT INTO movie_director VALUES ('3', '2');
+INSERT INTO movie_director VALUES ('3', '1');
+INSERT INTO movie_director VALUES ('4', '3');
+
+INSERT INTO movie_genre VALUES ('1', '1');
+INSERT INTO movie_genre VALUES ('2', '4');
+INSERT INTO movie_genre VALUES ('3', '2');
+INSERT INTO movie_genre VALUES ('4', '1');
+INSERT INTO movie_genre VALUES ('4', '3');
 
 
 # --- !Downs

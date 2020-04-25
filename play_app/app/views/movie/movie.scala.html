@@ -1,10 +1,40 @@
 @import models.Movie
-@(movie: Movie, comments: Seq[(Comment, User)], ratings: Seq[(Rating, User)])
+@(movie: Movie, comments: Seq[(Comment, User)], ratings: Seq[(Rating, User)], actors: Seq[Actor], directors: Seq[Director], genres: Seq[Genre])
 
 @main(movie.title) {
+
     <div class="col-12">
-        <h4><span class="badge badge-secondary">@movie.productionYear</span><span class="ml-3 badge badge-primary">@movie.price zł</span></h4>
+        <h4 class="border-bottom pb-3">
+            <span class="badge badge-secondary mr-4">@movie.productionYear</span>
+            @for(genre <- genres) {
+                <span class="badge px-1"><a href="@controllers.routes.GenreController.get(genre.id)">@genre.name</a></span>
+            }
+            <span class="float-right badge badge-primary">@movie.price zł</span>
+        </h4>
         <p>@movie.description</p>
+
+        @if(!directors.isEmpty) {
+            <div class="my-4 py-3">
+                <h5 class="mb-3">@if(directors.length > 1){Reżyserzy} else {Reżyser}</h5>
+                <ul class="list-group">
+                @for(director <- directors) {
+                    <li class="list-group-item"><a href="@controllers.routes.DirectorController.get(director.id)">@director.firstName @director.lastName</a></li>
+                }
+                </ul>
+            </div>
+        }
+
+        @if(!actors.isEmpty) {
+            <div class="my-4 py-3">
+                <h5 class="mb-3">Obsada</h5>
+                <ul class="list-group">
+                @for(actor <- actors) {
+                    <li class="list-group-item"><a href="@controllers.routes.ActorController.get(actor.id)">@actor.firstName @actor.lastName</a></li>
+                }
+                </ul>
+            </div>
+        }
+
         @if(!comments.isEmpty) {
             <div class="my-4 py-3">
                 <h5 class="mb-3">Komentarze</h5>

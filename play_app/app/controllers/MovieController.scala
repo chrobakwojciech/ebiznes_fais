@@ -1,15 +1,15 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.{Comment, Movie, Rating, User}
+import models.{Actor, Comment, Director, Genre, Movie, Rating, User}
 import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
-import repositories.{CommentRepository, MovieRepository, RatingRepository}
+import repositories.{ActorRepository, CommentRepository, DirectorRepository, GenreRepository, MovieRepository, RatingRepository}
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 @Singleton
-class MovieController @Inject()(movieRepository: MovieRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class MovieController @Inject()(movieRepository: MovieRepository, directorRepository: DirectorRepository, actorRepository: ActorRepository, genreRepository: GenreRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll = Action.async { implicit request =>
     val movies = movieRepository.getAll()
@@ -29,8 +29,26 @@ class MovieController @Inject()(movieRepository: MovieRepository, ratingReposito
       case Failure(_) => print("fail")
     }
 
+    var actors:Seq[Actor] = Seq[Actor]()
+    actorRepository.getForMovie(movieId).onComplete {
+      case Success(a) => actors = a
+      case Failure(_) => print("fail")
+    }
+
+    var genres:Seq[Genre] = Seq[Genre]()
+    genreRepository.getForMovie(movieId).onComplete {
+      case Success(g) => genres = g
+      case Failure(_) => print("fail")
+    }
+
+    var directors:Seq[Director] = Seq[Director]()
+    directorRepository.getForMovie(movieId).onComplete {
+      case Success(d) => directors = d
+      case Failure(_) => print("fail")
+    }
+
     movieRepository.getById(movieId) map {
-      case Some(m) => Ok(views.html.movie.movie(m, comments, ratings))
+      case Some(m) => Ok(views.html.movie.movie(m, comments, ratings, actors, directors, genres))
       case None => Redirect(routes.MovieController.getAll())
     }
   }

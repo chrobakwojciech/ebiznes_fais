@@ -62,17 +62,11 @@ PUT         /genres/:genreId                controllers.GenreController.update(g
 DELETE      /genres/:genreId                controllers.GenreController.delete(genreId: String)
 
 # Orders
-GET         /orders/:userId                 controllers.OrderController.get(userId: String)
-GET         /orders                         controllers.OrderController.create
+GET         /orders                         controllers.OrderController.getAll
+GET         /orders/:orderId                controllers.OrderController.get(orderId: String)
+GET         /add/orders                     controllers.OrderController.create
 PUT         /orders/:orderId                controllers.OrderController.update(orderId: String)
 DELETE      /orders/:orderId                controllers.OrderController.delete(orderId: String)
-
-# Order item
-GET         /orders/:orderId/items          controllers.OrderItemController.get(orderId: String)
-GET         /user/:userId/items             controllers.OrderItemController.getForUser(userId: String)
-GET         /order-items                    controllers.OrderItemController.create
-PUT         /order-items/:orderItemId       controllers.OrderItemController.update(orderItemId: String)
-DELETE      /order-items/:orderItemId       controllers.OrderItemController.delete(orderItemId: String)
 
 # Payments
 GET         /payments                       controllers.PaymentController.getAll

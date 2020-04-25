@@ -1,3 +1,58 @@
+@import models.Order
+@import models.Payment
+@import models.OrderItem
 @import models.User
-@(user: User)
-@user.firstName @user.lastName
+@import models.Movie
+
+@(order: (Order, Payment, User), orderItems: Seq[(OrderItem, Movie)], sum: Double)
+
+@main("Zamówienie #" + order._1.id) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Tytul</th>
+                <th scope="col">Opis</th>
+                <th scope="col">Rok produkcji</th>
+                <th scope="col">Cena</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(item <- orderItems) {
+            <tr>
+                <th scope="row">@item._2.id</th>
+                <td><a href="@controllers.routes.MovieController.get(item._2.id)">@item._2.title</a></td>
+                <td>@(item._2.description.substring(0, 64))...</td>
+                <td>@item._2.productionYear</td>
+                <td>@item._1.price zł</td>
+            </tr>
+        }
+            <tr>
+                <th></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><h4>@sum zł</h4></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="col my-4 py-3">
+        <h5 class="mb-3">Szczegóły</h5>
+        <dl class="row">
+            <dt class="col-sm-3">Metoda płatności</dt>
+            <dd class="col-sm-9">@order._2.name</dd>
+
+            <dt class="col-sm-3">Imię i nazwisko</dt>
+            <dd class="col-sm-9"><a href="@controllers.routes.UserController.get(order._3.id)">@order._3.firstName @order._3.lastName</a></dd>
+
+            <dt class="col-sm-3">E-mail</dt>
+            <dd class="col-sm-9">@order._3.email</dd>
+        </dl>
+    </div>
+
+    <div class="col-12 mt-5 border-top pt-3">
+        <a href="@controllers.routes.OrderController.getAll()" class="btn btn-outline-dark btn-sm" role="button" aria-disabled="true">
+            Lista zamówień</a>
+    </div>
+}
+

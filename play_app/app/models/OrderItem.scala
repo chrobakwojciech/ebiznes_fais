@@ -3,16 +3,14 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class OrderItem(id: String,
-                     order: String,
-                     movie: String
+case class OrderItem(order: String,
+                     movie: String,
+                     price: Double
                     )
 
 class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
   val _movie = TableQuery[MovieTable]
   val _order = TableQuery[OrderTable]
-
-  def id = column[String]("id", O.PrimaryKey)
 
   def order = column[String]("order")
 
@@ -22,7 +20,11 @@ class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
 
   def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
 
-  def * = (id, order, movie) <> ((OrderItem.apply _).tupled, OrderItem.unapply)
+  def price = column[Double]("price")
+
+  def pk = primaryKey("primaryKey", (order, movie))
+
+  def * = (order, movie, price) <> ((OrderItem.apply _).tupled, OrderItem.unapply)
 }
 
 

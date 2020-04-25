@@ -46,17 +46,17 @@ CREATE TABLE "order" (
 );
 
 CREATE TABLE "orderItem" (
-    "id" VARCHAR NOT NULL PRIMARY KEY ,
     "order" VARCHAR NOT NULL,
     "movie" VARCHAR NOT NULL,
+    "price" FLOAT NOT NULL,
+    PRIMARY KEY ("order", "movie"),
     FOREIGN KEY ("order") REFERENCES [order]("id"),
     FOREIGN KEY ("movie") REFERENCES movie("id")
 );
 
 CREATE TABLE "payment" (
     "id" VARCHAR NOT NULL PRIMARY KEY,
-    "name" VARCHAR NOT NULL,
-    "price" FLOAT NOT NULL
+    "name" VARCHAR NOT NULL
 );
 
 CREATE TABLE "rating" (
@@ -204,10 +204,10 @@ INSERT INTO movie_genre VALUES ('9', '7');
 INSERT INTO movie_genre VALUES ('10', '3');
 INSERT INTO movie_genre VALUES ('10', '4');
 
-INSERT INTO payment VALUES ('1', 'Platnosc 1', 0.0);
-INSERT INTO payment VALUES ('2', 'Platnosc 2', 5.99);
-INSERT INTO payment VALUES ('3', 'Platnosc 3', 8.99);
-INSERT INTO payment VALUES ('4', 'Platnosc 4', 10.99);
+INSERT INTO payment VALUES ('1', 'BLIK');
+INSERT INTO payment VALUES ('2', 'Karta Visa/MasterCard');
+INSERT INTO payment VALUES ('3', 'Przelew tradycyjny');
+INSERT INTO payment VALUES ('4', 'Kupon');
 
 INSERT INTO comment VALUES ('1', 'Komentarz 1', '1', '1');
 INSERT INTO comment VALUES ('2', 'Komentarz 2', '2', '2');
@@ -223,16 +223,20 @@ INSERT INTO [order] VALUES ('3', '1', '3');
 INSERT INTO [order] VALUES ('4', '2', '1');
 INSERT INTO [order] VALUES ('5', '2', '4');
 
-INSERT INTO orderItem VALUES ('1', '1', '1');
-INSERT INTO orderItem VALUES ('2', '1', '2');
-INSERT INTO orderItem VALUES ('3', '1', '3');
-INSERT INTO orderItem VALUES ('4', '2', '4');
-INSERT INTO orderItem VALUES ('5', '2', '3');
-INSERT INTO orderItem VALUES ('6', '3', '1');
-INSERT INTO orderItem VALUES ('7', '4', '2');
-INSERT INTO orderItem VALUES ('8', '4', '3');
-INSERT INTO orderItem VALUES ('9', '5', '1');
-INSERT INTO orderItem VALUES ('10', '5', '4');
+INSERT INTO orderItem VALUES ('1', '1', 9.99);
+INSERT INTO orderItem VALUES ('1', '2', 6.99);
+INSERT INTO orderItem VALUES ('1', '3', 9.99);
+INSERT INTO orderItem VALUES ('2', '4', 4.99);
+INSERT INTO orderItem VALUES ('2', '5', 12.99);
+INSERT INTO orderItem VALUES ('3', '6', 9.99);
+INSERT INTO orderItem VALUES ('4', '7', 9.99);
+INSERT INTO orderItem VALUES ('4', '8', 11.99);
+INSERT INTO orderItem VALUES ('5', '9', 10.99);
+INSERT INTO orderItem VALUES ('5', '10', 9.99);
+INSERT INTO orderItem VALUES ('1', '9', 18.99);
+INSERT INTO orderItem VALUES ('3', '1', 9.99);
+INSERT INTO orderItem VALUES ('4', '1', 4.99);
+INSERT INTO orderItem VALUES ('5', '4', 7.99);
 
 INSERT INTO rating VALUES ('1', '8', '1', '1');
 INSERT INTO rating VALUES ('2', '3', '2', '2');

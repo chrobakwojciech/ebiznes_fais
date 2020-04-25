@@ -1,7 +1,26 @@
-@import models.User
-@(users: Seq[User])
-<ul>
-    @for(user <- users) {
-        <li>@user.firstName @user.lastName</li>
-    }
-</ul>
+@import models.Order
+@(orders: Seq[(Order, Payment, User, Double)])
+@main("Zamówienia") {
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 5%" scope="col">#</th>
+                <th scope="col">Użytkownik</th>
+                <th scope="col">Płatność</th>
+                <th style="width: 10%" scope="col">Wartość</th>
+                <th style="width: 10%" scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(order <- orders) {
+            <tr>
+                <th scope="row">@order._1.id</th>
+                <td>@order._3.firstName @order._3.lastName</td>
+                <td>@order._2.name</td>
+                <td>@order._4 zł</td>
+                <td><a href="@controllers.routes.OrderController.get(order._1.id)">Szczegóły</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

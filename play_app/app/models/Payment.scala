@@ -4,8 +4,7 @@ import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
 case class Payment(id: String,
-                   name: String,
-                   price: Double
+                   name: String
                   )
 
 class PaymentTable(tag: Tag) extends Table[Payment](tag, "payment") {
@@ -13,9 +12,7 @@ class PaymentTable(tag: Tag) extends Table[Payment](tag, "payment") {
 
   def name = column[String]("name")
 
-  def price = column[Double]("price")
-
-  def * = (id, name, price) <> ((Payment.apply _).tupled, Payment.unapply)
+  def * = (id, name) <> ((Payment.apply _).tupled, Payment.unapply)
 }
 
 

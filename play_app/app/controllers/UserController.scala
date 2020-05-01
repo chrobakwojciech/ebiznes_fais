@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import play.api.mvc._
 import repositories.UserRepository
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserController @Inject()(userRepository: UserRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
@@ -39,13 +39,14 @@ class UserController @Inject()(userRepository: UserRepository, cc: MessagesContr
 
   def createUserHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[CreateUserForm] =>
-      val users = userRepository.getAll();
-      users.map(user => BadRequest(views.html.user.users(user)))
+      Future {
+        Redirect(routes.UserController.create()).flashing("error" -> "Błąd podczas tworzenia użytkownika!")
+      }
     }
 
     val successFunction = { user: CreateUserForm =>
       userRepository.create(user.firstName, user.lastName, user.email, user.password).map { _ =>
-        Redirect(routes.UserController.create()).flashing("success" -> "User created!")
+        Redirect(routes.UserController.create()).flashing("success" -> "Użytkownik dodany!")
       };
     }
     createUserForm.bindFromRequest.fold(errorFunction, successFunction)

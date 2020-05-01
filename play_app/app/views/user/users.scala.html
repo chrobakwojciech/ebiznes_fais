@@ -4,7 +4,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th style="width: 5%" scope="col">#</th>
+                <th style="width: 10%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">E-mail</th>
             </tr>
@@ -12,7 +12,7 @@
         <tbody>
         @for(user <- users) {
             <tr>
-                <th scope="row">@user.id</th>
+                <th scope="row"><span class="badge badge-light">@user.id</span></th>
                 <td><a href="@controllers.routes.UserController.get(user.id)">@user.firstName @user.lastName</a></td>
                 <td>@user.email</td>
             </tr>

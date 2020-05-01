@@ -1,24 +1,29 @@
 @import models.Movie
-@(movies: Seq[Movie])
+@import views.html.bootstrap3._
+@(movies: Seq[Movie])(implicit flash: Flash)
 @main("Filmy") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Tytul</th>
-                <th scope="col">Opis</th>
                 <th scope="col">Cena</th>
                 <th scope="col">Rok produkcji</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         @for(movie <- movies) {
             <tr>
-                <th scope="row">@movie.id</th>
+                <th scope="row"><span class="badge badge-light">@movie.id</span></th>
                 <td><a href="@controllers.routes.MovieController.get(movie.id)">@movie.title</a></td>
-                <td>@(movie.description.substring(0, 64))...</td>
                 <td>@movie.price zł</td>
                 <td>@movie.productionYear</td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.MovieController.delete(movie.id)" role="button">Usuń</a>
+                </td>
             </tr>
         }
         </tbody>

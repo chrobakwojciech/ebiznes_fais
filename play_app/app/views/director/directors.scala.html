@@ -1,20 +1,28 @@
 @import models.Director
-@(directors: Seq[Director])
+
+@import views.html.bootstrap3._
+@(directors: Seq[Director])(implicit flash: Flash)
 @main("Reżyserzy") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">img</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         @for(director <- directors) {
             <tr>
-                <th scope="row">@director.id</th>
+                <th scope="row"><span class="badge badge-light">@director.id</span></th>
                 <td><a href="@controllers.routes.DirectorController.get(director.id)">@director.firstName @director.lastName</a></td>
                 <td>@director.img</td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.DirectorController.delete(director.id)" role="button">Usuń</a>
+                </td>
             </tr>
         }
         </tbody>

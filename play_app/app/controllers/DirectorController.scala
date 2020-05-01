@@ -2,14 +2,24 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 import models.Movie
-import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.{DirectorRepository, MovieRepository}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
 class DirectorController @Inject()(directorRepository: DirectorRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+
+  val createDirectorForm: Form[CreateDirectorForm] = Form {
+    mapping(
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "img" -> nonEmptyText
+    )(CreateDirectorForm.apply)(CreateDirectorForm.unapply)
+  }
 
   def getAll = Action.async { implicit request =>
     val directors = directorRepository.getAll()
@@ -29,17 +39,31 @@ class DirectorController @Inject()(directorRepository: DirectorRepository, movie
     }
   }
 
-  def create = Action {
-    Ok("")
+  def create = Action { implicit request: MessagesRequest[AnyContent] =>
+    Ok(views.html.director.add_director(createDirectorForm))
   }
 
-  def update(directorId: String) = Action {
-    Ok("")
+  def createDirectorHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateDirectorForm] =>
+      Future {
+        Redirect(routes.DirectorController.create()).flashing("error" -> "Błąd podczas dodawania reżysera!")
+      }
+    }
+
+    val successFunction = { director: CreateDirectorForm =>
+      directorRepository.create(director.firstName, director.lastName, director.img).map { _ =>
+        Redirect(routes.DirectorController.getAll()).flashing("success" -> "Reżyser dodany!")
+      };
+    }
+    createDirectorForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def delete(directorId: String) = Action {
-    Ok("")
+  def delete(directorId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    directorRepository.delete(directorId).map(_ => Redirect(routes.DirectorController.getAll()).flashing("info" -> "Reżyser usunięty!"))
   }
 
 
 }
+case class CreateDirectorForm(firstName: String,
+                           lastName: String,
+                           img: String)

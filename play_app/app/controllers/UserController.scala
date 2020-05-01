@@ -15,7 +15,7 @@ class UserController @Inject()(userRepository: UserRepository, cc: MessagesContr
     mapping(
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "email" -> nonEmptyText,
+      "email" -> email,
       "password" -> nonEmptyText
     )(CreateUserForm.apply)(CreateUserForm.unapply)
   }
@@ -36,29 +36,25 @@ class UserController @Inject()(userRepository: UserRepository, cc: MessagesContr
     Ok(views.html.user.add_user(createUserForm))
   }
 
-
   def createUserHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[CreateUserForm] =>
       Future {
-        Redirect(routes.UserController.create()).flashing("error" -> "Błąd podczas tworzenia użytkownika!")
+        Redirect(routes.UserController.create()).flashing("error" -> "Błąd podczas dodawania użytkownika!")
       }
     }
 
     val successFunction = { user: CreateUserForm =>
       userRepository.create(user.firstName, user.lastName, user.email, user.password).map { _ =>
-        Redirect(routes.UserController.create()).flashing("success" -> "Użytkownik dodany!")
+        Redirect(routes.UserController.getAll()).flashing("success" -> "Użytkownik dodany!")
       };
     }
     createUserForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def update(userId: String): Action[AnyContent] = Action {
-    Ok("")
+  def delete(userId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    userRepository.delete(userId).map(_ => Redirect(routes.UserController.getAll()).flashing("info" -> "Użytkownik usunięty!"))
   }
 
-  def delete(userId: String): Action[AnyContent] = Action {
-    Ok("")
-  }
 }
 
 case class CreateUserForm(firstName: String,

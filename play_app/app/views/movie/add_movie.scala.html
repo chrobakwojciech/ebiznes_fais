@@ -1,0 +1,23 @@
+@(movie: Form[CreateMovieForm])(implicit request: MessagesRequestHeader, flash: Flash)
+
+
+@import views.html.bootstrap3._
+
+@main("Dodaj film") {
+    <div class="col">
+        @alerts(flash)
+        @helper.form(controllers.routes.MovieController.createMovieHandler()) {
+            @helper.CSRF.formField
+            @text(movie("title"), "Tytuł")
+            @textarea(movie("description"), "5", "Opis filmu")
+            @text(movie("productionYear"), "Rok premiery")
+            @double(movie("price"), "Cena")
+            @text(movie("img"), "Adres url okładki")
+            @submit()
+        }
+    </div>
+
+}
+
+
+

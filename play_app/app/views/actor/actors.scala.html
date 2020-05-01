@@ -1,20 +1,28 @@
 @import models.Actor
-@(actors: Seq[Actor])
+@import views.html.bootstrap3._
+
+@(actors: Seq[Actor])(implicit flash: Flash)
 @main("Aktorzy") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">img</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         @for(actor <- actors) {
             <tr>
-                <th scope="row">@actor.id</th>
+                <th scope="row"><span class="badge badge-light">@actor.id</span></th>
                 <td><a href="@controllers.routes.ActorController.get(actor.id)">@actor.firstName @actor.lastName</a></td>
                 <td>@actor.img</td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.ActorController.delete(actor.id)" role="button">Usuń</a>
+                </td>
             </tr>
         }
         </tbody>

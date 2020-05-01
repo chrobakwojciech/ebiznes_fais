@@ -1,7 +1,9 @@
 package repositories
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
-import models.{Director, DirectorTable, MovieDirectorTable}
+import models.{Actor, Director, DirectorTable, MovieDirectorTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -29,6 +31,15 @@ class DirectorRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(imp
     _movieDirectors.filter(_.movie === movieId).join(_director).on(_.director === _.id).map {
       case (ma, d) => d
     }.result
+  }
+
+  def create(firstName: String, lastName: String, img: String): Future[Int] = db.run {
+    val id: String = UUID.randomUUID().toString()
+    _director.insertOrUpdate(Director(id, firstName, lastName, img))
+  }
+
+  def delete(directorId: String): Future[Int] = db.run {
+    _director.filter(_.id === directorId).delete
   }
 
 }

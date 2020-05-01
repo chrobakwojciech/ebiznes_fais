@@ -31,4 +31,8 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
     _user.insertOrUpdate(User(id, firstName, lastName, email, password))
   }
 
+  def delete(userId: String): Future[Int] = db.run {
+    _user.filter(_.id === userId).delete
+  }
+
 }

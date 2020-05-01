@@ -1,12 +1,15 @@
 @import models.User
-@(users: Seq[User])
+@import views.html.bootstrap3._
+@(users: Seq[User])(implicit flash: Flash)
 @main("Użytkownicy") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
                 <th style="width: 10%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">E-mail</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -15,6 +18,10 @@
                 <th scope="row"><span class="badge badge-light">@user.id</span></th>
                 <td><a href="@controllers.routes.UserController.get(user.id)">@user.firstName @user.lastName</a></td>
                 <td>@user.email</td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.UserController.delete(user.id)" role="button">Usuń</a>
+                </td>
             </tr>
         }
         </tbody>

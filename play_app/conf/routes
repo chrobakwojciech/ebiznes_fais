@@ -18,15 +18,15 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET         /users                          controllers.UserController.getAll
 GET         /users/:userId                  controllers.UserController.get(userId: String)
 GET         /add/users                      controllers.UserController.create
-PUT         /users/:userId                  controllers.UserController.update(userId: String)
-DELETE      /users/:userId                  controllers.UserController.delete(userId: String)
+GET         /delete/users/:userId           controllers.UserController.delete(userId: String)
+POST        /createUserHandler              controllers.UserController.createUserHandler
 
 # Movies
 GET         /movies                         controllers.MovieController.getAll
 GET         /movies/:movieId                controllers.MovieController.get(movieId: String)
 GET         /add/movies                     controllers.MovieController.create
-PUT         /movies/:movieId                controllers.MovieController.update(movieId: String)
-DELETE      /movies/:movieId                controllers.MovieController.delete(movieId: String)
+GET         /delete/movies/:movieId         controllers.MovieController.delete(movieId: String)
+POST        /createMovieHandler             controllers.MovieController.createMovieHandler
 
 # Comments
 GET         /comments                       controllers.CommentController.getAll
@@ -44,15 +44,15 @@ DELETE      /ratings/:ratingId              controllers.CommentController.delete
 GET         /actors                         controllers.ActorController.getAll
 GET         /actors/:actorId                controllers.ActorController.get(actorId: String)
 GET         /add/actors                     controllers.ActorController.create
-PUT         /actors/:actorId                controllers.ActorController.update(actorId: String)
-DELETE      /actors/:actorId                controllers.ActorController.delete(actorId: String)
+GET         /delete/actors/:actorId         controllers.ActorController.delete(actorId: String)
+POST        /createActorHandler             controllers.ActorController.createActorHandler
 
 # Directors
 GET         /directors                      controllers.DirectorController.getAll
 GET         /directors/:directorId          controllers.DirectorController.get(directorId: String)
 GET         /add/directors                  controllers.DirectorController.create
-PUT         /directors/:directorId          controllers.DirectorController.update(directorId: String)
-DELETE      /directors/:directorId          controllers.DirectorController.delete(directorId: String)
+GET         /delete/directors/:directorId   controllers.DirectorController.delete(directorId: String)
+POST        /createDirectorHandler          controllers.DirectorController.createDirectorHandler
 
 # Genres
 GET         /genres                         controllers.GenreController.getAll
@@ -73,7 +73,3 @@ GET         /payments                       controllers.PaymentController.getAll
 GET         /add/payment                    controllers.PaymentController.create
 PUT         /payment/:paymentId             controllers.PaymentController.update(paymentId: String)
 DELETE      /payment/:paymentId             controllers.PaymentController.delete(paymentId: String)
-
-
-# Form handlers
-POST        /createUserHandler              controllers.UserController.createUserHandler

@@ -16,3 +16,8 @@ https://hub.docker.com/r/woitech16/zad1
     - sqlite-jdbc
 - routing
 - controllers
+
+---
+
+## Zadanie 3
+commit: 98c5e84266a726078039278c173c4218a73aeb73

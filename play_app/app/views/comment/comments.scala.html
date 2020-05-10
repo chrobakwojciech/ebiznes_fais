@@ -1,6 +1,9 @@
 @import models.Comment
-@(comments: Seq[(Comment, Movie, User)])
+@import views.html.bootstrap3._
+
+@(comments: Seq[(Comment, Movie, User)])(implicit flash: Flash)
     @main("Komentarze") {
+        @alerts(flash)
         <table class="table">
             <thead>
                 <tr>
@@ -8,15 +11,20 @@
                     <th scope="col">Użytkownik</th>
                     <th scope="col">Film</th>
                     <th scope="col">Komentarz</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             @for(comment <- comments) {
                 <tr>
-                    <th scope="row">@comment._1.id</th>
+                    <th scope="row"><span class="badge badge-light">@comment._1.id</span></th>
                     <td><a href="@controllers.routes.UserController.get(comment._3.id)">@comment._3.firstName @comment._3.lastName</a></td>
                     <td><a href="@controllers.routes.MovieController.get(comment._2.id)">@comment._2.title</a></td>
                     <td>@comment._1.content</td>
+                    <td class="text-right">
+                        <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                        <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.CommentController.delete(comment._1.id)" role="button">Usuń</a>
+                    </td>
                 </tr>
             }
             </tbody>

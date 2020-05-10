@@ -1,5 +1,7 @@
 package repositories
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.db.slick.DatabaseConfigProvider
@@ -34,6 +36,15 @@ class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, user
 
   def getForMovie(movieId: String): Future[Seq[(Comment, User)]] = db.run {
     _comment.filter(_.movie === movieId).join(_user).on(_.user === _.id).result
+  }
+
+  def create(content: String, userId: String, movieId: String) = db.run {
+    val id: String = UUID.randomUUID().toString()
+    _comment.insertOrUpdate(Comment(id, content, userId, movieId));
+  }
+
+  def delete(commentId: String) = db.run {
+    _comment.filter(_.id === commentId).delete
   }
 
 }

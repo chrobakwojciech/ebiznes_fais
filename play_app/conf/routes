@@ -27,8 +27,8 @@ POST        /createMovieHandler             controllers.MovieController.createMo
 # Comments
 GET         /comments                       controllers.CommentController.getAll
 GET         /add/comments                   controllers.CommentController.create
-PUT         /comments/:commentId            controllers.CommentController.update(commentId: String)
-DELETE      /comments/:commentId            controllers.CommentController.delete(commentId: String)
+GET         /delete/comments/:commentId     controllers.CommentController.delete(commentId: String)
+POST        /createCommentHandler           controllers.CommentController.createCommentHandler
 
 # Ratings
 GET         /ratings                        controllers.RatingController.getAll

@@ -1,5 +1,7 @@
 # --- !Ups
 
+PRAGMA foreign_keys = true;
+
 CREATE TABLE "actor" (
     "id" VARCHAR NOT NULL PRIMARY KEY,
     "firstName" VARCHAR NOT NULL,
@@ -97,7 +99,7 @@ CREATE TABLE "movie_genre" (
     "genre" VARCHAR NOT NULL,
     PRIMARY KEY ("movie", "genre"),
     FOREIGN KEY ("movie") REFERENCES movie("id"),
-    FOREIGN KEY ("genre") REFERENCES genre("id")
+    FOREIGN KEY ("genre") REFERENCES genre("id") ON DELETE CASCADE
 );
 
 INSERT INTO [user] VALUES ('1', 'Jan', 'Kowalski', 'jk@gmail.com', 'admin123');

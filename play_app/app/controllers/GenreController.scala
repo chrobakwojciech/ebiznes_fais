@@ -2,14 +2,21 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 import models.Movie
-import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.{GenreRepository, MovieRepository}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
 class GenreController @Inject()(genreRepository: GenreRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+  val createGenreForm: Form[CreateGenreForm] = Form {
+    mapping(
+      "name" -> nonEmptyText
+    )(CreateGenreForm.apply)(CreateGenreForm.unapply)
+  }
 
   def getAll = Action.async { implicit request =>
     val genres = genreRepository.getAll()
@@ -29,17 +36,30 @@ class GenreController @Inject()(genreRepository: GenreRepository, movieRepositor
     }
   }
 
-  def create = Action {
-    Ok("")
+  def create = Action { implicit request: MessagesRequest[AnyContent] =>
+    Ok(views.html.genre.add_genre(createGenreForm))
   }
 
-  def update(genreId: String) = Action {
-    Ok("")
+
+  def createGenreHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateGenreForm] =>
+      Future {
+        Redirect(routes.GenreController.create()).flashing("error" -> "Błąd podczas dodawania gatunku!")
+      }
+    }
+
+    val successFunction = { genre: CreateGenreForm =>
+      genreRepository.create(genre.name).map { _ =>
+        Redirect(routes.GenreController.getAll()).flashing("success" -> "Gatunek dodany!")
+      };
+    }
+    createGenreForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def delete(genreId: String) = Action {
-    Ok("")
+  def delete(genreId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    genreRepository.delete(genreId).map(_ => Redirect(routes.GenreController.getAll()).flashing("info" -> "Gatunek usunięty!"))
   }
-
 
 }
+
+case class CreateGenreForm(name: String)

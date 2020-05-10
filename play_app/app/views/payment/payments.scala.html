@@ -1,18 +1,27 @@
 @import models.Payment
-@(payments: Seq[Payment])
+
+@import views.html.bootstrap3._
+
+@(payments: Seq[Payment])(implicit flash: Flash)
 @main("Płatności") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Nazwa</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         @for(payment <- payments) {
             <tr>
-                <th scope="row">@payment.id</th>
+                <th scope="row"><span class="badge badge-light">@payment.id</span></th>
                 <td>@payment.name</td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.PaymentController.delete(payment.id)" role="button">Usuń</a>
+                </td>
             </tr>
         }
         </tbody>

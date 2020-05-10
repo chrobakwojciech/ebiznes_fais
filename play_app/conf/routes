@@ -5,10 +5,6 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
@@ -58,8 +54,8 @@ POST        /createDirectorHandler          controllers.DirectorController.creat
 GET         /genres                         controllers.GenreController.getAll
 GET         /genres/:genreId                controllers.GenreController.get(genreId: String)
 GET         /add/genres                     controllers.GenreController.create
-PUT         /genres/:genreId                controllers.GenreController.update(genreId: String)
-DELETE      /genres/:genreId                controllers.GenreController.delete(genreId: String)
+GET         /delete/genres/:genreId         controllers.GenreController.delete(genreId: String)
+POST        /createGenreHandler             controllers.GenreController.createGenreHandler
 
 # Orders
 GET         /orders                         controllers.OrderController.getAll
@@ -70,6 +66,6 @@ DELETE      /orders/:orderId                controllers.OrderController.delete(o
 
 # Payments
 GET         /payments                       controllers.PaymentController.getAll
-GET         /add/payment                    controllers.PaymentController.create
-PUT         /payment/:paymentId             controllers.PaymentController.update(paymentId: String)
-DELETE      /payment/:paymentId             controllers.PaymentController.delete(paymentId: String)
+GET         /add/payments                   controllers.PaymentController.create
+GET         /delete/payment/:paymentId      controllers.PaymentController.delete(paymentId: String)
+POST        /createPaymentHandler           controllers.PaymentController.createPaymentHandler

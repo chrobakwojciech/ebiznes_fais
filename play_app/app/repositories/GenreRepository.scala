@@ -1,7 +1,9 @@
 package repositories
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
-import models.{Genre, GenreTable, MovieGenreTable}
+import models.{Director, Genre, GenreTable, MovieGenreTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -30,5 +32,16 @@ class GenreRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
       case (ma, g) => g
     }.result
   }
+
+  def create(name: String): Future[Int] = db.run {
+    val id: String = UUID.randomUUID().toString()
+    _genre.insertOrUpdate(Genre(id, name))
+  }
+
+  def delete(genreId: String): Future[Int] = db.run {
+    _genre.filter(_.id === genreId).delete
+  }
+
+
 
 }

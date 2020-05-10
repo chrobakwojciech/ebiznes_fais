@@ -7,7 +7,8 @@ import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.{GenreRepository, MovieRepository}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
@@ -24,11 +25,7 @@ class GenreController @Inject()(genreRepository: GenreRepository, movieRepositor
   }
 
   def get(genreId: String) = Action.async { implicit request =>
-    var movies: Seq[Movie] = Seq[Movie]()
-    movieRepository.getForGenre(genreId).onComplete {
-      case Success(m) => movies = m
-      case Failure(_) => print("fail")
-    }
+    val movies: Seq[Movie] = Await.result(movieRepository.getForGenre(genreId), Duration.Inf)
 
     genreRepository.getById(genreId) map {
       case Some(g) => Ok(views.html.genre.genre(g, movies))

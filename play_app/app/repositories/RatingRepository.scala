@@ -1,5 +1,7 @@
 package repositories
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.db.slick.DatabaseConfigProvider
@@ -34,6 +36,15 @@ class RatingRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
 
   def getForMovie(movieId: String): Future[Seq[(Rating, User)]] = db.run {
     _rating.filter(_.movie === movieId).join(_user).on(_.user === _.id).result
+  }
+
+  def create(value: Int, userId: String, movieId: String) = db.run {
+    val id: String = UUID.randomUUID().toString()
+    _rating.insertOrUpdate(Rating(id, value, userId, movieId));
+  }
+
+  def delete(ratingId: String) = db.run {
+    _rating.filter(_.id === ratingId).delete
   }
 
 }

@@ -11,7 +11,7 @@
             @text(movie("title"), "Tytuł")
             @textarea(movie("description"), "5", "Opis filmu")
             @text(movie("productionYear"), "Rok premiery")
-            @double(movie("price"), "Cena")
+            @number(movie("price"), "Cena", step = "0.01")
             @text(movie("img"), "Adres url okładki")
             @submit()
         }

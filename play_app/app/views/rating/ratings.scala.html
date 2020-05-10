@@ -1,6 +1,9 @@
 @import models.Rating
-@(ratings: Seq[(Rating, Movie, User)])
+
+@import views.html.bootstrap3._
+@(ratings: Seq[(Rating, Movie, User)])(implicit flash: Flash)
 @main("Oceny") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
@@ -8,18 +11,23 @@
                 <th scope="col">Użytkownik</th>
                 <th scope="col">Film</th>
                 <th scope="col">Ocena</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         @for(rating <- ratings) {
             <tr>
-                <th scope="row">@rating._1.id</th>
+                <th scope="row"><span class="badge badge-light">@rating._1.id</span></th>
                 <td><a href="@controllers.routes.UserController.get(rating._3.id)">@rating._3.firstName @rating._3.lastName</a></td>
                 <td><a href="@controllers.routes.MovieController.get(rating._2.id)">@rating._2.title</a></td>
                 <td>
                     <div class="progress">
                         <div class="progress-bar @if(rating._1.value < 4) {bg-danger} @if(rating._1.value > 7) {bg-success}" role="progressbar" style="width: @(rating._1.value * 10)%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="10">@rating._1.value</div>
                     </div>
+                </td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.RatingController.delete(rating._1.id)" role="button">Usuń</a>
                 </td>
             </tr>
         }

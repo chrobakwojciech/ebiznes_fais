@@ -33,8 +33,8 @@ DELETE      /comments/:commentId            controllers.CommentController.delete
 # Ratings
 GET         /ratings                        controllers.RatingController.getAll
 GET         /add/ratings                    controllers.RatingController.create
-PUT         /ratings/:ratingId              controllers.CommentController.update(ratingId: String)
-DELETE      /ratings/:ratingId              controllers.CommentController.delete(ratingId: String)
+GET         /delete/ratings/:ratingId       controllers.RatingController.delete(ratingId: String)
+POST        /createRatingHandler            controllers.RatingController.createRatingHandler
 
 # Actors
 GET         /actors                         controllers.ActorController.getAll

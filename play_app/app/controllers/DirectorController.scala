@@ -7,7 +7,8 @@ import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.{DirectorRepository, MovieRepository}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
@@ -27,11 +28,7 @@ class DirectorController @Inject()(directorRepository: DirectorRepository, movie
   }
 
   def get(directorId: String) = Action.async { implicit request =>
-    var movies: Seq[Movie] = Seq[Movie]()
-    movieRepository.getForDirector(directorId).onComplete {
-      case Success(m) => movies = m
-      case Failure(_) => print("fail")
-    }
+    val movies: Seq[Movie] = Await.result(movieRepository.getForDirector(directorId), Duration.Inf)
 
     directorRepository.getById(directorId) map {
       case Some(d) => Ok(views.html.director.director(d, movies))

@@ -8,7 +8,8 @@ import play.api.data.format.Formats._
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
@@ -30,35 +31,11 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
   }
 
   def get(movieId: String) = Action.async { implicit request =>
-    var comments: Seq[(Comment, User)] = Seq[(Comment, User)]()
-    commentRepository.getForMovie(movieId).onComplete {
-      case Success(c) => comments = c
-      case Failure(_) => print("fail")
-    }
-
-    var ratings: Seq[(Rating, User)] = Seq[(Rating, User)]()
-    ratingRepository.getForMovie(movieId).onComplete {
-      case Success(r) => ratings = r
-      case Failure(_) => print("fail")
-    }
-
-    var actors: Seq[Actor] = Seq[Actor]()
-    actorRepository.getForMovie(movieId).onComplete {
-      case Success(a) => actors = a
-      case Failure(_) => print("fail")
-    }
-
-    var genres: Seq[Genre] = Seq[Genre]()
-    genreRepository.getForMovie(movieId).onComplete {
-      case Success(g) => genres = g
-      case Failure(_) => print("fail")
-    }
-
-    var directors: Seq[Director] = Seq[Director]()
-    directorRepository.getForMovie(movieId).onComplete {
-      case Success(d) => directors = d
-      case Failure(_) => print("fail")
-    }
+    val comments: Seq[(Comment, User)] = Await.result(commentRepository.getForMovie(movieId), Duration.Inf)
+    val ratings: Seq[(Rating, User)] = Await.result(ratingRepository.getForMovie(movieId), Duration.Inf)
+    val actors: Seq[Actor] = Await.result(actorRepository.getForMovie(movieId), Duration.Inf)
+    val genres: Seq[Genre] = Await.result(genreRepository.getForMovie(movieId), Duration.Inf)
+    val directors: Seq[Director] = Await.result(directorRepository.getForMovie(movieId), Duration.Inf)
 
     movieRepository.getById(movieId) map {
       case Some(m) => Ok(views.html.movie.movie(m, comments, ratings, actors, directors, genres))

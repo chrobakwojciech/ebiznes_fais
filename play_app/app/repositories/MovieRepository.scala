@@ -19,7 +19,7 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   val _movie = TableQuery[MovieTable]
   val _movieGenres = TableQuery[MovieGenreTable]
   val _movieActors = TableQuery[MovieActorTable]
-  val _movieDiretors = TableQuery[MovieDirectorTable]
+  val _movieDirectors = TableQuery[MovieDirectorTable]
 
   def getAll(): Future[Seq[Movie]] = db.run {
     _movie.result
@@ -42,7 +42,7 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   }
 
   def getForDirector(directorId: String): Future[Seq[Movie]] = db.run {
-    _movieDiretors.filter(_.director === directorId).join(_movie).on(_.movie === _.id).map {
+    _movieDirectors.filter(_.director === directorId).join(_movie).on(_.movie === _.id).map {
       case (md, m) => m
     }.result
   }

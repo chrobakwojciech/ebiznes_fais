@@ -24,7 +24,12 @@
         * the page content. *@
     <div class="container">
         <div class="row bg-white p-4">
-            <h3 class="pl-4">@title</h3>
+            <div class="col"><h3 class="pl-4">@title</h3></div>
+            <div class="col">
+                <a href="@controllers.routes.HomeController.index()" class="btn btn-light float-right" role="button" aria-pressed="true">Ekran główny</a>
+            </div>
+
+
         </div>
         <div class="row mt-3 bg-white p-4">
         @content

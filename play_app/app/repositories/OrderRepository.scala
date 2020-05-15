@@ -1,14 +1,17 @@
 package repositories
 
+import java.util.UUID
+
 import javax.inject.{Inject, Singleton}
 import models.{Movie, MovieTable, Order, OrderItem, OrderItemTable, OrderTable, Payment, PaymentTable, User, UserTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+class OrderRepository @Inject()(movieRepository: MovieRepository, dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
@@ -40,6 +43,26 @@ class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     _order.filter(_.id === orderId).join(_payment).on(_.payment === _.id).join(_user).on(_._1.user === _.id).map {
       case ((order, payment), user) => (order, payment, user)
     }.result.headOption
+  }
+
+  def create(user: String, payment: String, movies: Seq[String]) = {
+    val id: String = UUID.randomUUID().toString()
+    val createOrder = _order.insertOrUpdate(Order(id, user, payment))
+
+    var orderItems: Seq[OrderItem] = Seq()
+    for (m <- movies) {
+      val movie: Option[Movie] = Await.result(movieRepository.getById(m), Duration.Inf)
+      orderItems = orderItems :+ OrderItem(id, movie.get.id, movie.get.price)
+    }
+    val createOrderItems = _orderItems ++= orderItems
+
+    db.run(DBIO.seq(createOrder, createOrderItems).transactionally)
+  }
+
+  def delete(orderId: String) = {
+    val deleteOrder = _order.filter(_.id === orderId).delete
+    val deleteOrderItems = _orderItems.filter(_.order === orderId).delete
+    db.run(DBIO.seq(deleteOrder, deleteOrderItems).transactionally)
   }
 
 }

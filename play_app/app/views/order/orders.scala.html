@@ -1,6 +1,8 @@
 @import models.Order
-@(orders: Seq[(Order, Payment, User, Double)])
+@import views.html.bootstrap3._
+@(orders: Seq[(Order, Payment, User, Double)])(implicit flash: Flash)
 @main("Zamówienia") {
+    @alerts(flash)
     <table class="table">
         <thead>
             <tr>
@@ -8,19 +10,24 @@
                 <th scope="col">Użytkownik</th>
                 <th scope="col">Płatność</th>
                 <th style="width: 10%" scope="col">Wartość</th>
-                <th style="width: 10%" scope="col"></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
         @for(order <- orders) {
             <tr>
-                <th scope="row">@order._1.id</th>
+                <th scope="row"><span class="badge badge-light">@order._1.id</span></th>
                 <td>@order._3.firstName @order._3.lastName</td>
                 <td>@order._2.name</td>
                 <td>@order._4 zł</td>
-                <td><a href="@controllers.routes.OrderController.get(order._1.id)">Szczegóły</a></td>
+                <td class="text-right">
+                    <a class="btn btn-sm btn-outline-primary" href="@controllers.routes.OrderController.get(order._1.id)" role="button">Szczegóły</a>
+                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.OrderController.delete(order._1.id)" role="button">Usuń</a>
+                </td>
             </tr>
         }
         </tbody>
     </table>
+    <a href="@controllers.routes.OrderController.create()" class="btn btn-light float-right" role="button" aria-pressed="true">Dodaj</a>
 }

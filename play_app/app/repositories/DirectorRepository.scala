@@ -42,4 +42,8 @@ class DirectorRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(imp
     _director.filter(_.id === directorId).delete
   }
 
+  def update(directorId: String, firstName: String, lastName: String, img: String): Future[Int] = db.run {
+    _director.filter(_.id === directorId).update(Director(directorId, firstName, lastName, img))
+  }
+
 }

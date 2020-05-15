@@ -19,7 +19,7 @@
                 <td><a href="@controllers.routes.DirectorController.get(director.id)">@director.firstName @director.lastName</a></td>
                 <td>@director.img</td>
                 <td class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-info" href="@controllers.routes.DirectorController.update(director.id)" role="button">Edytuj</a>
                     <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.DirectorController.delete(director.id)" role="button">Usuń</a>
                 </td>
             </tr>

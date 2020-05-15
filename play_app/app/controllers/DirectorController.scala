@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.Movie
+import models.{Director, Movie}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -56,6 +56,27 @@ class DirectorController @Inject()(directorRepository: DirectorRepository, movie
 
   def delete(directorId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     directorRepository.delete(directorId).map(_ => Redirect(routes.DirectorController.getAll()).flashing("info" -> "Reżyser usunięty!"))
+  }
+
+  def update(directorId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+    val director: Director = Await.result(directorRepository.getById(directorId), Duration.Inf).get
+    val updateForm = createDirectorForm.fill(CreateDirectorForm(director.firstName, director.lastName, director.img))
+    Ok(views.html.director.update_director(directorId, updateForm))
+  }
+
+  def updateDirectorHandler(directorId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateDirectorForm] =>
+      Future {
+        Redirect(routes.DirectorController.update(directorId)).flashing("error" -> "Błąd podczas edycji reżysera!")
+      }
+    }
+
+    val successFunction = { director: CreateDirectorForm =>
+      directorRepository.update(directorId, director.firstName, director.lastName, director.img).map { _ =>
+        Redirect(routes.DirectorController.getAll()).flashing("success" -> "Reżyser zmodyfikowany!")
+      };
+    }
+    createDirectorForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
 

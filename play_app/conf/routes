@@ -50,7 +50,9 @@ GET         /directors                      controllers.DirectorController.getAl
 GET         /directors/:directorId          controllers.DirectorController.get(directorId: String)
 GET         /add/directors                  controllers.DirectorController.create
 GET         /delete/directors/:directorId   controllers.DirectorController.delete(directorId: String)
+GET         /update/directors/:directorId   controllers.DirectorController.update(directorId: String)
 POST        /createDirectorHandler          controllers.DirectorController.createDirectorHandler
+POST        /updateDirectorHandler          controllers.DirectorController.updateDirectorHandler(directorId: String)
 
 # Genres
 GET         /genres                         controllers.GenreController.getAll

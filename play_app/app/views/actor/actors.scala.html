@@ -20,7 +20,7 @@
                 <td><a href="@controllers.routes.ActorController.get(actor.id)">@actor.firstName @actor.lastName</a></td>
                 <td>@actor.img</td>
                 <td class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-info" href="@controllers.routes.ActorController.update(actor.id)" role="button">Edytuj</a>
                     <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.ActorController.delete(actor.id)" role="button">Usuń</a>
                 </td>
             </tr>

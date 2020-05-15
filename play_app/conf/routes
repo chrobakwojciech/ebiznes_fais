@@ -41,7 +41,9 @@ GET         /actors                         controllers.ActorController.getAll
 GET         /actors/:actorId                controllers.ActorController.get(actorId: String)
 GET         /add/actors                     controllers.ActorController.create
 GET         /delete/actors/:actorId         controllers.ActorController.delete(actorId: String)
+GET         /update/actors/:actorId         controllers.ActorController.update(actorId: String)
 POST        /createActorHandler             controllers.ActorController.createActorHandler
+POST        /updateActorHandler             controllers.ActorController.updateActorHandler(actorId: String)
 
 # Directors
 GET         /directors                      controllers.DirectorController.getAll

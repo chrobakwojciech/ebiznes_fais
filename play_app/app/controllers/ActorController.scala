@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.Movie
+import models.{Actor, Movie}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -56,6 +56,27 @@ class ActorController @Inject()(actorRepository: ActorRepository, movieRepositor
 
   def delete(actorId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     actorRepository.delete(actorId).map(_ => Redirect(routes.ActorController.getAll()).flashing("info" -> "Aktor usunięty!"))
+  }
+
+  def update(actorId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+    val actor: Actor = Await.result(actorRepository.getById(actorId), Duration.Inf).get
+    val updateForm = createActorForm.fill(CreateActorForm(actor.firstName, actor.lastName, actor.img))
+    Ok(views.html.actor.update_actor(actorId, updateForm))
+  }
+
+  def updateActorHandler(actorId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateActorForm] =>
+      Future {
+        Redirect(routes.ActorController.update(actorId)).flashing("error" -> "Błąd podczas edycji aktora!")
+      }
+    }
+
+    val successFunction = { actor: CreateActorForm =>
+      actorRepository.update(actorId, actor.firstName, actor.lastName, actor.img).map { _ =>
+        Redirect(routes.ActorController.getAll()).flashing("success" -> "Aktor zmodyfikowany!")
+      };
+    }
+    createActorForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 }
 

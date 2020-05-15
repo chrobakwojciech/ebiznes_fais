@@ -39,6 +39,10 @@ class ActorRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     _actor.insertOrUpdate(Actor(id, firstName, lastName, img))
   }
 
+  def update(id: String, firstName: String, lastName: String, img: String): Future[Int] = db.run {
+    _actor.filter(_.id === id).update(Actor(id, firstName, lastName, img))
+  }
+
   def delete(actorId: String): Future[Int] = db.run {
     _actor.filter(_.id === actorId).delete
   }

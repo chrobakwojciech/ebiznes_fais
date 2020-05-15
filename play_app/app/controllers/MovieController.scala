@@ -21,7 +21,10 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
       "description" -> nonEmptyText,
       "productionYear" -> nonEmptyText,
       "price" -> of(doubleFormat),
-      "img" -> nonEmptyText
+      "img" -> nonEmptyText,
+      "actors" -> seq(nonEmptyText),
+      "directors" -> seq(nonEmptyText),
+      "genres" -> seq(nonEmptyText)
     )(CreateMovieForm.apply)(CreateMovieForm.unapply)
   }
 
@@ -44,7 +47,10 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
   }
 
   def create: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    Ok(views.html.movie.add_movie(createMovieForm))
+    val actors: Seq[Actor] = Await.result(actorRepository.getAll(), Duration.Inf)
+    val directors: Seq[Director] = Await.result(directorRepository.getAll(), Duration.Inf)
+    val genres: Seq[Genre] = Await.result(genreRepository.getAll(), Duration.Inf)
+    Ok(views.html.movie.add_movie(createMovieForm, actors, directors, genres))
   }
 
   def update(movieId: String) = Action {
@@ -63,7 +69,7 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
     }
 
     val successFunction = { movie: CreateMovieForm =>
-      movieRepository.create(movie.title, movie.description, movie.productionYear, movie.price, movie.img).map { _ =>
+      movieRepository.create(movie.title, movie.description, movie.productionYear, movie.price, movie.img, movie.actors, movie.directors, movie.genres).map { _ =>
         Redirect(routes.MovieController.getAll()).flashing("success" -> "Film dodany!")
       }
     }
@@ -75,5 +81,8 @@ case class CreateMovieForm(title: String,
                            description: String,
                            productionYear: String,
                            price: Double,
-                           img: String
+                           img: String,
+                           actors: Seq[String],
+                           directors: Seq[String],
+                           genres: Seq[String]
                           )

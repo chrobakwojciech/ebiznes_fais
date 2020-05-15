@@ -1,16 +1,15 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.{Actor, Movie, User}
+import models.{Movie, User}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._
-import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
+import play.api.mvc._
 import repositories.{MovieRepository, RatingRepository, UserRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 @Singleton
 class RatingController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {

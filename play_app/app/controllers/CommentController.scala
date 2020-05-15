@@ -4,8 +4,7 @@ import javax.inject.{Inject, Singleton}
 import models.{Movie, User}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.format.Formats._
-import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
+import play.api.mvc._
 import repositories.{CommentRepository, MovieRepository, UserRepository}
 
 import scala.concurrent.duration.Duration

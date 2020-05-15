@@ -4,12 +4,11 @@ import javax.inject.{Inject, Singleton}
 import models.Movie
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
+import play.api.mvc._
 import repositories.{GenreRepository, MovieRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 @Singleton
 class GenreController @Inject()(genreRepository: GenreRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {

@@ -1,12 +1,11 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.{Comment, Movie, Order, OrderItem, Payment, User}
-import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
-import repositories.{MovieRepository, OrderRepository, PaymentRepository, UserRepository}
+import models.{Movie, OrderItem, Payment, User}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.format.Formats._
+import play.api.mvc._
+import repositories.{MovieRepository, OrderRepository, PaymentRepository, UserRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}

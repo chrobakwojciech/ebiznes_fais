@@ -1,8 +1,4 @@
-@import models.Order
-@import models.Payment
-@import models.OrderItem
-@import models.User
-@import models.Movie
+@import models.{Movie, Order, OrderItem, Payment, User}
 
 @(order: (Order, Payment, User), orderItems: Seq[(OrderItem, Movie)], sum: Double)
 

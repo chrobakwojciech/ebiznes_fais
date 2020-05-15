@@ -2,14 +2,12 @@ package repositories
 
 import java.util.UUID
 
-import controllers.{CreateMovieForm, CreateRatingForm}
 import javax.inject.{Inject, Singleton}
 import models.{User, UserTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {

@@ -3,7 +3,7 @@ package repositories
 import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
-import models.{Director, Genre, GenreTable, MovieGenreTable}
+import models.{Genre, GenreTable, MovieGenreTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

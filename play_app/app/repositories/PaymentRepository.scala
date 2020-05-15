@@ -3,7 +3,7 @@ package repositories
 import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
-import models.{Genre, Payment, PaymentTable}
+import models.{Payment, PaymentTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

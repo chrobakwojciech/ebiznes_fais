@@ -1,12 +1,20 @@
-@(movie: Form[CreateMovieForm], actors: Seq[Actor], directors: Seq[Director], genres: Seq[Genre])(implicit request: MessagesRequestHeader, flash: Flash)
-
+@(
+        id: String,
+        movie: Form[CreateMovieForm],
+        selectedActors: Seq[String],
+        actors: Seq[Actor],
+        selectedDirectors: Seq[String],
+        directors: Seq[Director],
+        selectedGenres: Seq[String],
+        genres: Seq[Genre]
+)(implicit request: MessagesRequestHeader, flash: Flash)
 
 @import views.html.bootstrap3._
 
-@main("Dodaj film") {
+@main("Zaktualizuj film") {
     <div class="col">
         @alerts(flash)
-        @helper.form(controllers.routes.MovieController.createMovieHandler()) {
+        @helper.form(controllers.routes.MovieController.updateMovieHandler(id)) {
             @helper.CSRF.formField
             @text(movie("title"), "Tytuł")
             @textarea(movie("description"), "5", "Opis filmu")
@@ -23,7 +31,12 @@
                     id="directors[]"
                     name="directors[]">
                     @for(d <- directors) {
-                        <option id="@d.id" value="@d.id" >@d.firstName @d.lastName</option>
+                        @if(selectedDirectors.contains(d.id)) {
+                            <option selected id="@d.id" value="@d.id" >@d.firstName @d.lastName</option>
+                        } else {
+                            <option id="@d.id" value="@d.id" >@d.firstName @d.lastName</option>
+                        }
+
                     }
                     </select>
                 </div>
@@ -38,7 +51,11 @@
                     id="actors[]"
                     name="actors[]">
                     @for(a <- actors) {
-                        <option id="@a.id" value="@a.id" >@a.firstName @a.lastName</option>
+                        @if(selectedActors.contains(a.id)) {
+                            <option selected id="@a.id" value="@a.id" >@a.firstName @a.lastName</option>
+                        } else {
+                            <option id="@a.id" value="@a.id" >@a.firstName @a.lastName</option>
+                        }
                     }
                     </select>
                 </div>
@@ -53,12 +70,16 @@
                     id="genres[]"
                     name="genres[]">
                     @for(g <- genres) {
-                        <option id="@g.id" value="@g.id" >@g.name</option>
+                        @if(selectedGenres.contains(g.id)) {
+                            <option selected id="@g.id" value="@g.id" >@g.name</option>
+                        } else {
+                            <option id="@g.id" value="@g.id" >@g.name</option>
+                        }
                     }
                     </select>
                 </div>
             </div>
-            @submit()
+            @submit("Edytuj")
         }
     </div>
 

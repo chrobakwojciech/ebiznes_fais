@@ -52,10 +52,6 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
     Ok(views.html.movie.add_movie(createMovieForm, actors, directors, genres))
   }
 
-  def update(movieId: String) = Action {
-    Ok("")
-  }
-
   def delete(movieId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     movieRepository.delete(movieId).map(_ => Redirect(routes.MovieController.getAll()).flashing("info" -> "Film usunięty!"))
   }
@@ -70,6 +66,44 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
     val successFunction = { movie: CreateMovieForm =>
       movieRepository.create(movie.title, movie.description, movie.productionYear, movie.price, movie.img, movie.actors, movie.directors, movie.genres).map { _ =>
         Redirect(routes.MovieController.getAll()).flashing("success" -> "Film dodany!")
+      }
+    }
+    createMovieForm.bindFromRequest.fold(errorFunction, successFunction)
+  }
+
+  def update(movieId: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    val movie: Movie = Await.result(movieRepository.getById(movieId), Duration.Inf).get
+
+    val actors: Seq[Actor] = Await.result(actorRepository.getAll(), Duration.Inf)
+    val selectedActors: Seq[String] = Await.result(actorRepository.getForMovie(movieId), Duration.Inf).map(_.id)
+
+    val directors: Seq[Director] = Await.result(directorRepository.getAll(), Duration.Inf)
+    val selectedDirectors: Seq[String] = Await.result(directorRepository.getForMovie(movieId), Duration.Inf).map(_.id)
+
+    val genres: Seq[Genre] = Await.result(genreRepository.getAll(), Duration.Inf)
+    val selectedGenres: Seq[String] = Await.result(genreRepository.getForMovie(movieId), Duration.Inf).map(_.id)
+
+    val updateForm = createMovieForm.fill(
+      CreateMovieForm(movie.title, movie.description, movie.productionYear, movie.price, movie.img, selectedActors, selectedDirectors, selectedGenres)
+    )
+
+    Ok(views.html.movie.update_movie(
+      movieId, updateForm,
+      selectedActors, actors,
+      selectedDirectors, directors,
+      selectedGenres, genres))
+  }
+
+  def updateMovieHandler(movieId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateMovieForm] =>
+      Future {
+        Redirect(routes.MovieController.create()).flashing("error" -> "Błąd podczas edycji filmu!")
+      }
+    }
+
+    val successFunction = { movie: CreateMovieForm =>
+      movieRepository.update(movieId, movie.title, movie.description, movie.productionYear, movie.price, movie.img, movie.actors, movie.directors, movie.genres).map { _ =>
+        Redirect(routes.MovieController.getAll()).flashing("success" -> "Film zmodyfikowany!")
       }
     }
     createMovieForm.bindFromRequest.fold(errorFunction, successFunction)

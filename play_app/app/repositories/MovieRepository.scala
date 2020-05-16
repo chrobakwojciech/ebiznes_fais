@@ -75,8 +75,48 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     db.run(DBIO.seq(createMovie, bindActors, bindDirectors, bindGenres).transactionally)
   }
 
-  def delete(movieId: String): Future[Int] = db.run {
-    _movie.filter(_.id === movieId).delete
+  def delete(movieId: String) = {
+    val deleteMovie = _movie.filter(_.id === movieId).delete
+    val deleteMovieActors = _movieActors.filter(_.movie === movieId).delete
+    val deleteMovieDirectors = _movieDirectors.filter(_.movie === movieId).delete
+    val deleteMovieGenres = _movieGenres.filter(_.movie === movieId).delete
+    db.run(DBIO.seq(deleteMovie, deleteMovieActors, deleteMovieDirectors, deleteMovieGenres).transactionally)
+  }
+
+  def update(id: String, title: String, description: String, productionYear: String, price: Double, img: String, actors: Seq[String], directors: Seq[String], genres: Seq[String]) = {
+
+    val updateMovie = _movie.filter(_.id === id).update(Movie(id, title, description, productionYear, price, img))
+
+
+    var actorSeq: Seq[MovieActor] = Seq()
+    for (a <- actors) {
+      actorSeq = actorSeq :+ MovieActor(id, a)
+    }
+    val cleanActors = _movieActors.filter(_.movie === id).delete
+    val bindActors = _movieActors ++= actorSeq
+
+    var directorSeq: Seq[MovieDirector] = Seq()
+    for (d <- directors) {
+      directorSeq = directorSeq :+ MovieDirector(id, d)
+    }
+    val cleanDirectors = _movieDirectors.filter(_.movie === id).delete
+    val bindDirectors = _movieDirectors ++= directorSeq
+
+
+    var genreSeq: Seq[MovieGenre] = Seq()
+    for (g <- genres) {
+      genreSeq = genreSeq :+ MovieGenre(id, g)
+    }
+    val cleanGenres = _movieGenres.filter(_.movie === id).delete
+    val bindGenres = _movieGenres ++= genreSeq
+
+
+    db.run(DBIO.seq(
+      updateMovie,
+      cleanActors, bindActors,
+      cleanDirectors, bindDirectors,
+      cleanGenres, bindGenres
+    ).transactionally)
   }
 
 }

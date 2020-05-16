@@ -24,7 +24,9 @@ GET         /movies                         controllers.MovieController.getAll
 GET         /movies/:movieId                controllers.MovieController.get(movieId: String)
 GET         /add/movies                     controllers.MovieController.create
 GET         /delete/movies/:movieId         controllers.MovieController.delete(movieId: String)
+GET         /update/movies/:movieId         controllers.MovieController.update(movieId: String)
 POST        /createMovieHandler             controllers.MovieController.createMovieHandler
+POST        /updateMovieHandler             controllers.MovieController.updateMovieHandler(movieId: String)
 
 # Comments
 GET         /comments                       controllers.CommentController.getAll

@@ -47,4 +47,8 @@ class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, user
     _comment.filter(_.id === commentId).delete
   }
 
+  def update(commentId: String, content: String, userId: String, movieId: String) = db.run {
+    _comment.filter(_.id === commentId).update(Comment(commentId, content, userId, movieId))
+  }
+
 }

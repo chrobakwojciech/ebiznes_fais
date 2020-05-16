@@ -30,7 +30,9 @@ POST        /createMovieHandler             controllers.MovieController.createMo
 GET         /comments                       controllers.CommentController.getAll
 GET         /add/comments                   controllers.CommentController.create
 GET         /delete/comments/:commentId     controllers.CommentController.delete(commentId: String)
+GET         /update/comments/:commentId     controllers.CommentController.update(commentId: String)
 POST        /createCommentHandler           controllers.CommentController.createCommentHandler
+POST        /updateCommentHandler           controllers.CommentController.updateCommentHandler(commentId: String)
 
 # Ratings
 GET         /ratings                        controllers.RatingController.getAll

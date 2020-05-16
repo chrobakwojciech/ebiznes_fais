@@ -47,4 +47,8 @@ class RatingRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
     _rating.filter(_.id === ratingId).delete
   }
 
+  def update(ratingId: String, value: Int, userId: String, movieId: String) = db.run {
+    _rating.filter(_.id === ratingId).update(Rating(ratingId, value, userId, movieId))
+  }
+
 }

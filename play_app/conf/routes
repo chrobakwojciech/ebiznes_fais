@@ -38,7 +38,9 @@ POST        /updateCommentHandler           controllers.CommentController.update
 GET         /ratings                        controllers.RatingController.getAll
 GET         /add/ratings                    controllers.RatingController.create
 GET         /delete/ratings/:ratingId       controllers.RatingController.delete(ratingId: String)
+GET         /update/ratings/:ratingId       controllers.RatingController.update(ratingId: String)
 POST        /createRatingHandler            controllers.RatingController.createRatingHandler
+POST        /updateRatingHandler            controllers.RatingController.updateRatingHandler(ratingId: String)
 
 # Actors
 GET         /actors                         controllers.ActorController.getAll

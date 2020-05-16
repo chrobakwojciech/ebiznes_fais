@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.{Movie, User}
+import models.{Movie, Rating, User}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._
@@ -51,8 +51,33 @@ class RatingController @Inject()(ratingRepository: RatingRepository, userReposit
   def delete(ratingId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     ratingRepository.delete(ratingId).map(_ => Redirect(routes.RatingController.getAll()).flashing("info" -> "Ocena filmu została usunięta!"))
   }
+
+
+  def update(ratingId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+    val users: Seq[User] = Await.result(userRepository.getAll(), Duration.Inf)
+    val movies: Seq[Movie] = Await.result(movieRepository.getAll(), Duration.Inf);
+    val rating: Rating = Await.result(ratingRepository.getById(ratingId), Duration.Inf).get
+    val updateForm = createRatingForm.fill(CreateRatingForm(rating.value, rating.user, rating.movie))
+    Ok(views.html.rating.update_rating(ratingId, updateForm, users, movies))
+  }
+
+  def updateRatingHandler(ratingId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateRatingForm] =>
+      Future {
+        Redirect(routes.RatingController.update(ratingId)).flashing("error" -> "Błąd podczas edycji oceny filmu!")
+      }
+    }
+
+    val successFunction = { rating: CreateRatingForm =>
+      ratingRepository.update(ratingId, rating.value, rating.userId, rating.movieId).map { _ =>
+        Redirect(routes.RatingController.getAll()).flashing("success" -> "Ocena zmodyfikowana!")
+      };
+    }
+    createRatingForm.bindFromRequest.fold(errorFunction, successFunction)
+  }
+
 }
 
 case class CreateRatingForm(value: Int,
-                            movieId: String,
-                            userId: String)
+                            userId: String,
+                            movieId: String)

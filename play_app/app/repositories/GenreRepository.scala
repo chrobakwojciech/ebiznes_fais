@@ -42,6 +42,10 @@ class GenreRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     _genre.filter(_.id === genreId).delete
   }
 
+  def update(genreId: String, name: String): Future[Int] = db.run {
+    _genre.filter(_.id === genreId).update(Genre(genreId, name))
+  }
+
 
 
 }

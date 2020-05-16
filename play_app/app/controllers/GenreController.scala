@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.Movie
+import models.{Genre, Movie}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -54,6 +54,27 @@ class GenreController @Inject()(genreRepository: GenreRepository, movieRepositor
 
   def delete(genreId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     genreRepository.delete(genreId).map(_ => Redirect(routes.GenreController.getAll()).flashing("info" -> "Gatunek usunięty!"))
+  }
+
+  def update(genreId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+    val genre: Genre = Await.result(genreRepository.getById(genreId), Duration.Inf).get
+    val updateForm = createGenreForm.fill(CreateGenreForm(genre.name))
+    Ok(views.html.genre.update_genre(genreId, updateForm))
+  }
+
+  def updateGenreHandler(genreId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val errorFunction = { formWithErrors: Form[CreateGenreForm] =>
+      Future {
+        Redirect(routes.GenreController.update(genreId)).flashing("error" -> "Błąd podczas edycji gatunku!")
+      }
+    }
+
+    val successFunction = { genre: CreateGenreForm =>
+      genreRepository.update(genreId, genre.name).map { _ =>
+        Redirect(routes.GenreController.getAll()).flashing("success" -> "Gatunek zmodyfikowany!")
+      };
+    }
+    createGenreForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
 }

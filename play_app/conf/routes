@@ -59,7 +59,9 @@ GET         /genres                         controllers.GenreController.getAll
 GET         /genres/:genreId                controllers.GenreController.get(genreId: String)
 GET         /add/genres                     controllers.GenreController.create
 GET         /delete/genres/:genreId         controllers.GenreController.delete(genreId: String)
+GET         /update/genres/:genreId         controllers.GenreController.update(genreId: String)
 POST        /createGenreHandler             controllers.GenreController.createGenreHandler
+POST        /updateGenreHandler             controllers.GenreController.updateGenreHandler(genreId: String)
 
 # Orders
 GET         /orders                         controllers.OrderController.getAll

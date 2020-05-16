@@ -15,7 +15,9 @@ GET         /users                          controllers.UserController.getAll
 GET         /users/:userId                  controllers.UserController.get(userId: String)
 GET         /add/users                      controllers.UserController.create
 GET         /delete/users/:userId           controllers.UserController.delete(userId: String)
+GET         /update/users/:userId           controllers.UserController.update(userId: String)
 POST        /createUserHandler              controllers.UserController.createUserHandler
+POST        /updateUserHandler              controllers.UserController.updateUserHandler(userId: String)
 
 # Movies
 GET         /movies                         controllers.MovieController.getAll

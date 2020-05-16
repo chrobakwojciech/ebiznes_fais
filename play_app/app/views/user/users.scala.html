@@ -19,7 +19,7 @@
                 <td><a href="@controllers.routes.UserController.get(user.id)">@user.firstName @user.lastName</a></td>
                 <td>@user.email</td>
                 <td class="text-right">
-                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-info" href="@controllers.routes.UserController.update(user.id)" role="button">Edytuj</a>
                     <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.UserController.delete(user.id)" role="button">Usuń</a>
                 </td>
             </tr>

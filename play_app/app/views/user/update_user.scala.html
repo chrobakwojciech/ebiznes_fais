@@ -2,7 +2,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj użytkownika") {
+@main("Edycja użytkownika") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.UserController.updateUserHandler(id)) {

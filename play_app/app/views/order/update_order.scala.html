@@ -2,7 +2,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj zamówienie") {
+@main("Edycja zamówienia") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.OrderController.updateOrderHandler(id)) {

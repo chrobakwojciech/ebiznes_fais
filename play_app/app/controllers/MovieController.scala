@@ -97,7 +97,7 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
   def updateMovieHandler(movieId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     val errorFunction = { formWithErrors: Form[CreateMovieForm] =>
       Future {
-        Redirect(routes.MovieController.create()).flashing("error" -> "Błąd podczas edycji filmu!")
+        Redirect(routes.MovieController.update(movieId)).flashing("error" -> "Błąd podczas edycji filmu!")
       }
     }
 

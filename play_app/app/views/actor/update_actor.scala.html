@@ -2,7 +2,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj aktora") {
+@main("Edycja aktora") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.ActorController.updateActorHandler(id)) {

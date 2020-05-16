@@ -2,7 +2,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj komentarz do filmu") {
+@main("Edycja komentarza") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.CommentController.updateCommentHandler(id)) {

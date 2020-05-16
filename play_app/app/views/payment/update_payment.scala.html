@@ -2,7 +2,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj typ płatności") {
+@main("Edycja typu płatności") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.PaymentController.updatePaymentHandler(id)) {

@@ -11,7 +11,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj film") {
+@main("Edycja filmu") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.MovieController.updateMovieHandler(id)) {

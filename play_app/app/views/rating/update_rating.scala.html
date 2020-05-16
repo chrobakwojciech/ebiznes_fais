@@ -2,7 +2,7 @@
 
 @import views.html.bootstrap3._
 
-@main("Zaktualizuj ocenę filmu") {
+@main("Edycja oceny") {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.RatingController.updateRatingHandler(id)) {

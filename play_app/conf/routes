@@ -9,6 +9,13 @@ GET     /                           controllers.HomeController.index
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
+##### API #########
+# Users
+GET         /api/users                      controllers.api.UserApiController.getAll
+GET         /api/users/:userId              controllers.api.UserApiController.get(userId: String)
+POST        /api/users                      controllers.api.UserApiController.create
+PUT         /api/users/:userId              controllers.api.UserApiController.update(userId: String)
+DELETE      /api/users/:userId              controllers.api.UserApiController.delete(userId: String)
 
 # Users
 GET         /users                          controllers.UserController.getAll

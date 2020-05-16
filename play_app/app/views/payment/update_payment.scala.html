@@ -1,0 +1,18 @@
+@(id: String, genre: Form[CreatePaymentForm])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import views.html.bootstrap3._
+
+@main("Zaktualizuj typ płatności") {
+    <div class="col">
+        @alerts(flash)
+        @helper.form(controllers.routes.PaymentController.updatePaymentHandler(id)) {
+            @helper.CSRF.formField
+            @text(genre("name"), "Nazwa")
+            @submit("Edytuj")
+        }
+    </div>
+
+}
+
+
+

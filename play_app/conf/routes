@@ -74,4 +74,6 @@ POST        /createOrderHandler             controllers.OrderController.createOr
 GET         /payments                       controllers.PaymentController.getAll
 GET         /add/payments                   controllers.PaymentController.create
 GET         /delete/payment/:paymentId      controllers.PaymentController.delete(paymentId: String)
+GET         /update/payment/:paymentId      controllers.PaymentController.update(paymentId: String)
 POST        /createPaymentHandler           controllers.PaymentController.createPaymentHandler
+POST        /updatePaymentHandler           controllers.PaymentController.updatePaymentHandler(paymentId: String)

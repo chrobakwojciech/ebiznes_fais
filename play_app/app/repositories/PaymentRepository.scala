@@ -35,4 +35,7 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
     _payment.filter(_.id === paymentId).delete
   }
 
+  def update(id: String, name: String): Future[Int] = db.run {
+    _payment.filter(_.id === id).update(Payment(id, name))
+  }
 }

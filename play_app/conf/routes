@@ -76,7 +76,9 @@ GET         /orders                         controllers.OrderController.getAll
 GET         /orders/:orderId                controllers.OrderController.get(orderId: String)
 GET         /add/orders                     controllers.OrderController.create
 GET         /delete/orders/:orderId         controllers.OrderController.delete(orderId: String)
+GET         /update/orders/:orderId         controllers.OrderController.update(orderId: String)
 POST        /createOrderHandler             controllers.OrderController.createOrderHandler
+POST        /updateOrderHandler             controllers.OrderController.updateOrderHandler(orderId: String)
 
 # Payments
 GET         /payments                       controllers.PaymentController.getAll

@@ -22,7 +22,7 @@
                 <td>@order._4 zł</td>
                 <td class="text-right">
                     <a class="btn btn-sm btn-outline-primary" href="@controllers.routes.OrderController.get(order._1.id)" role="button">Szczegóły</a>
-                    <button type="button" class="btn btn-sm btn-outline-info">Edytuj</button>
+                    <a class="btn btn-sm btn-outline-info" href="@controllers.routes.OrderController.update(order._1.id)" role="button">Edytuj</a>
                     <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.OrderController.delete(order._1.id)" role="button">Usuń</a>
                 </td>
             </tr>

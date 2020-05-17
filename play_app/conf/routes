@@ -59,6 +59,13 @@ POST        /api/ratings                    controllers.api.RatingApiController.
 PUT         /api/ratings/:ratingId          controllers.api.RatingApiController.update(ratingId: String)
 DELETE      /api/ratings/:ratingId          controllers.api.RatingApiController.delete(ratingId: String)
 
+# Movies
+GET         /api/movies                     controllers.api.MovieApiController.getAll
+GET         /api/movies/:movieId            controllers.api.MovieApiController.get(movieId: String)
+POST        /api/movies                     controllers.api.MovieApiController.create
+#PUT         /api/movies/:movieId            controllers.api.MovieApiController.update(movieId: String)
+#DELETE      /api/movies/:movieId            controllers.api.MovieApiController.delete(movieId: String)
+
 
 
 ##### FORMS ######

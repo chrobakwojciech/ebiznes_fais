@@ -34,6 +34,12 @@ class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, user
     _comment.filter(_.id === commentId).result.headOption
   }
 
+  def getByIdWithMovieAndUser(commentId: String): Future[Option[(Comment, Movie, User)]] = db.run {
+    _comment.filter(_.id === commentId).join(_movie).on(_.movie === _.id).join(_user).on(_._1.user === _.id).map {
+      case ((comment, movie), user) => (comment, movie, user)
+    }.result.headOption
+  }
+
   def getForMovie(movieId: String): Future[Seq[(Comment, User)]] = db.run {
     _comment.filter(_.movie === movieId).join(_user).on(_.user === _.id).result
   }

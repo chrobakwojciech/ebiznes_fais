@@ -45,6 +45,13 @@ POST        /api/payments                   controllers.api.PaymentApiController
 PUT         /api/payments/:paymentId        controllers.api.PaymentApiController.update(paymentId: String)
 DELETE      /api/payments/:paymentId        controllers.api.PaymentApiController.delete(paymentId: String)
 
+# Comments
+GET         /api/comments                   controllers.api.CommentApiController.getAll
+GET         /api/comments/:commentId        controllers.api.CommentApiController.get(commentId: String)
+POST        /api/comments                   controllers.api.CommentApiController.create
+PUT         /api/comments/:commentId        controllers.api.CommentApiController.update(commentId: String)
+DELETE      /api/comments/:commentId        controllers.api.CommentApiController.delete(commentId: String)
+
 
 
 ##### FORMS ######

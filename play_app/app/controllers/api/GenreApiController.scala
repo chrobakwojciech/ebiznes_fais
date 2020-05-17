@@ -10,14 +10,14 @@ import scala.concurrent.ExecutionContext
 case class CreateGenre(name: String)
 
 object CreateGenre {
-  implicit val userFormat = Json.format[CreateGenre]
+  implicit val genreFormat = Json.format[CreateGenre]
 }
 
 
 case class UpdateGenre(name: Option[String])
 
 object UpdateGenre {
-  implicit val userFormat = Json.format[UpdateGenre]
+  implicit val genreFormat = Json.format[UpdateGenre]
 }
 
 

@@ -10,14 +10,14 @@ import scala.concurrent.ExecutionContext
 case class CreatePayment(name: String)
 
 object CreatePayment {
-  implicit val userFormat = Json.format[CreatePayment]
+  implicit val paymentFormat = Json.format[CreatePayment]
 }
 
 
 case class UpdatePayment(name: Option[String])
 
 object UpdatePayment {
-  implicit val userFormat = Json.format[UpdatePayment]
+  implicit val paymentFormat = Json.format[UpdatePayment]
 }
 
 

@@ -13,7 +13,7 @@ case class CreateDirector(firstName: String,
                      )
 
 object CreateDirector {
-  implicit val userFormat = Json.format[CreateDirector]
+  implicit val directorFormat = Json.format[CreateDirector]
 }
 
 
@@ -23,7 +23,7 @@ case class UpdateDirector(firstName: Option[String],
                      )
 
 object UpdateDirector {
-  implicit val userFormat = Json.format[UpdateDirector]
+  implicit val directorFormat = Json.format[UpdateDirector]
 }
 
 

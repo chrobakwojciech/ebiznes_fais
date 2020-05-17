@@ -13,7 +13,7 @@ case class CreateActor(firstName: String,
                      )
 
 object CreateActor {
-  implicit val userFormat = Json.format[CreateActor]
+  implicit val actorFormat = Json.format[CreateActor]
 }
 
 
@@ -23,7 +23,7 @@ case class UpdateActor(firstName: Option[String],
                      )
 
 object UpdateActor {
-  implicit val userFormat = Json.format[UpdateActor]
+  implicit val actorFormat = Json.format[UpdateActor]
 }
 
 

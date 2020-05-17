@@ -1,12 +1,9 @@
 package controllers.api
 
-import akka.actor.Status.Success
-import akka.event.Logging.Error
 import javax.inject.{Inject, Singleton}
-import models.Actor
-import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{ActorRepository, CommentRepository, DirectorRepository, GenreRepository, MovieRepository, PaymentRepository, RatingRepository}
+import repositories._
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}

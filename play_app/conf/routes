@@ -62,9 +62,14 @@ DELETE      /api/ratings/:ratingId          controllers.api.RatingApiController.
 # Movies
 GET         /api/movies                     controllers.api.MovieApiController.getAll
 GET         /api/movies/:movieId            controllers.api.MovieApiController.get(movieId: String)
+GET         /api/movies/:movieId/actors     controllers.api.MovieApiController.getActors(movieId: String)
+GET         /api/movies/:movieId/directors  controllers.api.MovieApiController.getDirectors(movieId: String)
+GET         /api/movies/:movieId/genres     controllers.api.MovieApiController.getGenres(movieId: String)
+GET         /api/movies/:movieId/comments   controllers.api.MovieApiController.getComments(movieId: String)
+GET         /api/movies/:movieId/ratings    controllers.api.MovieApiController.getRatings(movieId: String)
 POST        /api/movies                     controllers.api.MovieApiController.create
-#PUT         /api/movies/:movieId            controllers.api.MovieApiController.update(movieId: String)
-#DELETE      /api/movies/:movieId            controllers.api.MovieApiController.delete(movieId: String)
+PUT         /api/movies/:movieId            controllers.api.MovieApiController.update(movieId: String)
+DELETE      /api/movies/:movieId            controllers.api.MovieApiController.delete(movieId: String)
 
 
 

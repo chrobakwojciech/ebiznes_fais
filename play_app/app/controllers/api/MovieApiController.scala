@@ -6,7 +6,7 @@ import javax.inject.{Inject, Singleton}
 import models.Actor
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc._
-import repositories.{ActorRepository, DirectorRepository, GenreRepository, MovieRepository, PaymentRepository}
+import repositories.{ActorRepository, CommentRepository, DirectorRepository, GenreRepository, MovieRepository, PaymentRepository, RatingRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
@@ -40,7 +40,14 @@ object UpdateMovie {
 
 
 @Singleton
-class MovieApiController @Inject()(movieRepository: MovieRepository, actorRepository: ActorRepository, directorRepository: DirectorRepository, genreRepository: GenreRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class MovieApiController @Inject()(movieRepository: MovieRepository,
+                                   actorRepository: ActorRepository,
+                                   directorRepository: DirectorRepository,
+                                   genreRepository: GenreRepository,
+                                   commentRepository: CommentRepository,
+                                   ratingRepository: RatingRepository,
+                                   cc: MessagesControllerComponents
+                                  )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val movies = movieRepository.getAll()
@@ -52,6 +59,31 @@ class MovieApiController @Inject()(movieRepository: MovieRepository, actorReposi
       case Some(m) => Ok(Json.toJson(m))
       case None => NotFound(Json.obj("message" -> "Movie does not exist"))
     }
+  }
+
+  def getActors(id: String) = Action.async { implicit request =>
+    val actors = actorRepository.getForMovie(id)
+    actors.map(actor => Ok(Json.toJson(actor)))
+  }
+
+  def getDirectors(id: String) = Action.async { implicit request =>
+    val directors = directorRepository.getForMovie(id)
+    directors.map(director => Ok(Json.toJson(director)))
+  }
+
+  def getGenres(id: String) = Action.async { implicit request =>
+    val genres = genreRepository.getForMovie(id)
+    genres.map(genre => Ok(Json.toJson(genre)))
+  }
+
+  def getComments(id: String) = Action.async { implicit request =>
+    val comments = commentRepository.getForMovie(id)
+    comments.map(comment => Ok(Json.toJson(comment.map(_._1))))
+  }
+
+  def getRatings(id: String) = Action.async { implicit request =>
+    val ratings = ratingRepository.getForMovie(id)
+    ratings.map(rating => Ok(Json.toJson(rating.map(_._1))))
   }
 
   def create() = Action(parse.json) { request =>
@@ -93,34 +125,78 @@ class MovieApiController @Inject()(movieRepository: MovieRepository, actorReposi
     )
   }
 
+  def update(id: String) = Action.async(parse.json) { implicit request =>
+    movieRepository.getById(id) map {
+      case Some(m) => {
+        val body = request.body
+        body.validate[UpdateMovie].fold(
+          errors => {
+            BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+          },
+          movie => {
+            var invalidActors: Seq[String] = Seq()
+            if (movie.actors.nonEmpty) {
+              for (a <- movie.actors.get) {
+                if (!(Await.result(actorRepository.isExist(a), Duration.Inf))) {
+                  invalidActors = invalidActors :+ a
+                }
+              }
+            }
 
-//
-//  def update(id: String) = Action.async(parse.json) { implicit request =>
-//    paymentRepository.getById(id) map {
-//      case Some(p) => {
-//        val body = request.body
-//        body.validate[UpdatePayment].fold(
-//          errors => {
-//            BadRequest(Json.obj("message" -> JsError.toJson(errors)))
-//          },
-//          payment => {
-//            paymentRepository.update(id, payment.name.getOrElse(p.name))
-//            Ok(Json.obj("message" -> "Payment updated"))
-//          }
-//        )
-//      }
-//      case None => NotFound(Json.obj("message" -> "Payment does not exist"))
-//    }
-//  }
-//
-//  def delete(id: String) = Action.async { implicit request =>
-//    paymentRepository.getById(id) map {
-//      case Some(g) => {
-//        paymentRepository.delete(id)
-//        Ok(Json.obj("message" -> "Payment deleted"))
-//      }
-//      case None => NotFound(Json.obj("message" -> "Payment does not exist"))
-//    }
-//  }
+
+            var invalidDirectors: Seq[String] = Seq()
+            if (movie.directors.nonEmpty) {
+              for (d <- movie.directors.get) {
+                if (!(Await.result(directorRepository.isExist(d), Duration.Inf))) {
+                  invalidDirectors = invalidDirectors :+ d
+                }
+              }
+            }
+
+            var invalidGenres: Seq[String] = Seq()
+            if (movie.genres.nonEmpty) {
+              for (g <- movie.genres.get) {
+                if (!(Await.result(genreRepository.isExist(g), Duration.Inf))) {
+                  invalidGenres = invalidGenres :+ g
+                }
+              }
+            }
+
+            val valid: Boolean = invalidActors.isEmpty && invalidDirectors.isEmpty && invalidGenres.isEmpty
+            if (!valid) {
+              BadRequest(Json.obj("invalid_actors" -> invalidActors, "invalid_directors" -> invalidDirectors, "invalidGenres" -> invalidGenres))
+            } else {
+              val currentActors: Seq[String] = Await.result(actorRepository.getForMovie(id), Duration.Inf).map(_.id)
+              val currentDirectors: Seq[String] = Await.result(directorRepository.getForMovie(id), Duration.Inf).map(_.id)
+              val currentGenres: Seq[String] = Await.result(genreRepository.getForMovie(id), Duration.Inf).map(_.id)
+
+              movieRepository.update(id,
+                movie.title.getOrElse(m.title),
+                movie.description.getOrElse(m.description),
+                movie.productionYear.getOrElse(m.productionYear),
+                movie.price.getOrElse(m.price),
+                movie.img.getOrElse(m.img),
+                movie.actors.getOrElse(currentActors),
+                movie.directors.getOrElse(currentDirectors),
+                movie.genres.getOrElse(currentGenres)
+              )
+              Ok(Json.obj("message" -> "Movie updated"))
+            }
+          }
+        )
+      }
+      case None => NotFound(Json.obj("message" -> "Movie does not exist"))
+    }
+  }
+
+  def delete(id: String) = Action.async { implicit request =>
+    movieRepository.getById(id) map {
+      case Some(m) => {
+        movieRepository.delete(id)
+        Ok(Json.obj("message" -> "Movie deleted"))
+      }
+      case None => NotFound(Json.obj("message" -> "Movie does not exist"))
+    }
+  }
 
 }

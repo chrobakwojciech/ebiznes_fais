@@ -31,12 +31,12 @@ POST        /api/directors                  controllers.api.DirectorApiControlle
 PUT         /api/directors/:directorId      controllers.api.DirectorApiController.update(directorId: String)
 DELETE      /api/directors/:directorId      controllers.api.DirectorApiController.delete(directorId: String)
 
-## Genres
-#GET         /api/genres                     controllers.api.GenreApiController.getAll
-#GET         /api/genres/:genreId            controllers.api.GenreApiController.get(genreId: String)
-#POST        /api/genres                     controllers.api.GenreApiController.create
-#PUT         /api/genres/:genreId            controllers.api.GenreApiController.update(genreId: String)
-#DELETE      /api/genres/:genreId            controllers.api.GenreApiController.delete(genreId: String)
+# Genres
+GET         /api/genres                     controllers.api.GenreApiController.getAll
+GET         /api/genres/:genreId            controllers.api.GenreApiController.get(genreId: String)
+POST        /api/genres                     controllers.api.GenreApiController.create
+PUT         /api/genres/:genreId            controllers.api.GenreApiController.update(genreId: String)
+DELETE      /api/genres/:genreId            controllers.api.GenreApiController.delete(genreId: String)
 
 
 

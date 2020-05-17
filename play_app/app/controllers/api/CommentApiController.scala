@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 import models.{Comment, Movie, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{CommentRepository, GenreRepository}
+import repositories.{CommentRepository, GenreRepository, MovieRepository, UserRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -28,7 +28,7 @@ object UpdateComment {
 
 
 @Singleton
-class CommentApiController @Inject()(commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class CommentApiController @Inject()(commentRepository: CommentRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val comments: Future[Seq[(Comment, Movie, User)]] = commentRepository.getAllWithMovieAndUser()
@@ -53,9 +53,20 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, cc: M
       errors => {
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
-      genre => {
-        commentRepository.create(genre.content, genre.user, genre.movie)
-        Ok(Json.obj("message" -> "Comment created"))
+      comment => {
+        // @FIXME
+        val userExist: Boolean = Await.result(userRepository.isExist(comment.user), Duration.Inf)
+        if (!userExist) {
+          BadRequest(Json.obj("message" -> "User does not exist"))
+        } else {
+          val movieExist: Boolean = Await.result(movieRepository.isExist(comment.movie), Duration.Inf)
+          if (!movieExist) {
+            BadRequest(Json.obj("message" -> "Movie does not exist"))
+          } else {
+            commentRepository.create(comment.content, comment.user, comment.movie)
+            Ok(Json.obj("message" -> "Comment created"))
+          }
+        }
       }
     )
   }
@@ -69,8 +80,19 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, cc: M
             BadRequest(Json.obj("message" -> JsError.toJson(errors)))
           },
           comment => {
-            commentRepository.update(id, comment.content.getOrElse(c.content), comment.user.getOrElse(c.user), comment.movie.getOrElse(c.movie))
-            Ok(Json.obj("message" -> "Comment updated"))
+            // @FIXME
+            val userExist: Boolean = Await.result(userRepository.isExist(comment.user.getOrElse(c.user)), Duration.Inf)
+            if (!userExist) {
+              BadRequest(Json.obj("message" -> "User does not exist"))
+            } else {
+              val movieExist: Boolean = Await.result(movieRepository.isExist(comment.movie.getOrElse(c.movie)), Duration.Inf)
+              if (!movieExist) {
+                BadRequest(Json.obj("message" -> "Movie does not exist"))
+              } else {
+                commentRepository.update(id, comment.content.getOrElse(c.content), comment.user.getOrElse(c.user), comment.movie.getOrElse(c.movie))
+                Ok(Json.obj("message" -> "Comment updated"))
+              }
+            }
           }
         )
       }

@@ -29,6 +29,10 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     _movie.filter(_.id === movieId).result.headOption
   }
 
+  def isExist(movieId: String): Future[Boolean] = db.run {
+    _movie.filter(_.id === movieId).exists.result
+  }
+
   def getForGenre(genreId: String): Future[Seq[Movie]] = db.run {
     _movieGenres.filter(_.genre === genreId).join(_movie).on(_.movie === _.id).map {
       case (mg, m) => m

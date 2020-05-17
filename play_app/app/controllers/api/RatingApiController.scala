@@ -4,9 +4,10 @@ import javax.inject.{Inject, Singleton}
 import models.{Comment, Movie, Rating, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{CommentRepository, RatingRepository}
+import repositories.{CommentRepository, MovieRepository, RatingRepository, UserRepository}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 case class CreateRating(value: Int,
                          user: String,
@@ -27,7 +28,7 @@ object UpdateRating {
 
 
 @Singleton
-class RatingApiController @Inject()(ratingRepository: RatingRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val ratings: Future[Seq[(Rating, Movie, User)]] = ratingRepository.getAllWithMovieAndUser()
@@ -53,8 +54,19 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, cc: Mess
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       rating => {
-        ratingRepository.create(rating.value, rating.user, rating.movie)
-        Ok(Json.obj("message" -> "Rating created"))
+        // @FIXME
+        val userExist: Boolean = Await.result(userRepository.isExist(rating.user), Duration.Inf)
+        if (!userExist) {
+          BadRequest(Json.obj("message" -> "User does not exist"))
+        } else {
+          val movieExist: Boolean = Await.result(movieRepository.isExist(rating.movie), Duration.Inf)
+          if (!movieExist) {
+            BadRequest(Json.obj("message" -> "Movie does not exist"))
+          } else {
+            ratingRepository.create(rating.value, rating.user, rating.movie)
+            Ok(Json.obj("message" -> "Rating created"))
+          }
+        }
       }
     )
   }
@@ -68,8 +80,19 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, cc: Mess
             BadRequest(Json.obj("message" -> JsError.toJson(errors)))
           },
           rating => {
-            ratingRepository.update(id, rating.value.getOrElse(r.value), rating.user.getOrElse(r.user), rating.movie.getOrElse(r.movie))
-            Ok(Json.obj("message" -> "Rating updated"))
+            // @FIXME
+            val userExist: Boolean = Await.result(userRepository.isExist(rating.user.getOrElse(r.user)), Duration.Inf)
+            if (!userExist) {
+              BadRequest(Json.obj("message" -> "User does not exist"))
+            } else {
+              val movieExist: Boolean = Await.result(movieRepository.isExist(rating.movie.getOrElse(r.movie)), Duration.Inf)
+              if (!movieExist) {
+                BadRequest(Json.obj("message" -> "Movie does not exist"))
+              } else {
+                ratingRepository.update(id, rating.value.getOrElse(r.value), rating.user.getOrElse(r.user), rating.movie.getOrElse(r.movie))
+                Ok(Json.obj("message" -> "Rating updated"))
+              }
+            }
           }
         )
       }

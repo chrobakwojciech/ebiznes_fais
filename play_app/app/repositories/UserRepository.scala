@@ -26,6 +26,10 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
     _user.filter(_.id === userId).result.headOption
   }
 
+  def isExist(userId: String): Future[Boolean] = db.run {
+    _user.filter(_.id === userId).exists.result
+  }
+
   def create(firstName: String, lastName: String, email: String, password: String): Future[Int] = db.run {
     val id: String = UUID.randomUUID().toString()
     _user.insertOrUpdate(User(id, firstName, lastName, email, password))

@@ -52,6 +52,13 @@ POST        /api/comments                   controllers.api.CommentApiController
 PUT         /api/comments/:commentId        controllers.api.CommentApiController.update(commentId: String)
 DELETE      /api/comments/:commentId        controllers.api.CommentApiController.delete(commentId: String)
 
+# Ratings
+GET         /api/ratings                    controllers.api.RatingApiController.getAll
+GET         /api/ratings/:ratingId          controllers.api.RatingApiController.get(ratingId: String)
+POST        /api/ratings                    controllers.api.RatingApiController.create
+PUT         /api/ratings/:ratingId          controllers.api.RatingApiController.update(ratingId: String)
+DELETE      /api/ratings/:ratingId          controllers.api.RatingApiController.delete(ratingId: String)
+
 
 
 ##### FORMS ######

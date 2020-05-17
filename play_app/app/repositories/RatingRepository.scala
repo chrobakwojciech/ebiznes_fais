@@ -34,6 +34,12 @@ class RatingRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
     _rating.filter(_.id === ratingId).result.headOption
   }
 
+  def getByIdWithMovieAndUser(ratingId: String): Future[Option[(Rating, Movie, User)]] = db.run {
+    _rating.filter(_.id === ratingId).join(_movie).on(_.movie === _.id).join(_user).on(_._1.user === _.id).map {
+      case ((rating, movie), user) => (rating, movie, user)
+    }.result.headOption
+  }
+
   def getForMovie(movieId: String): Future[Seq[(Rating, User)]] = db.run {
     _rating.filter(_.movie === movieId).join(_user).on(_.user === _.id).result
   }

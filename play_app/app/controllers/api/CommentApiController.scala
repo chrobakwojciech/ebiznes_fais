@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 import models.{Comment, Movie, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{CommentRepository, GenreRepository, MovieRepository, UserRepository}
+import repositories.{CommentRepository, MovieRepository, UserRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}

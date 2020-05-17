@@ -1,10 +1,10 @@
 package controllers.api
 
 import javax.inject.{Inject, Singleton}
-import models.{Comment, Movie, Rating, User}
+import models.{Movie, Rating, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{CommentRepository, MovieRepository, RatingRepository, UserRepository}
+import repositories.{MovieRepository, RatingRepository, UserRepository}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}

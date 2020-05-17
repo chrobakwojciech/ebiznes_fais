@@ -3,7 +3,7 @@ package controllers.api
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{DirectorRepository, GenreRepository}
+import repositories.GenreRepository
 
 import scala.concurrent.ExecutionContext
 

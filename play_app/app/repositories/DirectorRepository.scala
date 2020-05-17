@@ -27,6 +27,10 @@ class DirectorRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(imp
     _director.filter(_.id === directorId).result.headOption
   }
 
+  def isExist(directorId: String): Future[Boolean] = db.run {
+    _director.filter(_.id === directorId).exists.result
+  }
+
   def getForMovie(movieId: String): Future[Seq[Director]] = db.run {
     _movieDirectors.filter(_.movie === movieId).join(_director).on(_.director === _.id).map {
       case (ma, d) => d

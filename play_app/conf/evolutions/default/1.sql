@@ -14,8 +14,8 @@ CREATE TABLE "comment" (
     "content" VARCHAR NOT NULL,
     "user" VARCHAR NOT NULL,
     "movie" VARCHAR NOT NULL,
-    FOREIGN KEY ("user") REFERENCES [user]("id"),
-    FOREIGN KEY ("movie") REFERENCES movie("id")
+    FOREIGN KEY ("user") REFERENCES [user]("id") ON DELETE CASCADE ,
+    FOREIGN KEY ("movie") REFERENCES movie("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "director" (
@@ -43,8 +43,8 @@ CREATE TABLE "order" (
     "id" VARCHAR NOT NULL PRIMARY KEY ,
     "user" VARCHAR NOT NULL,
     "payment" VARCHAR NOT NULL,
-    FOREIGN KEY ("user") REFERENCES [user]("id"),
-    FOREIGN KEY ("payment") REFERENCES payment("id")
+    FOREIGN KEY ("user") REFERENCES [user]("id") ON DELETE CASCADE,
+    FOREIGN KEY ("payment") REFERENCES payment("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "orderItem" (
@@ -52,8 +52,8 @@ CREATE TABLE "orderItem" (
     "movie" VARCHAR NOT NULL,
     "price" FLOAT NOT NULL,
     PRIMARY KEY ("order", "movie"),
-    FOREIGN KEY ("order") REFERENCES [order]("id"),
-    FOREIGN KEY ("movie") REFERENCES movie("id")
+    FOREIGN KEY ("order") REFERENCES [order]("id") ON DELETE CASCADE,
+    FOREIGN KEY ("movie") REFERENCES movie("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "payment" (
@@ -66,8 +66,8 @@ CREATE TABLE "rating" (
     "value" INT NOT NULL,
     "user" VARCHAR NOT NULL,
     "movie" VARCHAR NOT NULL,
-    FOREIGN KEY ("user") REFERENCES [user]("id"),
-    FOREIGN KEY ("movie") REFERENCES movie("id")
+    FOREIGN KEY ("user") REFERENCES [user]("id") ON DELETE CASCADE,
+    FOREIGN KEY ("movie") REFERENCES movie("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "user" (
@@ -82,23 +82,23 @@ CREATE TABLE "movie_actor" (
     "movie" VARCHAR NOT NULL,
     "actor" VARCHAR NOT NULL,
     PRIMARY KEY ("movie", "actor"),
-    FOREIGN KEY ("movie") REFERENCES movie("id"),
-    FOREIGN KEY ("actor") REFERENCES actor("id")
+    FOREIGN KEY ("movie") REFERENCES movie("id") ON DELETE CASCADE,
+    FOREIGN KEY ("actor") REFERENCES actor("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "movie_director" (
     "movie" VARCHAR NOT NULL,
     "director" VARCHAR NOT NULL,
     PRIMARY KEY ("movie", "director"),
-    FOREIGN KEY ("movie") REFERENCES movie("id"),
-    FOREIGN KEY ("director") REFERENCES director("id")
+    FOREIGN KEY ("movie") REFERENCES movie("id") ON DELETE CASCADE,
+    FOREIGN KEY ("director") REFERENCES director("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "movie_genre" (
     "movie" VARCHAR NOT NULL,
     "genre" VARCHAR NOT NULL,
     PRIMARY KEY ("movie", "genre"),
-    FOREIGN KEY ("movie") REFERENCES movie("id"),
+    FOREIGN KEY ("movie") REFERENCES movie("id") ON DELETE CASCADE,
     FOREIGN KEY ("genre") REFERENCES genre("id") ON DELETE CASCADE
 );
 

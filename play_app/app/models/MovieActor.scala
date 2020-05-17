@@ -14,11 +14,11 @@ class MovieActorTable(tag: Tag) extends Table[MovieActor](tag, "movie_actor") {
 
   def movie = column[String]("movie")
 
-  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
+  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def actor = column[String]("actor")
 
-  def actor_fk = foreignKey("actor_fk", actor, _actor)(_.id)
+  def actor_fk = foreignKey("actor_fk", actor, _actor)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def pk = primaryKey("primaryKey", (movie, actor))
 

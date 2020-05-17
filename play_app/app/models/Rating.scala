@@ -19,11 +19,11 @@ class RatingTable(tag: Tag) extends Table[Rating](tag, "rating") {
 
   def user = column[String]("user")
 
-  def user_fk = foreignKey("user_fk", user, _user)(_.id)
+  def user_fk = foreignKey("user_fk", user, _user)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def movie = column[String]("movie")
 
-  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
+  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def * = (id, value, user, movie) <> ((Rating.apply _).tupled, Rating.unapply)
 }

@@ -16,11 +16,11 @@ class OrderTable(tag: Tag) extends Table[Order](tag, "order") {
 
   def user = column[String]("user")
 
-  def user_fk = foreignKey("user_fk", user, _user)(_.id)
+  def user_fk = foreignKey("user_fk", user, _user)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def payment = column[String]("payment")
 
-  def payment_fk = foreignKey("payment_fk", payment, _payment)(_.id)
+  def payment_fk = foreignKey("payment_fk", payment, _payment)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def * = (id, user, payment) <> ((Order.apply _).tupled, Order.unapply)
 }

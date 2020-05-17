@@ -28,6 +28,10 @@ class ActorRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     _actor.filter(_.id === actorId).result.headOption
   }
 
+  def isExist(actorId: String): Future[Boolean] = db.run {
+    _actor.filter(_.id === actorId).exists.result
+  }
+
   def getForMovie(movieId: String): Future[Seq[Actor]] = db.run {
     _movieActors.filter(_.movie === movieId).join(_actor).on(_.actor === _.id).map {
       case (ma, a) => a

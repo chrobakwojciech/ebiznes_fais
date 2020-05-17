@@ -81,10 +81,10 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
 
   def delete(movieId: String) = {
     val deleteMovie = _movie.filter(_.id === movieId).delete
-    val deleteMovieActors = _movieActors.filter(_.movie === movieId).delete
-    val deleteMovieDirectors = _movieDirectors.filter(_.movie === movieId).delete
-    val deleteMovieGenres = _movieGenres.filter(_.movie === movieId).delete
-    db.run(DBIO.seq(deleteMovie, deleteMovieActors, deleteMovieDirectors, deleteMovieGenres).transactionally)
+//    val deleteMovieActors = _movieActors.filter(_.movie === movieId).delete
+//    val deleteMovieDirectors = _movieDirectors.filter(_.movie === movieId).delete
+//    val deleteMovieGenres = _movieGenres.filter(_.movie === movieId).delete
+    db.run(DBIO.seq(deleteMovie).transactionally)
   }
 
   def update(id: String, title: String, description: String, productionYear: String, price: Double, img: String, actors: Seq[String], directors: Seq[String], genres: Seq[String]) = {

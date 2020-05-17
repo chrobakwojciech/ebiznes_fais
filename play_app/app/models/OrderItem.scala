@@ -14,11 +14,11 @@ class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
 
   def order = column[String]("order")
 
-  def order_fk = foreignKey("order_fk", order, _order)(_.id)
+  def order_fk = foreignKey("order_fk", order, _order)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def movie = column[String]("movie")
 
-  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
+  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def price = column[Double]("price")
 

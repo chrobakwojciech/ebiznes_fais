@@ -14,7 +14,7 @@ class MovieGenreTable(tag: Tag) extends Table[MovieGenre](tag, "movie_genre") {
 
   def movie = column[String]("movie")
 
-  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id)
+  def movie_fk = foreignKey("movie_fk", movie, _movie)(_.id, onUpdate = ForeignKeyAction.NoAction , onDelete = ForeignKeyAction.Cascade)
 
   def genre = column[String]("genre")
 

@@ -38,6 +38,13 @@ POST        /api/genres                     controllers.api.GenreApiController.c
 PUT         /api/genres/:genreId            controllers.api.GenreApiController.update(genreId: String)
 DELETE      /api/genres/:genreId            controllers.api.GenreApiController.delete(genreId: String)
 
+# Payments
+GET         /api/payments                   controllers.api.PaymentApiController.getAll
+GET         /api/payments/:paymentId        controllers.api.PaymentApiController.get(paymentId: String)
+POST        /api/payments                   controllers.api.PaymentApiController.create
+PUT         /api/payments/:paymentId        controllers.api.PaymentApiController.update(paymentId: String)
+DELETE      /api/payments/:paymentId        controllers.api.PaymentApiController.delete(paymentId: String)
+
 
 
 ##### FORMS ######

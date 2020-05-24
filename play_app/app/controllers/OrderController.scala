@@ -28,19 +28,11 @@ class OrderController @Inject()(orderRepository: OrderRepository, movieRepositor
   }
 
   def get(orderId: String) = Action.async { implicit request =>
-    var orderItems: Seq[(OrderItem, Movie)] = Seq[(OrderItem, Movie)]()
-    var sum: Double = 0.0
-    orderRepository.getOrderItemsWithMovie(orderId).onComplete {
-      case Success(oi) => {
-        oi.foreach(sum += _._1.price);
-        sum = (math.floor(sum * 100)/100)
-        orderItems = oi
-      }
-      case Failure(_) => print("fail")
-    }
+    val orderItems: Seq[(OrderItem, Movie)] = Await.result(orderRepository.getOrderItemsWithMovie(orderId), Duration.Inf)
+    val value: Double = Await.result(orderRepository.getOrderValue(orderId), Duration.Inf)
 
     orderRepository.getByIdWithUserAndPayment(orderId) map {
-      case Some(o) => Ok(views.html.order.order(o, orderItems, sum))
+      case Some(o) => Ok(views.html.order.order(o, orderItems, value))
       case None => Redirect(routes.OrderController.getAll())
     }
   }

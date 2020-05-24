@@ -26,6 +26,10 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
     _payment.filter(_.id === paymentId).result.headOption
   }
 
+  def isExist(paymentId: String): Future[Boolean] = db.run {
+    _payment.filter(_.id === paymentId).exists.result
+  }
+
   def create(name: String): Future[Int] = db.run {
     val id: String = UUID.randomUUID().toString()
     _payment.insertOrUpdate(Payment(id, name))

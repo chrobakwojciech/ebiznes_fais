@@ -26,8 +26,7 @@ class OrderRepository @Inject()(movieRepository: MovieRepository, dbConfigProvid
   def getAllWithPaymentAndUser(): Future[Seq[(Order, Payment, User, Double)]] = db.run {
     _order.join(_payment).on(_.payment === _.id).join(_user).on(_._1.user === _.id).map {
       case ((order, payment), user) => {
-        var value = 0.0
-//        value = _orderItems.filter(_.order === order.id).result
+        val value = _orderItems.filter(_.order === order.id).map(_.price).sum.getOrElse(0.0)
         (order, payment, user, value)
       }
     }.result
@@ -41,6 +40,10 @@ class OrderRepository @Inject()(movieRepository: MovieRepository, dbConfigProvid
     _orderItems.filter(_.order === orderId).join(_movie).on(_.movie === _.id).map {
       case (oi, m) => (oi, m)
     }.result
+  }
+
+  def getOrderValue(orderId: String): Future[Double] = db.run {
+    _orderItems.filter(_.order === orderId).map(_.price).sum.result.map(_.getOrElse(0.0))
   }
 
   def getOrderItemsForOrder(orderId: String): Future[Seq[OrderItem]] = db.run {

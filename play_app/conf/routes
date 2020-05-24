@@ -71,6 +71,13 @@ POST        /api/movies                     controllers.api.MovieApiController.c
 PUT         /api/movies/:movieId            controllers.api.MovieApiController.update(movieId: String)
 DELETE      /api/movies/:movieId            controllers.api.MovieApiController.delete(movieId: String)
 
+# Orders
+GET         /api/orders                    controllers.api.OrderApiController.getAll
+GET         /api/orders/:orderId           controllers.api.OrderApiController.get(orderId: String)
+POST        /api/orders                    controllers.api.OrderApiController.create
+PUT         /api/orders/:orderId           controllers.api.OrderApiController.update(orderId: String)
+DELETE      /api/orders/:orderId           controllers.api.OrderApiController.delete(orderId: String)
+
 
 
 ##### FORMS ######

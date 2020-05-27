@@ -32,3 +32,5 @@ RUN apt-get install -y npm && npm install -g npm@6.8.0
 EXPOSE 8000 9000 5000 8888
 
 VOLUME /home/chrobak_1137045/projekt
+
+COPY play_app play_app

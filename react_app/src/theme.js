@@ -12,17 +12,17 @@ const theme = createMuiTheme({
     },
     palette: {
         primary: {
-            main: colors.indigo["900"],
+            main: '#ff424f',
         },
         secondary: {
-            main: '#1de2ad',
+            main: '#ffb708',
         },
         text: {
             primary: '#fff',
         },
         background: {
-            default: colors.common.white,
-            paper: '#111'
+            paper: '#191c1f',
+            default: '#222b31'
         },
     },
 });

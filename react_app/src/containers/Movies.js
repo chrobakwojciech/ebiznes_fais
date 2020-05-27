@@ -3,7 +3,6 @@ import {Box, Grid} from '@material-ui/core';
 import MovieGridItem from "../components/movies/MovieGridItem";
 import API from "../utils/API";
 
-
 export default function Movies() {
     const [movies, setMovies] = useState([]);
 
@@ -18,8 +17,8 @@ export default function Movies() {
     }, []);
 
     return (
-        <Box m={2} >
-            <Grid container spacing={3}>
+        <Box m={2}>
+            <Grid container spacing={5}>
                 {movies.map(movie => (
                     <MovieGridItem movie={movie}/>
                 ))}

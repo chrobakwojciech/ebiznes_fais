@@ -10,16 +10,18 @@ import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles({
-    root: {
-        maxWidth: 345,
+    gridItem: {
+      backgroundColor: 'transparent'
     },
-    media: {
-        filter: 'grayscale(85%)',
-        transition: 'all 0.2s ease',
-        "&:hover": {
-            filter: 'grayscale(0%)',
-        },
-        height: 420,
+    movieImg: {
+        width: '100%'
+    },
+    movieTitle: {
+        marginBlockStart: '0.3em',
+        marginBlockEnd: '0.1em'
+    },
+    movieProductionYear: {
+        color: '#ccc'
     }
 });
 
@@ -28,21 +30,13 @@ export default function MovieGridItem(props) {
     const classes = useStyles();
 
     return (
-        <Grid item xs={2}>
-            <Card elevation={0} className={classes.root}>
-                <CardActionArea>
-                    <CardMedia
-                        className={classes.media}
-                        image={movie.img}
-                        title={movie.title}
-                    />
-                    <CardContent>
-                        <Typography align="center" variant="h5" component="h2">
-                            {movie.title}
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
+        <Grid item  xl={2} lg={3} md={4} sm={6} xs={12}>
+            <Paper elevation={0} className={classes.gridItem}>
+                <img className={classes.movieImg} src={movie.img} alt={movie.title}/>
+                <h2 className={classes.movieTitle}>{movie.title}</h2>
+                <Typography className={classes.movieProductionYear} variant="subtitle2">{movie.productionYear}</Typography>
+            </Paper>
+
         </Grid>
     )
 

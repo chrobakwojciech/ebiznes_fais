@@ -3,6 +3,9 @@ import {Box, Grid} from '@material-ui/core';
 import MovieGridItem from "../components/movies/MovieGridItem";
 import API from "../utils/API";
 import {useParams} from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import * as _ from 'lodash';
+import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 export default function Movies(props) {
     const [movies, setMovies] = useState([]);
@@ -29,7 +32,7 @@ export default function Movies(props) {
                 if (movieRatings.length > 0) {
                     movie.rating = sum/movieRatings.length
                 } else {
-                    movie.rating = 'brak ocen'
+                    movie.rating = 0
                 }
             }
             setMovies(movies);
@@ -38,12 +41,23 @@ export default function Movies(props) {
         fetchData();
     }, []);
 
+    const sort = (field) => {
+        const sortedMovies = _.sortBy(movies, [field, 'title']);
+        setMovies(_.reverse(sortedMovies))
+    };
+
     return (
         <Box m={2}>
             <h2>{genreName}</h2>
+            <Box mb={2}>
+                <ButtonGroup aria-label="outlined button group">
+                    <Button variant="outlined" onClick={() => sort('rating')}>Najlepiej oceniane</Button>
+                    <Button onClick={() => sort('productionYear')}>Najnowsze</Button>
+                </ButtonGroup>
+            </Box>
             <Grid container spacing={5}>
                 {movies.map(movie => (
-                    <MovieGridItem movie={movie}/>
+                    <MovieGridItem key={movie.id} movie={movie}/>
                 ))}
             </Grid>
         </Box>

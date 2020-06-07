@@ -14,6 +14,7 @@ import {NavLink} from "react-router-dom";
 import {Movie} from "@material-ui/icons";
 import * as colors from "@material-ui/core/colors";
 import API from "../utils/API";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 const drawerWidth = 240;
 
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: drawerWidth,
+        borderRight: 'none'
     },
     drawerContainer: {
         overflow: 'auto',
@@ -38,6 +40,10 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         padding: theme.spacing(3),
     },
+    drawerSubtitle: {
+        color: '#9f9f9f',
+        marginBlockEnd: 0
+    }
 }));
 
 
@@ -59,7 +65,7 @@ export default function Layout(props) {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap>MovieDB</Typography>
+                    <Typography variant="h6" noWrap>MovieVOD</Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -79,9 +85,12 @@ export default function Layout(props) {
                     </List>
                     <Divider />
                     <List>
+                        <ListSubheader component="div" >
+                            <h4 className={classes.drawerSubtitle}>Gatunki</h4>
+                        </ListSubheader>
                         {genres.map((genre) => (
                             <ListItem button component={NavLink} to={"/gatunek/" + genre.name.toLowerCase()}  key={genre.name}>
-                                <ListItemText primary={genre.name} />
+                                <ListItemText primary={genre.name}/>
                             </ListItem>
                         ))}
                     </List>

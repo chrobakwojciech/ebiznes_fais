@@ -12,15 +12,27 @@ export default function Movies(props) {
     useEffect(() => {
         const fetchData = async () => {
             const genres = await API.get('/genres')
-            const genre = genres.data.find(genre => genre.name.toLowerCase() === urlParams.genreName)
+            const genre = genres.data.find(genre => genre.name.toLowerCase() === urlParams.genreName);
 
-            let url = '/movies'
+            let url = '/movies';
             if (genre) {
                 setGenreName(genre.name);
                 url = `/genres/${genre.id}/movies`
             }
-            const result = await API.get(url);
-            setMovies(result.data);
+            let result = await API.get(url);
+            let movies = result.data;
+            result = await API.get('/ratings');
+            const ratings = result.data;
+            for (let movie of movies) {
+                const movieRatings = ratings.filter(r => r.movie.id === movie.id);
+                const sum = movieRatings.reduce((a, b) => +a + +b.value, 0);
+                if (movieRatings.length > 0) {
+                    movie.rating = sum/movieRatings.length
+                } else {
+                    movie.rating = 'brak ocen'
+                }
+            }
+            setMovies(movies);
         };
 
         fetchData();

@@ -1,6 +1,18 @@
 import {createMuiTheme} from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
+    overrides: {
+      MuiListItem: {
+          root: {
+              '&.active': {
+                  backgroundColor: '#222b31'
+              },
+              '&.active:hover': {
+                  backgroundColor: '#222b31'
+              }
+          }
+      }
+    },
     typography: {
         fontFamily: [
             'Catamaran'

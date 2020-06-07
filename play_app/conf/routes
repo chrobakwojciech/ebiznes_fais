@@ -33,6 +33,7 @@ DELETE      /api/directors/:directorId      controllers.api.DirectorApiControlle
 
 # Genres
 GET         /api/genres                     controllers.api.GenreApiController.getAll
+GET         /api/genres/:genreId/movies     controllers.api.GenreApiController.getMovies(genreId: String)
 GET         /api/genres/:genreId            controllers.api.GenreApiController.get(genreId: String)
 POST        /api/genres                     controllers.api.GenreApiController.create
 PUT         /api/genres/:genreId            controllers.api.GenreApiController.update(genreId: String)

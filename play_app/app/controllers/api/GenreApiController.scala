@@ -3,7 +3,7 @@ package controllers.api
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.GenreRepository
+import repositories.{GenreRepository, MovieRepository}
 
 import scala.concurrent.ExecutionContext
 
@@ -22,11 +22,16 @@ object UpdateGenre {
 
 
 @Singleton
-class GenreApiController @Inject()(genreRepository: GenreRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class GenreApiController @Inject()(genreRepository: GenreRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val genres = genreRepository.getAll()
     genres.map(genre => Ok(Json.toJson(genre)))
+  }
+
+  def getMovies(id: String): Action[AnyContent] = Action.async { implicit request =>
+    val movies = movieRepository.getForGenre(id)
+    movies.map(movie => Ok(Json.toJson(movie)))
   }
 
   def get(id: String) = Action.async { implicit request =>

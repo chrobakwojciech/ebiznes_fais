@@ -1,12 +1,13 @@
 package controllers.api
 
 import javax.inject.{Inject, Singleton}
+import models.{Movie, Rating}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 case class CreateMovie(title: String,
                        description: String,

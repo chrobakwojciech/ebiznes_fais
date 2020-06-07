@@ -10,12 +10,17 @@ GET     /                           controllers.HomeController.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 ##### API #########
+# Auth
+POST        /api/auth/signup                 controllers.api.AuthenticationApiController.signUp
+POST        /api/auth/signin                 controllers.api.AuthenticationApiController.signIn
+GET         /api/auth/me                     controllers.api.AuthenticationApiController.me
+GET         /api/auth/me2                    controllers.api.AuthenticationApiController.isAuthenticated
 # Users
-GET         /api/users                      controllers.api.UserApiController.getAll
-GET         /api/users/:userId              controllers.api.UserApiController.get(userId: String)
-POST        /api/users                      controllers.api.UserApiController.create
-PUT         /api/users/:userId              controllers.api.UserApiController.update(userId: String)
-DELETE      /api/users/:userId              controllers.api.UserApiController.delete(userId: String)
+#GET         /api/users                      controllers.api.UserApiController.getAll
+#GET         /api/users/:userId              controllers.api.UserApiController.get(userId: String)
+#POST        /api/users                      controllers.api.UserApiController.create
+#PUT         /api/users/:userId              controllers.api.UserApiController.update(userId: String)
+#DELETE      /api/users/:userId              controllers.api.UserApiController.delete(userId: String)
 
 # Actors
 GET         /api/actors                     controllers.api.ActorApiController.getAll
@@ -83,13 +88,13 @@ DELETE      /api/orders/:orderId           controllers.api.OrderApiController.de
 
 ##### FORMS ######
 # Users
-GET         /users                          controllers.UserController.getAll
-GET         /users/:userId                  controllers.UserController.get(userId: String)
-GET         /add/users                      controllers.UserController.create
-GET         /delete/users/:userId           controllers.UserController.delete(userId: String)
-GET         /update/users/:userId           controllers.UserController.update(userId: String)
-POST        /createUserHandler              controllers.UserController.createUserHandler
-POST        /updateUserHandler              controllers.UserController.updateUserHandler(userId: String)
+#GET         /users                          controllers.UserController.getAll
+#GET         /users/:userId                  controllers.UserController.get(userId: String)
+#GET         /add/users                      controllers.UserController.create
+#GET         /delete/users/:userId           controllers.UserController.delete(userId: String)
+#GET         /update/users/:userId           controllers.UserController.update(userId: String)
+#POST        /createUserHandler              controllers.UserController.createUserHandler
+#POST        /updateUserHandler              controllers.UserController.updateUserHandler(userId: String)
 
 # Movies
 GET         /movies                         controllers.MovieController.getAll

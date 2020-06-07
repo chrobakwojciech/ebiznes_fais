@@ -76,12 +76,22 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
 
   def getComments(id: String) = Action.async { implicit request =>
     val comments = commentRepository.getForMovie(id)
-    comments.map(comment => Ok(Json.toJson(comment.map(_._1))))
+    comments.map(comment => {
+      val newComment = comment.map {
+        case (c, u) => Json.obj("id" -> c.id, "content" -> c.content, "user" -> u)
+      }
+      Ok(Json.toJson(newComment))
+    })
   }
 
   def getRatings(id: String) = Action.async { implicit request =>
     val ratings = ratingRepository.getForMovie(id)
-    ratings.map(rating => Ok(Json.toJson(rating.map(_._1))))
+    ratings.map(rating => {
+      val newRating = rating.map {
+        case (r, u) => Json.obj("id" -> r.id, "value" -> r.value, "user" -> u)
+      }
+      Ok(Json.toJson(newRating))
+    })
   }
 
   def create() = Action(parse.json) { request =>

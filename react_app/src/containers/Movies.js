@@ -39,11 +39,13 @@ export default function Movies(props) {
         };
 
         fetchData();
-    }, []);
+    }, [urlParams.genreName]);
 
-    const sort = (field) => {
-        const sortedMovies = _.sortBy(movies, [field, 'title']);
-        setMovies(_.reverse(sortedMovies))
+    const sort = (field, dir) => {
+        const sortedFields = field === 'title' ? ['title'] : [field, 'title'];
+        const sortedMovies = _.sortBy(movies, sortedFields);
+        dir === 'asc' ? setMovies(sortedMovies) : setMovies(_.reverse(sortedMovies))
+
     };
 
     return (
@@ -53,6 +55,7 @@ export default function Movies(props) {
                 <ButtonGroup aria-label="outlined button group">
                     <Button variant="outlined" onClick={() => sort('rating')}>Najlepiej oceniane</Button>
                     <Button onClick={() => sort('productionYear')}>Najnowsze</Button>
+                    <Button onClick={() => sort('title', 'asc')}>Alfabetycznie</Button>
                 </ButtonGroup>
             </Box>
             <Grid container spacing={5}>

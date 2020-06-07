@@ -4,8 +4,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {ThemeProvider} from '@material-ui/core/styles';
 import theme from './theme';
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import Home from "./containers/Home";
 import Movies from "./containers/Movies";
+import Movie from "./containers/Movie";
 import Layout from "./components/Layout";
 
 const routing = (
@@ -14,8 +14,13 @@ const routing = (
         <BrowserRouter>
             <Layout>
                 <Switch >
-                    <Route exact path="/"><Home/></Route>
-                    <Route path="/movies"><Movies/></Route>
+                    <Route exact path="/"><Movies/></Route>
+                    <Route path="/gatunek/:genreName" render={(props) => (
+                        <Movies key={props.match.params.genreName}/>
+                    )}/>              
+                    <Route path="/filmy/:movieId" render={(props) => (
+                        <Movie key={props.match.params.movieId}/>
+                    )}/>
                 </Switch>
             </Layout>
 

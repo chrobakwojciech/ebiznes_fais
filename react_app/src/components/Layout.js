@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,11 +10,10 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import {Link, NavLink} from "react-router-dom";
-import {Home, Movie} from "@material-ui/icons";
+import {NavLink} from "react-router-dom";
+import {Movie} from "@material-ui/icons";
 import * as colors from "@material-ui/core/colors";
+import API from "../utils/API";
 
 const drawerWidth = 240;
 
@@ -41,8 +40,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 export default function Layout(props) {
     const classes = useStyles();
+    const [genres, setGenres] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await API.get("/genres");
+            setGenres(result.data);
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <div className={classes.root}>
@@ -62,21 +72,16 @@ export default function Layout(props) {
                 <Toolbar />
                 <div className={classes.drawerContainer}>
                     <List>
-                        <ListItem button component={NavLink} to="/movies" >
-                            <ListItemIcon><Movie style={{ color: colors.common.white }}/></ListItemIcon>
-                            <ListItemText primary="Filmy" />
-                        </ListItem>
                         <ListItem button component={NavLink} exact={true} to="/" >
-                            <ListItemIcon><Home style={{ color: colors.common.white }}/></ListItemIcon>
+                            <ListItemIcon><Movie style={{ color: colors.common.white }}/></ListItemIcon>
                             <ListItemText primary="Home" />
                         </ListItem>
                     </List>
                     <Divider />
                     <List>
-                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                            <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                <ListItemText primary={text} />
+                        {genres.map((genre) => (
+                            <ListItem button component={NavLink} to={"/gatunek/" + genre.name.toLowerCase()}  key={genre.name}>
+                                <ListItemText primary={genre.name} />
                             </ListItem>
                         ))}
                     </List>

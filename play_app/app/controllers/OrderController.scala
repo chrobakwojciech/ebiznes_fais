@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Order, OrderItem, Payment, User}
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -9,7 +9,6 @@ import repositories.{MovieRepository, OrderRepository, PaymentRepository, UserRe
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 @Singleton
 class OrderController @Inject()(orderRepository: OrderRepository, movieRepository: MovieRepository, userRepository: UserRepository, paymentRepository: PaymentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {

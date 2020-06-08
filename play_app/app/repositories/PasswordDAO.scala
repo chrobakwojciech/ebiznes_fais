@@ -1,21 +1,15 @@
 package repositories
 
-import java.util.UUID
-
-import com.mohiva.play.silhouette.api.{AuthInfo, LoginInfo, Provider}
-import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.services.IdentityService
-import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
-import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import javax.inject.{Inject, Singleton}
-import models.{Password, PasswordTable, User, UserTable}
+import models.{Password, PasswordTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
-import scala.util.{Failure, Success}
 
 @Singleton
 class PasswordDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)

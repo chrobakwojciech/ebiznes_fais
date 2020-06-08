@@ -9,7 +9,7 @@ import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util._
 import com.mohiva.play.silhouette.api.{Environment, EventBus, Silhouette, SilhouetteProvider}
 import com.mohiva.play.silhouette.crypto.{JcaCrypter, JcaCrypterSettings, JcaSigner, JcaSignerSettings}
-import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorService, CookieAuthenticatorSettings, JWTAuthenticator, JWTAuthenticatorService, JWTAuthenticatorSettings}
+import com.mohiva.play.silhouette.impl.authenticators._
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.util.{DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.BCryptPasswordHasher
@@ -28,7 +28,6 @@ import scala.concurrent.duration._
 class SilhouetteModule extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
-
     bind[Silhouette[CookieEnv]].to[SilhouetteProvider[CookieEnv]]
     bind[Silhouette[JwtEnv]].to[SilhouetteProvider[JwtEnv]]
     bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]

@@ -1,18 +1,16 @@
 package controllers.api
 
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
-import com.mohiva.play.silhouette.api.{LoginEvent, LoginInfo, Silhouette}
-import com.mohiva.play.silhouette.api.services.{AuthenticatorResult, AuthenticatorService}
+import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util.Credentials
+import com.mohiva.play.silhouette.api.{LoginEvent, LoginInfo, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, JWTAuthenticator}
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import javax.inject.Inject
-
 import play.api.libs.json.{JsError, Json}
-import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents}
 import repositories.UserRepository
-
 import utils.auth.{CookieEnv, JwtEnv}
 
 import scala.concurrent.{ExecutionContext, Future}

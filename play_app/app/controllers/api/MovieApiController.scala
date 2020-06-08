@@ -2,14 +2,13 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Rating}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
 import utils.auth.JwtEnv
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext}
 
 case class CreateMovie(title: String,
                        description: String,

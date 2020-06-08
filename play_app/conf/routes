@@ -13,7 +13,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # Auth
 POST        /api/auth/signup                 controllers.api.AuthenticationApiController.signUp
 POST        /api/auth/signin                 controllers.api.AuthenticationApiController.signIn
-POST        /api/auth/jwt                    controllers.api.AuthenticationApiController.jwt
+#POST        /api/auth/jwt                    controllers.api.AuthenticationApiController.jwt
 GET         /api/auth/me                     controllers.api.AuthenticationApiController.me
 # Users
 #GET         /api/users                      controllers.api.UserApiController.getAll

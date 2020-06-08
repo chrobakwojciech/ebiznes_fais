@@ -2,6 +2,7 @@ package modules
 
 import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides}
+import com.mohiva.play.silhouette.api.actions.SecuredErrorHandler
 import com.mohiva.play.silhouette.api.crypto.{Crypter, CrypterAuthenticatorEncoder, Signer}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.AuthenticatorService
@@ -19,7 +20,7 @@ import play.api.Configuration
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.CookieHeaderEncoding
 import repositories.{PasswordDAO, UserRepository}
-import utils.{CookieEnv, JwtEnv}
+import utils.auth.{CookieEnv, CustomSecuredErrorHandler, JwtEnv}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -30,7 +31,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
     bind[Silhouette[CookieEnv]].to[SilhouetteProvider[CookieEnv]]
     bind[Silhouette[JwtEnv]].to[SilhouetteProvider[JwtEnv]]
-
+    bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
@@ -113,7 +114,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
 
-
   @Provides
   def provideAuthInfoRepository(passwordDAO: DelegableAuthInfoDAO[PasswordInfo]): AuthInfoRepository =
     new DelegableAuthInfoRepository(passwordDAO)
@@ -126,7 +126,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   @Provides
   def provideCredentialsProvider(authInfoRepository: AuthInfoRepository,
                                  passwordHasherRegistry: PasswordHasherRegistry): CredentialsProvider = {
-
     new CredentialsProvider(authInfoRepository, passwordHasherRegistry)
   }
 
@@ -134,16 +133,13 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   @Named("authenticator-signer")
   def provideAuthenticatorSigner(configuration: Configuration): Signer = {
     val config = JcaSignerSettings("SecretKey")
-
     new JcaSigner(config)
   }
 
   @Provides
   @Named("authenticator-crypter")
   def provideAuthenticatorCrypter(configuration: Configuration): Crypter = {
-
     val config = JcaCrypterSettings("SecretKey")
-
     new JcaCrypter(config)
   }
 

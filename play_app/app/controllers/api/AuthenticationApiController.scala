@@ -8,12 +8,12 @@ import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, JWTA
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import javax.inject.Inject
-import models.User
-import play.api.i18n.Messages
+
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
 import repositories.UserRepository
-import utils.{CookieEnv, JwtEnv}
+
+import utils.auth.{CookieEnv, JwtEnv}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,7 +47,28 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
   val cookieAuthService: AuthenticatorService[CookieAuthenticator] = silhouetteCookie.env.authenticatorService
   val jwtAuthService: AuthenticatorService[JWTAuthenticator] = silhouetteJwt.env.authenticatorService
 
-  def signUp() = silhouetteCookie.UnsecuredAction(parse.json).async { implicit request =>
+//  def signUp() = silhouetteCookie.UnsecuredAction(parse.json).async { implicit request =>
+//    val body = request.body
+//    body.validate[SignUp].fold(
+//      errors => {
+//        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
+//      },
+//      user => {
+//        userRepository.retrieve(LoginInfo(CredentialsProvider.ID, user.email))
+//          .flatMap((uo: Option[User]) =>
+//            uo.fold({
+//              userRepository.create2(user.firstName, user.lastName, user.email, user.password).flatMap(cookieAuthService.create(_))
+//                .flatMap(cookieAuthService.init(_))
+//                .flatMap(cookieAuthService.embed(_, Ok(Json.obj("message" -> "tutaj 1"))))
+//            })({ _ =>
+//              Future.successful(AuthenticatorResult(Ok(Json.obj("message" -> "Tutaj 2"))))
+//            })
+//          )
+//      }
+//    )
+//  }
+
+  def signUp() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
     val body = request.body
     body.validate[SignUp].fold(
       errors => {
@@ -55,40 +76,40 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
       },
       user => {
         userRepository.retrieve(LoginInfo(CredentialsProvider.ID, user.email))
-          .flatMap((uo: Option[User]) =>
-            uo.fold({
-              userRepository.create2(user.firstName, user.lastName, user.email, user.password).flatMap(cookieAuthService.create(_))
-                .flatMap(cookieAuthService.init(_))
-                .flatMap(cookieAuthService.embed(_, Ok(Json.obj("message" -> "tutaj 1"))))
-            })({ _ =>
-              Future.successful(AuthenticatorResult(Ok(Json.obj("message" -> "Tutaj 2"))))
-            })
-          )
+          .flatMap {
+            case Some(user) => Future.successful(BadRequest(Json.obj("message" -> "User already exist")))
+            case None => {
+              userRepository.create2(user.firstName, user.lastName, user.email, user.password)
+                .flatMap(jwtAuthService.create(_))
+                .flatMap(jwtAuthService.init(_))
+                .flatMap(token => Future.successful(Ok(Json.obj("message" -> "User created", "token" -> token))))
+            }
+          }
       }
     )
   }
 
-  def signIn() = silhouetteCookie.UnsecuredAction(parse.json).async { implicit request =>
-    val body = request.body
-    body.validate[SignIn].fold(
-      errors => {
-        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
-      },
-      credentials => {
-        credentialsProvider.authenticate(credentials = Credentials(credentials.email, credentials.password))
-          .flatMap { loginInfo =>
-            cookieAuthService.create(loginInfo)
-              .flatMap(cookieAuthService.init(_))
-              .flatMap(cookieAuthService.embed(_, Ok(Json.obj("message" -> "tutaj 1", "test" -> loginInfo))))
-          }.recover {
-          case e: Exception =>
-            BadRequest(Json.obj("message" -> e.getMessage))
-        }
-      }
-    )
-  }
+//  def signIn() = silhouetteCookie.UnsecuredAction(parse.json).async { implicit request =>
+//    val body = request.body
+//    body.validate[SignIn].fold(
+//      errors => {
+//        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
+//      },
+//      credentials => {
+//        credentialsProvider.authenticate(credentials = Credentials(credentials.email, credentials.password))
+//          .flatMap { loginInfo =>
+//            cookieAuthService.create(loginInfo)
+//              .flatMap(cookieAuthService.init(_))
+//              .flatMap(cookieAuthService.embed(_, Ok(Json.obj("message" -> "tutaj 1", "test" -> loginInfo))))
+//          }.recover {
+//          case e: Exception =>
+//            BadRequest(Json.obj("message" -> e.getMessage))
+//        }
+//      }
+//    )
+//  }
 
-  def jwt() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
+  def signIn() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
     val body = request.body
     body.validate[SignIn].fold(
       errors => {
@@ -118,11 +139,4 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
   def me = silhouetteJwt.SecuredAction { implicit request =>
     Ok(Json.toJson(request.identity))
   }
-//
-//  def isAuthenticated = silhouetteCookie.UserAwareAction { implicit request =>
-//    request.identity match {
-//      case Some(identity) => Ok
-//      case None => Unauthorized
-//    }
-//  }
 }

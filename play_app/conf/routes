@@ -13,8 +13,8 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # Auth
 POST        /api/auth/signup                 controllers.api.AuthenticationApiController.signUp
 POST        /api/auth/signin                 controllers.api.AuthenticationApiController.signIn
-#POST        /api/auth/jwt                    controllers.api.AuthenticationApiController.jwt
 GET         /api/auth/me                     controllers.api.AuthenticationApiController.me
+
 # Users
 #GET         /api/users                      controllers.api.UserApiController.getAll
 #GET         /api/users/:userId              controllers.api.UserApiController.get(userId: String)
@@ -87,14 +87,12 @@ DELETE      /api/orders/:orderId           controllers.api.OrderApiController.de
 
 
 ##### FORMS ######
-# Users
-#GET         /users                          controllers.UserController.getAll
-#GET         /users/:userId                  controllers.UserController.get(userId: String)
-#GET         /add/users                      controllers.UserController.create
-#GET         /delete/users/:userId           controllers.UserController.delete(userId: String)
-#GET         /update/users/:userId           controllers.UserController.update(userId: String)
-#POST        /createUserHandler              controllers.UserController.createUserHandler
-#POST        /updateUserHandler              controllers.UserController.updateUserHandler(userId: String)
+# Auth
+GET         /auth/signup                    controllers.AuthenticationController.signUp
+GET         /auth/signin                    controllers.AuthenticationController.signIn
+GET         /auth/signout                   controllers.AuthenticationController.signOut
+POST        /auth/signInHandler             controllers.AuthenticationController.signInHandler
+POST        /auth/signUpHandler             controllers.AuthenticationController.signUpHandler
 
 # Movies
 GET         /movies                         controllers.MovieController.getAll

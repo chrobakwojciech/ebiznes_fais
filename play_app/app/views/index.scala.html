@@ -1,5 +1,9 @@
+@import views.html.bootstrap3.alerts
+
+@()(implicit flash: Flash)
 @main("Ekran główny") {
     <div class="col-12">
+        @alerts(flash)
         <div class="row">
             <div class="col">
                 <div class="card bg-light">

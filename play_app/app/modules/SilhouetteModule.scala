@@ -20,7 +20,7 @@ import play.api.Configuration
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.CookieHeaderEncoding
 import repositories.{PasswordDAO, UserRepository}
-import utils.auth.{CookieEnv, JsonErrorHandler, JwtEnv}
+import utils.auth.{CookieEnv, DashboardErrorHandler, JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -36,6 +36,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
+    bind[DashboardErrorHandler].toInstance(new DashboardErrorHandler())
   }
 
   @Provides

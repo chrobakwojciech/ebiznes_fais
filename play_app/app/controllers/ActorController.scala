@@ -1,17 +1,26 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.SecuredErrorHandler
 import javax.inject.{Inject, Singleton}
-import models.{Actor, Movie}
+import models.{Actor, Movie, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import repositories.{ActorRepository, MovieRepository}
+import utils.auth.{CookieEnv, DashboardErrorHandler, JsonErrorHandler, JwtEnv, RoleAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class ActorController @Inject()(actorRepository: ActorRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class ActorController @Inject()(
+                                 actorRepository: ActorRepository,
+                                 movieRepository: MovieRepository,
+                                 cc: MessagesControllerComponents,
+                                 errorHandler: DashboardErrorHandler,
+                                 silhouette: Silhouette[CookieEnv])
+                               (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val createActorForm: Form[CreateActorForm] = Form {
     mapping(
@@ -21,12 +30,12 @@ class ActorController @Inject()(actorRepository: ActorRepository, movieRepositor
     )(CreateActorForm.apply)(CreateActorForm.unapply)
   }
 
-  def getAll: Action[AnyContent] = Action.async { implicit request =>
+  def getAll: Action[AnyContent] = silhouette.SecuredAction(errorHandler).async { implicit request =>
     val actors = actorRepository.getAll();
     actors.map(actor => Ok(views.html.actor.actors(actor)))
   }
 
-  def get(actorId: String) = Action.async { implicit request =>
+  def get(actorId: String) = silhouette.SecuredAction(errorHandler).async { implicit request =>
     val movies: Seq[Movie] = Await.result(movieRepository.getForActor(actorId), Duration.Inf)
 
     actorRepository.getById(actorId) map {

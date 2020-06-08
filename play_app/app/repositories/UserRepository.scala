@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import javax.inject.{Inject, Singleton}
-import models.{User, UserTable}
+import models.{User, UserRoles, UserTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -36,7 +36,7 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider,
   def create2(firstName: String, lastName: String, email: String, password: String) = {
     val id: String = UUID.randomUUID().toString()
     db.run {
-      _user.insertOrUpdate(User(id, firstName, lastName, email, CredentialsProvider.ID, email))
+      _user.insertOrUpdate(User(id, firstName, lastName, email, UserRoles.User, CredentialsProvider.ID, email))
     } andThen {
       case Failure(_: Throwable) => None
       case Success(_) => {
@@ -61,7 +61,7 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider,
 
   def create(firstName: String, lastName: String, email: String, password: String): Future[Int] = db.run {
     val id: String = UUID.randomUUID().toString()
-    _user.insertOrUpdate(User(id, firstName, lastName, email, password, password))
+    _user.insertOrUpdate(User(id, firstName, lastName, email, UserRoles.User, password, password))
   }
 
   def delete(userId: String): Future[Int] = db.run {
@@ -69,7 +69,7 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider,
   }
 
   def update(id: String, firstName: String, lastName: String, email: String, password: String): Future[Int] = db.run {
-    _user.filter(_.id === id).update(User(id, firstName, lastName, email, password, password))
+    _user.filter(_.id === id).update(User(id, firstName, lastName, email, UserRoles.User, password, password))
   }
 
 }

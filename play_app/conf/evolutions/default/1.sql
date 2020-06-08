@@ -75,6 +75,7 @@ CREATE TABLE "user" (
     "firstName" VARCHAR NOT NULL,
     "lastName" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
+    "role" VARCHAR NOT NULL,
     "providerId" VARCHAR NOT NULL,
     "providerKey" VARCHAR NOT NULL
 );

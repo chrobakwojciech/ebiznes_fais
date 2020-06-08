@@ -9,7 +9,7 @@ import play.api.mvc._
 import scala.concurrent.Future
 
 @Singleton
-class CustomSecuredErrorHandler extends SecuredErrorHandler {
+class JsonErrorHandler extends SecuredErrorHandler {
   override def onNotAuthenticated(implicit request: RequestHeader) = {
     Future.successful(Unauthorized(Json.obj("message" -> "Authentication failed")))
   }

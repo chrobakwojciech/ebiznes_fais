@@ -20,7 +20,7 @@ import play.api.Configuration
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.CookieHeaderEncoding
 import repositories.{PasswordDAO, UserRepository}
-import utils.auth.{CookieEnv, CustomSecuredErrorHandler, JwtEnv}
+import utils.auth.{CookieEnv, JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -30,7 +30,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[Silhouette[CookieEnv]].to[SilhouetteProvider[CookieEnv]]
     bind[Silhouette[JwtEnv]].to[SilhouetteProvider[JwtEnv]]
-    bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]
+    bind[SecuredErrorHandler].to[JsonErrorHandler]
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))

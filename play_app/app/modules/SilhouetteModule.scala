@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util._
 import com.mohiva.play.silhouette.api.{Environment, EventBus, Silhouette, SilhouetteProvider}
 import com.mohiva.play.silhouette.crypto.{JcaCrypter, JcaCrypterSettings, JcaSigner, JcaSignerSettings}
-import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorService, CookieAuthenticatorSettings}
+import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorService, CookieAuthenticatorSettings, JWTAuthenticator, JWTAuthenticatorService, JWTAuthenticatorSettings}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.util.{DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.BCryptPasswordHasher
@@ -19,7 +19,7 @@ import play.api.Configuration
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.CookieHeaderEncoding
 import repositories.{PasswordDAO, UserRepository}
-import utils.DefaultEnv
+import utils.{CookieEnv, JwtEnv}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -28,7 +28,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
 
-    bind[Silhouette[DefaultEnv]].to[SilhouetteProvider[DefaultEnv]]
+    bind[Silhouette[CookieEnv]].to[SilhouetteProvider[CookieEnv]]
+    bind[Silhouette[JwtEnv]].to[SilhouetteProvider[JwtEnv]]
 
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
@@ -41,11 +42,11 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   def providePasswordDAO(db: DatabaseConfigProvider): DelegableAuthInfoDAO[PasswordInfo] = new PasswordDAO(db)
 
   @Provides
-  def provideEnvironment(userService: UserRepository,
+  def provideCookieEnvironment(userService: UserRepository,
                          authenticatorService: AuthenticatorService[CookieAuthenticator],
-                         eventBus: EventBus): Environment[DefaultEnv] = {
+                         eventBus: EventBus): Environment[CookieEnv] = {
 
-    Environment[DefaultEnv](
+    Environment[CookieEnv](
       userService,
       authenticatorService,
       Seq(),
@@ -54,7 +55,20 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
   @Provides
-  def provideAuthenticatorService(@Named("authenticator-signer") signer: Signer,
+  def provideJwtEnvironment(userService: UserRepository,
+                            authenticatorService: AuthenticatorService[JWTAuthenticator],
+                            eventBus: EventBus): Environment[JwtEnv] = {
+
+    Environment[JwtEnv](
+      userService,
+      authenticatorService,
+      Seq(),
+      eventBus
+    )
+  }
+
+  @Provides
+  def provideCookieAuthenticatorService(@Named("authenticator-signer") signer: Signer,
                                   @Named("authenticator-crypter") crypter: Crypter,
                                   cookieHeaderEncoding: CookieHeaderEncoding,
                                   fingerprintGenerator: FingerprintGenerator,
@@ -78,6 +92,26 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
     new CookieAuthenticatorService(config, None, signer, cookieHeaderEncoding, authenticatorEncoder, fingerprintGenerator, idGenerator, clock)
   }
+
+  @Provides
+  def provideJwtAuthenticatorService(@Named("authenticator-crypter") crypter: Crypter,
+                                        idGenerator: IDGenerator,
+                                        configuration: Configuration,
+                                        clock: Clock): AuthenticatorService[JWTAuthenticator] = {
+
+    val config = JWTAuthenticatorSettings(
+      authenticatorExpiry = 12 hours,
+      authenticatorIdleTimeout = None,
+      issuerClaim = "woitech",
+      requestParts = Some(Seq(RequestPart.Headers)),
+      sharedSecret = "SecretKeySecretKeySecretKeySecretKeySecretKeySecretKey"
+    )
+
+    val authenticatorEncoder = new CrypterAuthenticatorEncoder(crypter)
+
+    new JWTAuthenticatorService(config, None, authenticatorEncoder, idGenerator, clock)
+  }
+
 
 
   @Provides

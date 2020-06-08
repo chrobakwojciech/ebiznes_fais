@@ -6,7 +6,7 @@ import models.{Movie, Rating}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
-import utils.DefaultEnv
+import utils.{CookieEnv, JwtEnv}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -47,10 +47,10 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
                                    commentRepository: CommentRepository,
                                    ratingRepository: RatingRepository,
                                    cc: MessagesControllerComponents,
-                                   silhouette: Silhouette[DefaultEnv]
+                                   silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
-  def getAll = silhouette.UserAwareAction.async { implicit request =>
+  def getAll = silhouette.SecuredAction.async { implicit request =>
     val movies = movieRepository.getAll()
     movies.map(movie => Ok(Json.toJson(movie)))
   }

@@ -1,4 +1,4 @@
-@(id: String, order: Form[CreateOrderForm], users: Seq[User], payments: Seq[Payment], selectedMovies: Seq[String], movies: Seq[Movie])(implicit request: MessagesRequestHeader, flash: Flash)
+@(id: String, order: Form[CreateOrderForm], users: Seq[User], payments: Seq[Payment], selectedMovies: Seq[String], movies: Seq[Movie])(implicit request: Request[_], flash: Flash)
 
 @import views.html.bootstrap3._
 

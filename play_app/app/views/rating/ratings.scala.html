@@ -17,7 +17,7 @@
         @for(rating <- ratings) {
             <tr>
                 <th scope="row"><span class="badge badge-light">@rating._1.id</span></th>
-                <td><a href="@controllers.routes.UserController.get(rating._3.id)">@rating._3.firstName @rating._3.lastName</a></td>
+                <td>@rating._3.firstName @rating._3.lastName</td>
                 <td><a href="@controllers.routes.MovieController.get(rating._2.id)">@rating._2.title</a></td>
                 <td>
                     <div class="progress">

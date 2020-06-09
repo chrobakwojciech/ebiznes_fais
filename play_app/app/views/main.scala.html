@@ -4,7 +4,7 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
-@(title: String)(content: Html)
+@(title: String, isLogged: Boolean = true, onSignUpPage: Boolean = false)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,9 +25,26 @@
     <div class="container">
         <div class="row bg-white p-4">
             <div class="col"><h3 class="pl-4">@title</h3></div>
-            <div class="col">
-                <a href="@controllers.routes.HomeController.index()" class="btn btn-light float-right" role="button" aria-pressed="true">Ekran główny</a>
-            </div>
+            @if(isLogged) {
+                <div class="col">
+                    <a href="@controllers.routes.AuthenticationController.signOut" class="btn btn-light float-right" role="button" aria-pressed="true">Wyloguj się</a>
+                </div>
+                <div class="col-2">
+                    <a href="@controllers.routes.HomeController.index()" class="btn btn-light float-right" role="button" aria-pressed="true">Ekran główny</a>
+                </div>
+            } else {
+                @if(!onSignUpPage) {
+                    <div class="col">
+                        <a href="@controllers.routes.AuthenticationController.signUp()" class="btn btn-light float-right" role="button" aria-pressed="true">Zarejestruj się</a>
+                    </div>
+                } else {
+                    <div class="col">
+                        <a href="@controllers.routes.AuthenticationController.signIn()" class="btn btn-light float-right" role="button" aria-pressed="true">Zaloguj się</a>
+                    </div>
+                }
+            }
+
+
 
 
         </div>

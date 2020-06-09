@@ -40,8 +40,7 @@
                 <h5 class="mb-3">Komentarze</h5>
                 <ul class="list-group">
                 @for(comment <- comments) {
-                    <li class="list-group-item"><a href="@controllers.routes.UserController.get(comment._2.id)">@comment._2.firstName @comment._2.lastName</a>
-                        : @comment._1.content</li>
+                    <li class="list-group-item">@comment._2.firstName @comment._2.lastName: @comment._1.content</li>
                 }
                 </ul>
             </div>
@@ -52,8 +51,7 @@
                 <h5 class="mb-3">Oceny</h5>
                 <ul class="list-group">
                 @for(rating <- ratings) {
-                    <li class="list-group-item"><a href="@controllers.routes.UserController.get(rating._2.id)">@rating._2.firstName @rating._2.lastName</a>
-                        : @rating._1.value</li>
+                    <li class="list-group-item">@rating._2.firstName @rating._2.lastName: @rating._1.value</li>
                 }
                 </ul>
             </div>

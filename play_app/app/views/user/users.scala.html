@@ -9,6 +9,7 @@
                 <th style="width: 10%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">E-mail</th>
+                <th scope="col">Typ</th>
                 <th></th>
             </tr>
         </thead>
@@ -16,8 +17,9 @@
         @for(user <- users) {
             <tr>
                 <th scope="row"><span class="badge badge-light">@user.id</span></th>
-                <td><a href="@controllers.routes.UserController.get(user.id)">@user.firstName @user.lastName</a></td>
+                <td>@user.firstName @user.lastName</td>
                 <td>@user.email</td>
+                <td><span class="badge @if(user.role == "admin") {badge-primary} else {badge-secondary} text-uppercase">@user.role</span></td>
                 <td class="text-right">
                     <a class="btn btn-sm btn-outline-info" href="@controllers.routes.UserController.update(user.id)" role="button">Edytuj</a>
                     <a class="btn btn-sm btn-outline-danger" href="@controllers.routes.UserController.delete(user.id)" role="button">Usuń</a>
@@ -26,5 +28,5 @@
         }
         </tbody>
     </table>
-    <a href="@controllers.routes.UserController.create()" class="btn btn-light float-right" role="button" aria-pressed="true">Dodaj</a>
+@*    <a href="@controllers.routes.UserController.create()" class="btn btn-light float-right" role="button" aria-pressed="true">Dodaj</a>*@
 }

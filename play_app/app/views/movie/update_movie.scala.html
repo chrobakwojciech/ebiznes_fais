@@ -7,7 +7,7 @@
         directors: Seq[Director],
         selectedGenres: Seq[String],
         genres: Seq[Genre]
-)(implicit request: MessagesRequestHeader, flash: Flash)
+)(implicit request: Request[_], flash: Flash)
 
 @import views.html.bootstrap3._
 

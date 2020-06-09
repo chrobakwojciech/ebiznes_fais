@@ -1,17 +1,27 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.{HandlerResult, Silhouette}
+import com.mohiva.play.silhouette.api.actions.{SecuredErrorHandler, SecuredRequest, SecuredRequestHeader}
 import javax.inject.{Inject, Singleton}
-import models.{Actor, Movie}
+import models.{Actor, Movie, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.Json
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import repositories.{ActorRepository, MovieRepository}
+import utils.auth.{CookieEnv, DashboardErrorHandler, JsonErrorHandler, JwtEnv, RoleCookieAuthorization, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class ActorController @Inject()(actorRepository: ActorRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class ActorController @Inject()(
+                                 actorRepository: ActorRepository,
+                                 movieRepository: MovieRepository,
+                                 cc: MessagesControllerComponents,
+                                 silhouette: Silhouette[CookieEnv])
+                               (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val createActorForm: Form[CreateActorForm] = Form {
     mapping(
@@ -21,12 +31,12 @@ class ActorController @Inject()(actorRepository: ActorRepository, movieRepositor
     )(CreateActorForm.apply)(CreateActorForm.unapply)
   }
 
-  def getAll: Action[AnyContent] = Action.async { implicit request =>
+  def getAll: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val actors = actorRepository.getAll();
     actors.map(actor => Ok(views.html.actor.actors(actor)))
   }
 
-  def get(actorId: String) = Action.async { implicit request =>
+  def get(actorId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val movies: Seq[Movie] = Await.result(movieRepository.getForActor(actorId), Duration.Inf)
 
     actorRepository.getById(actorId) map {
@@ -35,11 +45,11 @@ class ActorController @Inject()(actorRepository: ActorRepository, movieRepositor
     }
   }
 
-  def create = Action { implicit request: MessagesRequest[AnyContent] =>
+  def create = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     Ok(views.html.actor.add_actor(createActorForm))
   }
 
-  def createActorHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def createActorHandler: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateActorForm] =>
       Future {
         Redirect(routes.ActorController.create()).flashing("error" -> "Błąd podczas dodawania aktora!")
@@ -54,17 +64,17 @@ class ActorController @Inject()(actorRepository: ActorRepository, movieRepositor
     createActorForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def delete(actorId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def delete(actorId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     actorRepository.delete(actorId).map(_ => Redirect(routes.ActorController.getAll()).flashing("info" -> "Aktor usunięty!"))
   }
 
-  def update(actorId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+  def update(actorId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val actor: Actor = Await.result(actorRepository.getById(actorId), Duration.Inf).get
     val updateForm = createActorForm.fill(CreateActorForm(actor.firstName, actor.lastName, actor.img))
     Ok(views.html.actor.update_actor(actorId, updateForm))
   }
 
-  def updateActorHandler(actorId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def updateActorHandler(actorId: String): Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateActorForm] =>
       Future {
         Redirect(routes.ActorController.update(actorId)).flashing("error" -> "Błąd podczas edycji aktora!")

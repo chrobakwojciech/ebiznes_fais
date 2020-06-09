@@ -10,12 +10,10 @@ GET     /                           controllers.HomeController.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 ##### API #########
-# Users
-GET         /api/users                      controllers.api.UserApiController.getAll
-GET         /api/users/:userId              controllers.api.UserApiController.get(userId: String)
-POST        /api/users                      controllers.api.UserApiController.create
-PUT         /api/users/:userId              controllers.api.UserApiController.update(userId: String)
-DELETE      /api/users/:userId              controllers.api.UserApiController.delete(userId: String)
+# Auth
+POST        /api/auth/signup                controllers.api.AuthenticationApiController.signUp
+POST        /api/auth/signin                controllers.api.AuthenticationApiController.signIn
+GET         /api/auth/me                    controllers.api.AuthenticationApiController.me
 
 # Actors
 GET         /api/actors                     controllers.api.ActorApiController.getAll
@@ -82,13 +80,17 @@ DELETE      /api/orders/:orderId           controllers.api.OrderApiController.de
 
 
 ##### FORMS ######
+# Auth
+GET         /auth/signup                    controllers.AuthenticationController.signUp
+GET         /auth/signin                    controllers.AuthenticationController.signIn
+GET         /auth/signout                   controllers.AuthenticationController.signOut
+POST        /auth/signInHandler             controllers.AuthenticationController.signInHandler
+POST        /auth/signUpHandler             controllers.AuthenticationController.signUpHandler
+
 # Users
 GET         /users                          controllers.UserController.getAll
-GET         /users/:userId                  controllers.UserController.get(userId: String)
-GET         /add/users                      controllers.UserController.create
 GET         /delete/users/:userId           controllers.UserController.delete(userId: String)
 GET         /update/users/:userId           controllers.UserController.update(userId: String)
-POST        /createUserHandler              controllers.UserController.createUserHandler
 POST        /updateUserHandler              controllers.UserController.updateUserHandler(userId: String)
 
 # Movies

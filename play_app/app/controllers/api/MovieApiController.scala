@@ -1,13 +1,15 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Rating}
+import models.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
+import utils.auth.{JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext}
 
 case class CreateMovie(title: String,
                        description: String,
@@ -44,10 +46,11 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
                                    genreRepository: GenreRepository,
                                    commentRepository: CommentRepository,
                                    ratingRepository: RatingRepository,
-                                   cc: MessagesControllerComponents
+                                   cc: MessagesControllerComponents,
+                                   silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
-  def getAll: Action[AnyContent] = Action.async { implicit request =>
+  def getAll = Action.async { implicit request =>
     val movies = movieRepository.getAll()
     movies.map(movie => Ok(Json.toJson(movie)))
   }

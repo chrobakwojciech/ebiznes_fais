@@ -75,7 +75,16 @@ CREATE TABLE "user" (
     "firstName" VARCHAR NOT NULL,
     "lastName" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
-    "password" VARCHAR NOT NULL
+    "role" VARCHAR NOT NULL,
+    "providerId" VARCHAR NOT NULL,
+    "providerKey" VARCHAR NOT NULL
+);
+
+CREATE TABLE "password" (
+    "providerKey" VARCHAR NOT NULL PRIMARY KEY,
+    "hasher" VARCHAR NOT NULL,
+    "hash" VARCHAR NOT NULL,
+    "salt" VARCHAR
 );
 
 CREATE TABLE "movie_actor" (
@@ -102,8 +111,12 @@ CREATE TABLE "movie_genre" (
     FOREIGN KEY ("genre") REFERENCES genre("id") ON DELETE CASCADE
 );
 
-INSERT INTO [user] VALUES ('1', 'Jan', 'Kowalski', 'jk@gmail.com', 'admin123');
-INSERT INTO [user] VALUES ('2', 'Piotr', 'Nowak', 'pn@gmail.com', 'admin123');
+
+INSERT INTO [user] VALUES ('1', 'Super', 'Admin', 'admin@gmail.com', 'admin', 'credentials', 'admin@gmail.com');
+INSERT INTO [user] VALUES ('2', 'Basic', 'User', 'user@gmail.com', 'user', 'credentials', 'user@gmail.com');
+
+INSERT INTO password VALUES ('admin@gmail.com', 'bcrypt', '$2a$10$fS7iZrubBKLsvwM08XQgR.IbkU4.wjIEAohcC.Nwy/YqFym90U.lC', NULL);
+INSERT INTO password VALUES ('user@gmail.com', 'bcrypt', '$2a$10$fS7iZrubBKLsvwM08XQgR.IbkU4.wjIEAohcC.Nwy/YqFym90U.lC', NULL);
 
 INSERT INTO actor VALUES ('1', 'John', 'Travolta', 'http://via.placeholder.com/200x290');
 INSERT INTO actor VALUES ('2', 'Samuel', 'L. Jackson', 'http://via.placeholder.com/200x290');
@@ -329,3 +342,4 @@ DROP TABLE orderItem;
 DROP TABLE payment;
 DROP TABLE rating;
 DROP TABLE [user];
+DROP TABLE password

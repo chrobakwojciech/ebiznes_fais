@@ -1,4 +1,4 @@
-@(comment: Form[CreateCommentForm], users: Seq[User], movies: Seq[Movie])(implicit request: MessagesRequestHeader, flash: Flash)
+@(comment: Form[CreateCommentForm], users: Seq[User], movies: Seq[Movie])(implicit request: Request[_], flash: Flash)
 
 @import views.html.bootstrap3._
 

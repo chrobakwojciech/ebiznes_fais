@@ -1,5 +1,5 @@
 @(flash: Flash)
-<div class="col">
+<div class="col px-0 pb-2">
     @if(flash.get("error")) {
         <div class="alert alert-danger" role="alert">
         @flash.get("error").getOrElse("")

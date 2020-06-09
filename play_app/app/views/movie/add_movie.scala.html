@@ -1,4 +1,4 @@
-@(movie: Form[CreateMovieForm], actors: Seq[Actor], directors: Seq[Director], genres: Seq[Genre])(implicit request: MessagesRequestHeader, flash: Flash)
+@(movie: Form[CreateMovieForm], actors: Seq[Actor], directors: Seq[Director], genres: Seq[Genre])(implicit request: Request[_], flash: Flash)
 
 
 @import views.html.bootstrap3._

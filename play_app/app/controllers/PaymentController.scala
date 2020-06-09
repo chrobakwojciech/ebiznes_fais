@@ -1,17 +1,20 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.Payment
+import models.{Payment, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import repositories.PaymentRepository
+import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class PaymentController @Inject()(paymentRepository: PaymentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class PaymentController @Inject()(paymentRepository: PaymentRepository, cc: MessagesControllerComponents,
+                                  silhouette: Silhouette[CookieEnv])(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val createPaymentForm: Form[CreatePaymentForm] = Form {
     mapping(
@@ -19,16 +22,16 @@ class PaymentController @Inject()(paymentRepository: PaymentRepository, cc: Mess
     )(CreatePaymentForm.apply)(CreatePaymentForm.unapply)
   }
 
-  def getAll = Action.async { implicit request =>
+  def getAll = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val payments = paymentRepository.getAll();
     payments.map(payment => Ok(views.html.payment.payments(payment)))
   }
 
-  def create = Action { implicit request: MessagesRequest[AnyContent] =>
+  def create = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     Ok(views.html.payment.add_payment(createPaymentForm))
   }
 
-  def createPaymentHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def createPaymentHandler: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreatePaymentForm] =>
       Future {
         Redirect(routes.PaymentController.create()).flashing("error" -> "Błąd podczas dodawania typu płatności!")
@@ -43,17 +46,17 @@ class PaymentController @Inject()(paymentRepository: PaymentRepository, cc: Mess
     createPaymentForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def delete(paymentId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def delete(paymentId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     paymentRepository.delete(paymentId).map(_ => Redirect(routes.PaymentController.getAll()).flashing("info" -> "Typ płatności usunięty!"))
   }
 
-  def update(paymentId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+  def update(paymentId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val payment: Payment = Await.result(paymentRepository.getById(paymentId), Duration.Inf).get
     val updateForm = createPaymentForm.fill(CreatePaymentForm(payment.name))
     Ok(views.html.payment.update_payment(paymentId, updateForm))
   }
 
-  def updatePaymentHandler(paymentId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def updatePaymentHandler(paymentId: String): Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreatePaymentForm] =>
       Future {
         Redirect(routes.PaymentController.update(paymentId)).flashing("error" -> "Błąd podczas edycji typu płatności!")

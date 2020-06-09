@@ -1,18 +1,21 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Rating, User}
+import models.{Movie, Rating, User, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._
 import play.api.mvc._
 import repositories.{MovieRepository, RatingRepository, UserRepository}
+import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class RatingController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class RatingController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents,
+                                 silhouette: Silhouette[CookieEnv])(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val createRatingForm: Form[CreateRatingForm] = Form {
     mapping(
@@ -22,18 +25,18 @@ class RatingController @Inject()(ratingRepository: RatingRepository, userReposit
     )(CreateRatingForm.apply)(CreateRatingForm.unapply)
   }
 
-  def getAll = Action.async { implicit request =>
+  def getAll = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val ratings = ratingRepository.getAllWithMovieAndUser()
     ratings.map(rating => Ok(views.html.rating.ratings(rating)))
   }
 
-  def create = Action { implicit request: MessagesRequest[AnyContent] =>
+  def create = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val users: Seq[User] = Await.result(userRepository.getAll(), Duration.Inf)
     val movies: Seq[Movie] = Await.result(movieRepository.getAll(), Duration.Inf);
     Ok(views.html.rating.add_rating(createRatingForm, users, movies))
   }
 
-  def createRatingHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def createRatingHandler: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateRatingForm] =>
       Future {
         Redirect(routes.RatingController.create()).flashing("error" -> "Błąd podczas dodawania oceny!")
@@ -48,12 +51,12 @@ class RatingController @Inject()(ratingRepository: RatingRepository, userReposit
     createRatingForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def delete(ratingId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def delete(ratingId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     ratingRepository.delete(ratingId).map(_ => Redirect(routes.RatingController.getAll()).flashing("info" -> "Ocena filmu została usunięta!"))
   }
 
 
-  def update(ratingId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+  def update(ratingId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val users: Seq[User] = Await.result(userRepository.getAll(), Duration.Inf)
     val movies: Seq[Movie] = Await.result(movieRepository.getAll(), Duration.Inf);
     val rating: Rating = Await.result(ratingRepository.getById(ratingId), Duration.Inf).get
@@ -61,7 +64,7 @@ class RatingController @Inject()(ratingRepository: RatingRepository, userReposit
     Ok(views.html.rating.update_rating(ratingId, updateForm, users, movies))
   }
 
-  def updateRatingHandler(ratingId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def updateRatingHandler(ratingId: String): Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateRatingForm] =>
       Future {
         Redirect(routes.RatingController.update(ratingId)).flashing("error" -> "Błąd podczas edycji oceny filmu!")

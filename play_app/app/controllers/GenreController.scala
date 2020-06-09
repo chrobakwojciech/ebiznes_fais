@@ -1,29 +1,32 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Genre, Movie}
+import models.{Genre, Movie, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import repositories.{GenreRepository, MovieRepository}
+import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class GenreController @Inject()(genreRepository: GenreRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class GenreController @Inject()(genreRepository: GenreRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents,
+                                silhouette: Silhouette[CookieEnv])(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
   val createGenreForm: Form[CreateGenreForm] = Form {
     mapping(
       "name" -> nonEmptyText
     )(CreateGenreForm.apply)(CreateGenreForm.unapply)
   }
 
-  def getAll = Action.async { implicit request =>
+  def getAll = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val genres = genreRepository.getAll()
     genres.map(genre => Ok(views.html.genre.genres(genre)))
   }
 
-  def get(genreId: String) = Action.async { implicit request =>
+  def get(genreId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val movies: Seq[Movie] = Await.result(movieRepository.getForGenre(genreId), Duration.Inf)
 
     genreRepository.getById(genreId) map {
@@ -32,12 +35,12 @@ class GenreController @Inject()(genreRepository: GenreRepository, movieRepositor
     }
   }
 
-  def create = Action { implicit request: MessagesRequest[AnyContent] =>
+  def create = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_] =>
     Ok(views.html.genre.add_genre(createGenreForm))
   }
 
 
-  def createGenreHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def createGenreHandler: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateGenreForm] =>
       Future {
         Redirect(routes.GenreController.create()).flashing("error" -> "Błąd podczas dodawania gatunku!")
@@ -52,17 +55,17 @@ class GenreController @Inject()(genreRepository: GenreRepository, movieRepositor
     createGenreForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def delete(genreId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def delete(genreId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     genreRepository.delete(genreId).map(_ => Redirect(routes.GenreController.getAll()).flashing("info" -> "Gatunek usunięty!"))
   }
 
-  def update(genreId: String) = Action { implicit request: MessagesRequest[AnyContent] =>
+  def update(genreId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val genre: Genre = Await.result(genreRepository.getById(genreId), Duration.Inf).get
     val updateForm = createGenreForm.fill(CreateGenreForm(genre.name))
     Ok(views.html.genre.update_genre(genreId, updateForm))
   }
 
-  def updateGenreHandler(genreId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def updateGenreHandler(genreId: String): Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateGenreForm] =>
       Future {
         Redirect(routes.GenreController.update(genreId)).flashing("error" -> "Błąd podczas edycji gatunku!")

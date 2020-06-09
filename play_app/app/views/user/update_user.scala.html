@@ -1,4 +1,4 @@
-@(id: String, user: Form[CreateUserForm])(implicit request: MessagesRequestHeader, flash: Flash)
+@(id: String, user: Form[CreateUserForm], isAdmin: Boolean)(implicit request: Request[_], flash: Flash)
 
 @import views.html.bootstrap3._
 
@@ -9,8 +9,21 @@
             @helper.CSRF.formField
             @text(user("firstName"), "Imię")
             @text(user("lastName"), "Nazwisko")
-            @text(user("email"), "E-mail")
-            @text(user("password"), "Hasło")
+            <div class="form-group">
+                <div class="col-sm-10" >
+                    <label class="checkbox-inline">
+                        <input
+                        type="checkbox"
+                        name="isAdmin"
+                        id="isAdmin"
+                        value="true"
+                        @if(isAdmin) {checked}
+                        >
+                        Administrator
+                    </label>
+                </div>
+            </div>
+
             @submit("Edytuj")
         }
     </div>

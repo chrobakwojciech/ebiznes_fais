@@ -6,7 +6,7 @@ import models.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
-import utils.auth.{JwtEnv, RoleAuthorization}
+import utils.auth.{JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
@@ -50,7 +50,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
                                    silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
-  def getAll = silhouette.SecuredAction(RoleAuthorization(UserRoles.User)).async { implicit request =>
+  def getAll = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.User)).async { implicit request =>
     val movies = movieRepository.getAll()
     movies.map(movie => Ok(Json.toJson(movie)))
   }

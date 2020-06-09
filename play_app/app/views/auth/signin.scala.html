@@ -1,7 +1,7 @@
 @import views.html.bootstrap3._
 
 @(user: Form[SignIn])(implicit request: MessagesRequestHeader, flash: Flash)
-@main("Zaloguj się") {
+@main("Zaloguj się", false) {
     <div class="col">
         @alerts(flash)
         @helper.form(controllers.routes.AuthenticationController.signInHandler()) {

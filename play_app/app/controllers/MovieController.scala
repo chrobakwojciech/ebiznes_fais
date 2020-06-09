@@ -1,5 +1,6 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.data.Form
@@ -7,12 +8,21 @@ import play.api.data.Forms._
 import play.api.data.format.Formats._
 import play.api.mvc._
 import repositories._
+import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class MovieController @Inject()(movieRepository: MovieRepository, directorRepository: DirectorRepository, actorRepository: ActorRepository, genreRepository: GenreRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class MovieController @Inject()(
+                                 movieRepository: MovieRepository,
+                                 directorRepository: DirectorRepository,
+                                 actorRepository: ActorRepository,
+                                 genreRepository: GenreRepository,
+                                 ratingRepository: RatingRepository,
+                                 commentRepository: CommentRepository,
+                                 cc: MessagesControllerComponents,
+                                 silhouette: Silhouette[CookieEnv])(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val createMovieForm: Form[CreateMovieForm] = Form {
     mapping(
@@ -27,12 +37,12 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
     )(CreateMovieForm.apply)(CreateMovieForm.unapply)
   }
 
-  def getAll = Action.async { implicit request =>
+  def getAll = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val movies = movieRepository.getAll()
     movies.map(movie => Ok(views.html.movie.movies(movie)))
   }
 
-  def get(movieId: String) = Action.async { implicit request =>
+  def get(movieId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.User)).async { implicit request: Request[_]  =>
     val comments: Seq[(Comment, User)] = Await.result(commentRepository.getForMovie(movieId), Duration.Inf)
     val ratings: Seq[(Rating, User)] = Await.result(ratingRepository.getForMovie(movieId), Duration.Inf)
     val actors: Seq[Actor] = Await.result(actorRepository.getForMovie(movieId), Duration.Inf)
@@ -45,18 +55,18 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
     }
   }
 
-  def create: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+  def create: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val actors: Seq[Actor] = Await.result(actorRepository.getAll(), Duration.Inf)
     val directors: Seq[Director] = Await.result(directorRepository.getAll(), Duration.Inf)
     val genres: Seq[Genre] = Await.result(genreRepository.getAll(), Duration.Inf)
     Ok(views.html.movie.add_movie(createMovieForm, actors, directors, genres))
   }
 
-  def delete(movieId: String) = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def delete(movieId: String) = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     movieRepository.delete(movieId).map(_ => Redirect(routes.MovieController.getAll()).flashing("info" -> "Film usunięty!"))
   }
 
-  def createMovieHandler: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def createMovieHandler: Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateMovieForm] =>
       Future {
         Redirect(routes.MovieController.create()).flashing("error" -> "Błąd podczas dodawania filmu!")
@@ -71,7 +81,7 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
     createMovieForm.bindFromRequest.fold(errorFunction, successFunction)
   }
 
-  def update(movieId: String): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+  def update(movieId: String): Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)) { implicit request: Request[_]  =>
     val movie: Movie = Await.result(movieRepository.getById(movieId), Duration.Inf).get
 
     val actors: Seq[Actor] = Await.result(actorRepository.getAll(), Duration.Inf)
@@ -94,7 +104,7 @@ class MovieController @Inject()(movieRepository: MovieRepository, directorReposi
       selectedGenres, genres))
   }
 
-  def updateMovieHandler(movieId: String): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
+  def updateMovieHandler(movieId: String): Action[AnyContent] = silhouette.SecuredAction(RoleCookieAuthorization(UserRoles.Admin)).async { implicit request: Request[_]  =>
     val errorFunction = { formWithErrors: Form[CreateMovieForm] =>
       Future {
         Redirect(routes.MovieController.update(movieId)).flashing("error" -> "Błąd podczas edycji filmu!")

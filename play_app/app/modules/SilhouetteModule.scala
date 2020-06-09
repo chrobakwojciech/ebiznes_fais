@@ -30,13 +30,13 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[Silhouette[CookieEnv]].to[SilhouetteProvider[CookieEnv]]
     bind[Silhouette[JwtEnv]].to[SilhouetteProvider[JwtEnv]]
-    bind[SecuredErrorHandler].to[JsonErrorHandler]
+    bind[SecuredErrorHandler].to[DashboardErrorHandler]
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
-    bind[DashboardErrorHandler].toInstance(new DashboardErrorHandler())
+    bind[JsonErrorHandler].toInstance(new JsonErrorHandler())
   }
 
   @Provides

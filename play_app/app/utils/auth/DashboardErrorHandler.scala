@@ -11,7 +11,7 @@ import scala.concurrent.Future
 @Singleton
 class DashboardErrorHandler extends SecuredErrorHandler {
   override def onNotAuthenticated(implicit request: RequestHeader) = {
-    Future.successful(Redirect(routes.AuthenticationController.signIn()))
+    Future.successful(Redirect(routes.AuthenticationController.signIn()).flashing("error" -> "Musisz być zalogowany"))
   }
 
   override def onNotAuthorized(implicit request: RequestHeader) = {

@@ -11,9 +11,9 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 ##### API #########
 # Auth
-POST        /api/auth/signup                 controllers.api.AuthenticationApiController.signUp
-POST        /api/auth/signin                 controllers.api.AuthenticationApiController.signIn
-GET         /api/auth/me                     controllers.api.AuthenticationApiController.me
+POST        /api/auth/signup                controllers.api.AuthenticationApiController.signUp
+POST        /api/auth/signin                controllers.api.AuthenticationApiController.signIn
+GET         /api/auth/me                    controllers.api.AuthenticationApiController.me
 
 # Actors
 GET         /api/actors                     controllers.api.ActorApiController.getAll

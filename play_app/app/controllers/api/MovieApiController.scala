@@ -50,7 +50,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
                                    silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
-  def getAll = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.User)).async { implicit request =>
+  def getAll = Action.async { implicit request =>
     val movies = movieRepository.getAll()
     movies.map(movie => Ok(Json.toJson(movie)))
   }

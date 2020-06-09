@@ -7,7 +7,7 @@
         @helper.form(controllers.routes.AuthenticationController.signInHandler()) {
             @helper.CSRF.formField
             @text(user("email"), "E-mail")
-            @text(user("password"), "Hasło")
+            @password(user("password"), "Hasło")
             @submit("Zaloguj się")
         }
     </div>

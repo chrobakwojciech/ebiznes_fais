@@ -10,11 +10,12 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import {NavLink} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import {Movie} from "@material-ui/icons";
 import * as colors from "@material-ui/core/colors";
 import API from "../utils/API";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import Button from "@material-ui/core/Button";
 
 const drawerWidth = 240;
 
@@ -43,11 +44,14 @@ const useStyles = makeStyles((theme) => ({
     drawerSubtitle: {
         color: '#9f9f9f',
         marginBlockEnd: 0
+    },
+    title: {
+        flexGrow: 1
     }
 }));
 
 
-export default function Layout(props) {
+export default function Layout({children}) {
     const classes = useStyles();
     const [genres, setGenres] = useState([]);
 
@@ -65,7 +69,8 @@ export default function Layout(props) {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap>MovieVOD</Typography>
+                    <Typography className={classes.title} variant="h6" noWrap>MovieVOD</Typography>
+                    <Button color="inherit" component={Link} to="/logowanie">Zaloguj się</Button>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -98,7 +103,7 @@ export default function Layout(props) {
             </Drawer>
             <main className={classes.content}>
                 <Toolbar />
-                {props.children}
+                {children}
             </main>
         </div>
     );

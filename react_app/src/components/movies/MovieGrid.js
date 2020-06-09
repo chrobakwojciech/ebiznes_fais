@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Grid} from '@material-ui/core';
-import MovieGridItem from "../components/movies/MovieGridItem";
-import API from "../utils/API";
+import MovieGridItem from "./MovieGridItem";
+import API from "../../utils/API";
 import {useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import * as _ from 'lodash';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 
-export default function Movies(props) {
+export default function MovieGrid(props) {
     const [movies, setMovies] = useState([]);
     const [genreName, setGenreName] = useState(null);
     const urlParams = useParams();

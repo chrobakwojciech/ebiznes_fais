@@ -79,11 +79,11 @@ class AuthenticationController @Inject()(cc: MessagesControllerComponents,
       userRepository.retrieve(LoginInfo(CredentialsProvider.ID, user.email))
         .flatMap((uo: Option[User]) =>
           uo.fold({
-            userRepository.create2(user.firstName, user.lastName, user.email, user.password).flatMap(cookieAuthService.create(_))
+            userRepository.create(user.firstName, user.lastName, user.email, user.password).flatMap(cookieAuthService.create(_))
               .flatMap(cookieAuthService.init(_))
               .flatMap(cookieAuthService.embed(_, Redirect(routes.HomeController.index()).flashing("success" -> "Witamy!")))
           })({ _ =>
-            Future.successful(AuthenticatorResult(Redirect(routes.AuthenticationController.signIn())))
+            Future.successful(AuthenticatorResult(Redirect(routes.AuthenticationController.signUp()).flashing("error" -> "Bład podczas rejestracji")))
           })
         )
     }

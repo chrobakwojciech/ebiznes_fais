@@ -57,7 +57,7 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
           .flatMap {
             case Some(user) => Future.successful(BadRequest(Json.obj("message" -> "User already exist")))
             case None => {
-              userRepository.create2(user.firstName, user.lastName, user.email, user.password)
+              userRepository.create(user.firstName, user.lastName, user.email, user.password)
                 .flatMap(jwtAuthService.create(_))
                 .flatMap(jwtAuthService.init(_))
                 .flatMap(token => Future.successful(Ok(Json.obj("message" -> "User created", "token" -> token))))

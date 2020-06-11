@@ -15,6 +15,9 @@ POST        /api/auth/signup                controllers.api.AuthenticationApiCon
 POST        /api/auth/signin                controllers.api.AuthenticationApiController.signIn
 GET         /api/auth/me                    controllers.api.AuthenticationApiController.me
 
+# User
+GET         /api/user/movies                controllers.api.UserApiController.getMovies
+
 # Actors
 GET         /api/actors                     controllers.api.ActorApiController.getAll
 GET         /api/actors/:actorId            controllers.api.ActorApiController.get(actorId: String)

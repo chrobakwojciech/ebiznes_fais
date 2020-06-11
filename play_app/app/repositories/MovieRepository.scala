@@ -20,6 +20,8 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   val _movieGenres = TableQuery[MovieGenreTable]
   val _movieActors = TableQuery[MovieActorTable]
   val _movieDirectors = TableQuery[MovieDirectorTable]
+  val _order = TableQuery[OrderTable]
+  val _orderItem = TableQuery[OrderItemTable]
 
   def getAll(): Future[Seq[Movie]] = db.run {
     _movie.result
@@ -49,6 +51,16 @@ class MovieRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     _movieDirectors.filter(_.director === directorId).join(_movie).on(_.movie === _.id).map {
       case (md, m) => m
     }.result
+  }
+
+  def getForUser(userId: String): Future[Seq[Movie]] = db.run {
+    _order
+      .filter(_.user === userId)
+        .join(_orderItem).on(_.id === _.order)
+        .join(_movie).on(_._2.movie === _.id)
+        .map {
+          case ((o, oi), m) => m
+        }.distinct.result
   }
 
   def create(title: String, description: String, productionYear: String, price: Double, img: String, actors: Seq[String], directors: Seq[String], genres: Seq[String]) = {

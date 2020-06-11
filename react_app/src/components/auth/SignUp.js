@@ -13,11 +13,12 @@ import {authApi} from "../../utils/api/auth.api";
 import Alert from "@material-ui/lab/Alert/Alert";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({card: {
+        backgroundColor: 'transparent'
+    },
     cardHeader: {
-        // textAlign: 'center',
         paddingTop: '16px',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: 'transparent',
         color: theme.palette.primary.main
     },
     cardContent: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     },
     cardActions: {
         paddingBlockStart: '16px',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: 'transparent'
     },
     form: {
         display: 'flex',
@@ -95,7 +96,7 @@ export default function SignUp() {
                 </Alert>
             </Snackbar>
 
-            <Card elevation={0}>
+            <Card className={classes.card} elevation={0}>
                 <CardHeader className={classes.cardHeader} title="Rejestracja"/>
                 <CardContent className={classes.cardContent}>
                     <form className={classes.form}>

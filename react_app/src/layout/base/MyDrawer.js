@@ -1,17 +1,18 @@
 import Toolbar from "@material-ui/core/Toolbar";
 import {NavLink} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon/ListItemIcon";
-import {Movie} from "@material-ui/icons";
+import {Apps, VideoLibrary, Movie, ArrowForwardIos, AccountBox, ChevronRight} from "@material-ui/icons";
 import * as colors from "@material-ui/core/colors";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Drawer from "@material-ui/core/Drawer/Drawer";
 import {genreApi} from "../../utils/api/genre.api";
+import {UserContext} from "../../context/UserContext";
 
 const drawerWidth = 240;
 
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MyDrawer() {
     const classes = useStyles();
     const [genres, setGenres] = useState([]);
+    const {userCtx} = useContext(UserContext);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,6 +51,32 @@ export default function MyDrawer() {
 
         fetchData();
     }, []);
+
+    const UserListPanel = () => {
+        if (userCtx.user) {
+            return (
+                <>
+                    <Divider />
+                    <List>
+                        <ListSubheader component="div" >
+                            <h4 className={classes.drawerSubtitle}>Moje konto</h4>
+                        </ListSubheader>
+                        <ListItem button >
+                            <ListItemIcon><AccountBox style={{ color: colors.common.white }}/></ListItemIcon>
+                            <ListItemText primary="Profil" />
+                        </ListItem>
+                        <ListItem button component={NavLink} exact={true} to="/biblioteka">
+                            <ListItemIcon><VideoLibrary style={{ color: colors.common.white }}/></ListItemIcon>
+                            <ListItemText primary="Biblioteka" />
+                        </ListItem>
+                    </List>
+                </>
+            )
+        } else {
+            return null
+        }
+    };
+
 
     return (
         <Drawer
@@ -62,10 +90,11 @@ export default function MyDrawer() {
             <div className={classes.drawerContainer}>
                 <List>
                     <ListItem button component={NavLink} exact={true} to="/" >
-                        <ListItemIcon><Movie style={{ color: colors.common.white }}/></ListItemIcon>
+                        <ListItemIcon><Apps style={{ color: colors.common.white }}/></ListItemIcon>
                         <ListItemText primary="Home" />
                     </ListItem>
                 </List>
+                <UserListPanel/>
                 <Divider />
                 <List>
                     <ListSubheader component="div" >
@@ -73,6 +102,7 @@ export default function MyDrawer() {
                     </ListSubheader>
                     {genres.map((genre) => (
                         <ListItem button component={NavLink} to={"/gatunek/" + genre.name.toLowerCase()}  key={genre.name}>
+                            <ListItemIcon><ChevronRight style={{ color: colors.common.white }}/></ListItemIcon>
                             <ListItemText primary={genre.name}/>
                         </ListItem>
                     ))}

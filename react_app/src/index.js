@@ -12,6 +12,8 @@ import AppRoute from "./utils/AppRoute";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import UserContextProvider from "./context/UserContextProvider";
+import GenreMovies from "./components/genres/GenreMovies";
+import UserLibrary from "./components/user/UserLibrary";
 
 const routing = (
     <ThemeProvider theme={theme}>
@@ -20,8 +22,9 @@ const routing = (
             <BrowserRouter>
                 <Switch>
                     <AppRoute exact path="/" component={MovieGrid} layout={BaseLayout}/>
-                    <AppRoute path="/gatunek/:genreName" component={MovieGrid} layout={BaseLayout}/>
+                    <AppRoute path="/gatunek/:genreName" component={GenreMovies} layout={BaseLayout}/>
                     <AppRoute path="/filmy/:movieId" component={Movie} layout={BaseLayout}/>
+                    <AppRoute path="/biblioteka" component={UserLibrary} layout={BaseLayout}/>
 
                     <AppRoute exact path="/logowanie" component={Login} layout={AuthLayout}/>
                     <AppRoute exact path="/rejestracja" component={SignUp} layout={AuthLayout}/>

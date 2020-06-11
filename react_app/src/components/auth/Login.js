@@ -12,12 +12,16 @@ import {UserContext} from "../../context/UserContext";
 import {authApi} from "../../utils/api/auth.api";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import API from "../../utils/api/API";
 
 const useStyles = makeStyles(theme => ({
+    card: {
+        backgroundColor: 'transparent'
+    },
     cardHeader: {
         // textAlign: 'center',
         paddingTop: '16px',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: 'transparent',
         color: theme.palette.secondary.main
     },
     cardContent: {
@@ -27,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     },
     cardActions: {
         paddingBlockStart: '16px',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: 'transparent'
     },
     form: {
         display: 'flex',
@@ -82,7 +86,7 @@ export default function Login() {
                 </Alert>
             </Snackbar>
 
-            <Card elevation={0}>
+            <Card className={classes.card} elevation={0}>
                 <CardHeader className={classes.cardHeader} title="Logowanie"/>
                 <CardContent className={classes.cardContent}>
                     <form className={classes.form}>

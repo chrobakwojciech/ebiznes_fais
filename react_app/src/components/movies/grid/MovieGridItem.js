@@ -5,6 +5,8 @@ import Rating from '@material-ui/lab/Rating';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Link} from 'react-router-dom';
 import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import {AttachMoney, CheckCircle} from "@material-ui/icons"
 
 
 const useStyles = makeStyles({
@@ -24,20 +26,52 @@ const useStyles = makeStyles({
     },
     link: {
         textDecoration: 'none'
+    },
+    posterBox: {
+        position: 'relative'
+    },
+    posterOverlay: {
+        position: 'absolute',
+        top: 8,
+        left: 8
+    },
+    posterPrice: {
+        position: 'absolute',
+        top: -16,
+        right: 0
+    },
+    customChip: {
+        borderRadius: 0
     }
 });
+
 
 export default function MovieGridItem(props) {
     const movie = props.movie;
     const classes = useStyles();
+
+    const PosterOverlay = () => {
+        if (movie.isBought) {
+            return (
+                <>
+                    <Box className={classes.posterOverlay}>
+                        <Chip className={classes.customChip} size="small" color="secondary" icon={<CheckCircle />} label={'Kupiony'} />
+                    </Box>
+                </>
+            )
+        } else {
+            return null
+        }
+    };
 
     return (
         <Grid item  xl={2} lg={3} md={4} sm={6} xs={12}>
             <Link className={classes.link} to={{ pathname: `/filmy/${movie.id}`}}>
                 <Paper elevation={0} className={classes.gridItem}>
                     <Box className={classes.gridItem} display="flex" flexDirection="column" justifyContent="space-between">
-                        <Box>
+                        <Box className={classes.posterBox} height={"100%"}>
                             <img className={classes.movieImg} src={movie.img} alt={movie.title}/>
+                            <PosterOverlay/>
                         </Box>
                         <Box>
                             <h2 className={classes.movieTitle}>{movie.title}</h2>

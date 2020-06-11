@@ -1,28 +1,43 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Box, Grid} from '@material-ui/core';
-import MovieGridItem from "./MovieGridItem";
+import MovieGridItem from "./../movies/grid/MovieGridItem";
+import {useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import * as _ from 'lodash';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import {movieApi} from "../../../utils/api/movie.api";
-import {UserContext} from "../../../context/UserContext";
+import {genreApi} from "../../utils/api/genre.api";
+import {movieApi} from "../../utils/api/movie.api";
+import {UserContext} from "../../context/UserContext";
+import {useHistory} from "react-router-dom";
 
-export default function MovieGrid() {
+export default function GenreMovies() {
     const [movies, setMovies] = useState([]);
+    const [gridTitle, setGridTitle] = useState(null);
+    const urlParams = useParams();
     const {userCtx} = useContext(UserContext);
+    let history = useHistory();
 
     useEffect(() => {
         const fetchData = async () => {
-            let movies = await movieApi.getAll();
-            await movieApi.addRatings(movies);
-            if (userCtx.user) {
-                await movieApi.addUserInfo(movies)
+            const genres = await genreApi.getAll();
+            const genre = genres.find(genre => genre.name.toLowerCase() === urlParams.genreName);
+
+            if (!genre) {
+                history.push('/')
+            } else {
+                let movies = await movieApi.getForGenre(genre.id);
+                setGridTitle(genre.name);
+
+                await movieApi.addRatings(movies);
+                if (userCtx.user) {
+                    await movieApi.addUserInfo(movies)
+                }
+                setMovies(movies);
             }
-            setMovies(movies);
         };
 
         fetchData();
-    }, []);
+    }, [urlParams.genreName]);
 
     const sort = (field, dir) => {
         const sortedFields = field === 'title' ? ['title'] : [field, 'title'];
@@ -33,6 +48,7 @@ export default function MovieGrid() {
 
     return (
         <Box m={2}>
+            <h2>{gridTitle}</h2>
             <Box mb={2}>
                 <ButtonGroup aria-label="outlined button group">
                     <Button variant="outlined" onClick={() => sort('rating')}>Najlepiej oceniane</Button>

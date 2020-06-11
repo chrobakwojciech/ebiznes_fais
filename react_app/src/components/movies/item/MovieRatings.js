@@ -4,6 +4,9 @@ import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import React from "react";
 import Rating from "@material-ui/lab/Rating/Rating";
+import {AccountCircle} from "@material-ui/icons";
+import * as colors from "@material-ui/core/colors";
+import ListItemIcon from "@material-ui/core/ListItemIcon/ListItemIcon";
 
 export default function MovieRatings({ratings}) {
     return (
@@ -11,12 +14,9 @@ export default function MovieRatings({ratings}) {
             <h3>Oceny</h3>
             {ratings.map(rating => (
                 <ListItem>
-                    <ListItemAvatar>
-                        <Avatar
-                            alt={`${rating.user.firstName} ${rating.user.lastName}`}
-                            src={'http://via.placeholder.com/100x100'}
-                        />
-                    </ListItemAvatar>
+                    <ListItemIcon>
+                        <AccountCircle fontSize="large" style={{ color: colors.common.white }} />
+                    </ListItemIcon>
 
 
                     <ListItemText

@@ -5,6 +5,10 @@ import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import React, {useEffect, useState} from "react";
 import Typography from "@material-ui/core/Typography";
 import {movieApi} from "../../../utils/api/movie.api";
+import {AccountCircle} from "@material-ui/icons";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import * as colors from "@material-ui/core/colors";
+
 
 export default function MovieComments({movieId}) {
     const [comments, setComments] = useState([]);
@@ -26,13 +30,9 @@ export default function MovieComments({movieId}) {
                 <h3>Komentarze</h3>
                 {comments.map(comment => (
                     <ListItem>
-                        <ListItemAvatar>
-                            <Avatar
-                                alt={`${comment.user.firstName} ${comment.user.lastName}`}
-                                src={'http://via.placeholder.com/100x100'}
-                            />
-                        </ListItemAvatar>
-
+                        <ListItemIcon>
+                            <AccountCircle fontSize="large" style={{ color: colors.common.white }} />
+                        </ListItemIcon>
 
                         <ListItemText
                             id={comment.id}

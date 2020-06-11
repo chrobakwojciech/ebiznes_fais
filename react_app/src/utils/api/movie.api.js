@@ -13,6 +13,17 @@ class MovieApi {
         return movies;
     }
 
+    async getForUser() {
+        let movies = [];
+        try {
+            movies = await API.get('/user/movies');
+            movies = movies.data;
+        } catch (e) {
+            console.error(e);
+        }
+        return movies;
+    }
+
     async getForGenre(genreId) {
         let movies = [];
         try {
@@ -22,6 +33,18 @@ class MovieApi {
             console.error(e);
         }
         return movies;
+    }
+
+    async getMovieGenre(movieId) {
+        let genres = [];
+        try {
+            genres = await API.get(`/movies/${movieId}/genres`);
+            genres = genres.data
+        } catch (e) {
+            console.error(e);
+        }
+
+        return genres;
     }
 
     async getMovieComments(movieId) {
@@ -88,6 +111,15 @@ class MovieApi {
             } else {
                 movie.rating = 0
             }
+        }
+    }
+
+    async addUserInfo(movies) {
+        let userMovies = await API.get('/user/movies');
+        const userMovieIds = userMovies.data.map(movie => movie.id);
+
+        for (let movie of movies) {
+            movie.isBought = !!userMovieIds.includes(movie.id);
         }
     }
 }

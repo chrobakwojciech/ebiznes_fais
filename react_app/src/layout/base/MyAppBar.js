@@ -28,8 +28,8 @@ export default function MyAppBar() {
     const logOutHandler = () => {
         setUserCtx({user: null, token: null});
         localStorage.removeItem('userCtx');
+        window.location.reload();
     };
-
 
     const UserInfoPanel = () => {
         if (userCtx.user) {

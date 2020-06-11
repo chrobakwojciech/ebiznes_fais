@@ -1,16 +1,17 @@
-import React from 'react';
-import Paper from "@material-ui/core/Paper/Paper";
+import React, {useContext, useState} from 'react';
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CardHeader from "@material-ui/core/CardHeader";
-import Box from "@material-ui/core/Box";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import TextField from "@material-ui/core/TextField";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
+import {UserContext} from "../../context/UserContext";
+import {authApi} from "../../utils/api/auth.api";
+import Alert from "@material-ui/lab/Alert/Alert";
+import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
 const useStyles = makeStyles(theme => ({
     cardHeader: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles(theme => ({
         marginBlockEnd: '24px'
     },
     formFieldText: {
-        color: theme.palette.text.primary
+        color: theme.palette.text.secondary
     },
     smallButton: {
         color: '#ccc'
@@ -45,9 +46,55 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignUp() {
     const classes = useStyles();
+    let history = useHistory();
+    const {setUserCtx} = useContext(UserContext);
+
+    const [formData, setFormData] = useState({
+        firstName: null,
+        lastName: null,
+        email: null,
+        password: null
+    });
+    const [error, setError] = useState(null);
+
+    const signUpHandler = async () => {
+        try {
+            const signUpRes = await authApi.signUp(formData);
+            const token = signUpRes.token;
+            const userMe = await authApi.me(token);
+            const ctx = { user: userMe, token: token };
+            localStorage.setItem('userCtx', JSON.stringify(ctx));
+            setUserCtx(ctx);
+            history.push('/');
+        } catch (e) {
+            setError('Błąd podczas rejestracji, spróbuj jeszcze raz');
+        }
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setError(null);
+    };
+
+    const onChangeHandler = (event) => {
+        const target = event.target;
+
+        setFormData({
+            ...formData,
+            [target.name]: target.value
+        });
+    };
 
     return (
         <Grid item xs={3}>
+            <Snackbar open={error} autoHideDuration={4000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    {error}
+                </Alert>
+            </Snackbar>
+
             <Card elevation={0}>
                 <CardHeader className={classes.cardHeader} title="Rejestracja"/>
                 <CardContent className={classes.cardContent}>
@@ -59,6 +106,9 @@ export default function SignUp() {
                             className={classes.formField}
                             fullWidth
                             required
+                            value={formData.firstName}
+                            onChange={onChangeHandler}
+                            name="firstName"
                             id="firstName"
                             label="Imię"
                         />
@@ -69,6 +119,9 @@ export default function SignUp() {
                             className={classes.formField}
                             fullWidth
                             required
+                            value={formData.lastName}
+                            name="lastName"
+                            onChange={onChangeHandler}
                             id="lastName"
                             label="Nazwisko"
                         />
@@ -79,6 +132,9 @@ export default function SignUp() {
                             className={classes.formField}
                             fullWidth
                             required
+                            value={formData.email}
+                            name="email"
+                            onChange={onChangeHandler}
                             id="email"
                             label="Adres e-mail"
                         />
@@ -89,6 +145,9 @@ export default function SignUp() {
                             }}
                             className={classes.formField}
                             fullWidth
+                            value={formData.password}
+                            name="password"
+                            onChange={onChangeHandler}
                             id="password"
                             label="Hasło"
                             type="password"
@@ -101,7 +160,7 @@ export default function SignUp() {
                         justify="space-between"
                         container
                     >
-                        <Grid item><Button variant="outlined" color="primary">Zarejestruj się</Button></Grid>
+                        <Grid item><Button onClick={signUpHandler} variant="outlined" color="primary">Zarejestruj się</Button></Grid>
                         <Grid item><Button className={classes.smallButton} component={Link} to="/logowanie">Przejdź do logowania</Button></Grid>
                     </Grid>
                 </CardActions>

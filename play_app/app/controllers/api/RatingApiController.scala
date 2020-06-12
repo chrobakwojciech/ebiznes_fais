@@ -1,16 +1,17 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
 import models.{Movie, Rating, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{MovieRepository, RatingRepository, UserRepository}
+import utils.auth.{JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 case class CreateRating(value: Int,
-                         user: String,
                          movie: String)
 
 object CreateRating {
@@ -18,17 +19,10 @@ object CreateRating {
 }
 
 
-case class UpdateRating(value: Option[Int],
-                         user: Option[String],
-                         movie: Option[String])
-
-object UpdateRating {
-  implicit val ratingFormat = Json.format[UpdateRating]
-}
-
-
 @Singleton
-class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository,
+                                    errorHandler: JsonErrorHandler,
+                                    silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val ratings: Future[Seq[(Rating, Movie, User)]] = ratingRepository.getAllWithMovieAndUser()
@@ -47,57 +41,28 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepo
     }
   }
 
-  def create() = Action(parse.json) { implicit request =>
+  def create() = silhouette.SecuredAction(errorHandler).async(parse.json) { implicit request =>
     val body = request.body
     body.validate[CreateRating].fold(
       errors => {
-        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
       rating => {
         // @FIXME
-        val userExist: Boolean = Await.result(userRepository.isExist(rating.user), Duration.Inf)
+        val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
         if (!userExist) {
-          BadRequest(Json.obj("message" -> "User does not exist"))
+          Future.successful(BadRequest(Json.obj("message" -> "User does not exist")))
         } else {
           val movieExist: Boolean = Await.result(movieRepository.isExist(rating.movie), Duration.Inf)
           if (!movieExist) {
-            BadRequest(Json.obj("message" -> "Movie does not exist"))
+            Future.successful(BadRequest(Json.obj("message" -> "Movie does not exist")))
           } else {
-            ratingRepository.create(rating.value, rating.user, rating.movie)
-            Ok(Json.obj("message" -> "Rating created"))
+            ratingRepository.create(rating.value, request.identity.id, rating.movie)
+            Future.successful(Ok(Json.obj("message" -> "Rating created")))
           }
         }
       }
     )
-  }
-
-  def update(id: String) = Action.async(parse.json) { implicit request =>
-    ratingRepository.getById(id) map {
-      case Some(r) => {
-        val body = request.body
-        body.validate[UpdateRating].fold(
-          errors => {
-            BadRequest(Json.obj("message" -> JsError.toJson(errors)))
-          },
-          rating => {
-            // @FIXME
-            val userExist: Boolean = Await.result(userRepository.isExist(rating.user.getOrElse(r.user)), Duration.Inf)
-            if (!userExist) {
-              BadRequest(Json.obj("message" -> "User does not exist"))
-            } else {
-              val movieExist: Boolean = Await.result(movieRepository.isExist(rating.movie.getOrElse(r.movie)), Duration.Inf)
-              if (!movieExist) {
-                BadRequest(Json.obj("message" -> "Movie does not exist"))
-              } else {
-                ratingRepository.update(id, rating.value.getOrElse(r.value), rating.user.getOrElse(r.user), rating.movie.getOrElse(r.movie))
-                Ok(Json.obj("message" -> "Rating updated"))
-              }
-            }
-          }
-        )
-      }
-      case None => NotFound(Json.obj("message" -> "Rating does not exist"))
-    }
   }
 
   def delete(id: String) = Action.async { implicit request =>

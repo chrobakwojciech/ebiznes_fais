@@ -1,16 +1,17 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
 import models.{Comment, Movie, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{CommentRepository, MovieRepository, UserRepository}
+import utils.auth.{JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 case class CreateComment(content: String,
-                       user: String,
                        movie: String)
 
 object CreateComment {
@@ -19,7 +20,6 @@ object CreateComment {
 
 
 case class UpdateComment(content: Option[String],
-                         user: Option[String],
                          movie: Option[String])
 
 object UpdateComment {
@@ -28,7 +28,9 @@ object UpdateComment {
 
 
 @Singleton
-class CommentApiController @Inject()(commentRepository: CommentRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class CommentApiController @Inject()(commentRepository: CommentRepository, userRepository: UserRepository, movieRepository: MovieRepository,
+                                     errorHandler: JsonErrorHandler,
+                                     silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val comments: Future[Seq[(Comment, Movie, User)]] = commentRepository.getAllWithMovieAndUser()
@@ -47,31 +49,31 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, userR
     }
   }
 
-  def create() = Action(parse.json) { implicit request =>
+  def create() = silhouette.SecuredAction(errorHandler).async(parse.json) { implicit request =>
     val body = request.body
     body.validate[CreateComment].fold(
       errors => {
-        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
       comment => {
         // @FIXME
-        val userExist: Boolean = Await.result(userRepository.isExist(comment.user), Duration.Inf)
+        val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
         if (!userExist) {
-          BadRequest(Json.obj("message" -> "User does not exist"))
+          Future.successful(BadRequest(Json.obj("message" -> "User does not exist")))
         } else {
           val movieExist: Boolean = Await.result(movieRepository.isExist(comment.movie), Duration.Inf)
           if (!movieExist) {
-            BadRequest(Json.obj("message" -> "Movie does not exist"))
+            Future.successful(BadRequest(Json.obj("message" -> "Movie does not exist")))
           } else {
-            commentRepository.create(comment.content, comment.user, comment.movie)
-            Ok(Json.obj("message" -> "Comment created"))
+            commentRepository.create(comment.content, request.identity.id, comment.movie)
+            Future.successful(Ok(Json.obj("message" -> "Comment created")))
           }
         }
       }
     )
   }
 
-  def update(id: String) = Action.async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(errorHandler).async(parse.json) { implicit request =>
     commentRepository.getById(id) map {
       case Some(c) => {
         val body = request.body
@@ -81,7 +83,7 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, userR
           },
           comment => {
             // @FIXME
-            val userExist: Boolean = Await.result(userRepository.isExist(comment.user.getOrElse(c.user)), Duration.Inf)
+            val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
             if (!userExist) {
               BadRequest(Json.obj("message" -> "User does not exist"))
             } else {
@@ -89,7 +91,7 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, userR
               if (!movieExist) {
                 BadRequest(Json.obj("message" -> "Movie does not exist"))
               } else {
-                commentRepository.update(id, comment.content.getOrElse(c.content), comment.user.getOrElse(c.user), comment.movie.getOrElse(c.movie))
+                commentRepository.update(id, comment.content.getOrElse(c.content), request.identity.id, comment.movie.getOrElse(c.movie))
                 Ok(Json.obj("message" -> "Comment updated"))
               }
             }

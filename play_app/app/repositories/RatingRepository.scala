@@ -45,8 +45,11 @@ class RatingRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
   }
 
   def create(value: Int, userId: String, movieId: String) = db.run {
-    val id: String = UUID.randomUUID().toString()
-    _rating.insertOrUpdate(Rating(id, value, userId, movieId));
+    val newId: String = UUID.randomUUID().toString()
+    _rating.filter(_.user === userId).filter(_.movie === movieId).result.headOption.flatMap {
+      case Some(r) => _rating.insertOrUpdate(Rating(r.id, value, userId, movieId));
+      case None => _rating.insertOrUpdate(Rating(newId, value, userId, movieId));
+    }
   }
 
   def delete(ratingId: String) = db.run {

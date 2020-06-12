@@ -21,6 +21,7 @@ GET         /api/user/movies                controllers.api.UserApiController.ge
 # Actors
 GET         /api/actors                     controllers.api.ActorApiController.getAll
 GET         /api/actors/:actorId            controllers.api.ActorApiController.get(actorId: String)
+GET         /api/actors/:actorId/movies     controllers.api.ActorApiController.getMovies(actorId: String)
 POST        /api/actors                     controllers.api.ActorApiController.create
 PUT         /api/actors/:actorId            controllers.api.ActorApiController.update(actorId: String)
 DELETE      /api/actors/:actorId            controllers.api.ActorApiController.delete(actorId: String)
@@ -58,7 +59,6 @@ DELETE      /api/comments/:commentId        controllers.api.CommentApiController
 GET         /api/ratings                    controllers.api.RatingApiController.getAll
 GET         /api/ratings/:ratingId          controllers.api.RatingApiController.get(ratingId: String)
 POST        /api/ratings                    controllers.api.RatingApiController.create
-PUT         /api/ratings/:ratingId          controllers.api.RatingApiController.update(ratingId: String)
 DELETE      /api/ratings/:ratingId          controllers.api.RatingApiController.delete(ratingId: String)
 
 # Movies

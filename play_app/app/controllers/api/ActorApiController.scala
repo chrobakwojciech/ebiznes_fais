@@ -3,7 +3,7 @@ package controllers.api
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.ActorRepository
+import repositories.{ActorRepository, MovieRepository}
 
 import scala.concurrent.ExecutionContext
 
@@ -28,7 +28,7 @@ object UpdateActor {
 
 
 @Singleton
-class ActorApiController @Inject()(actorRepository: ActorRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class ActorApiController @Inject()(actorRepository: ActorRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val actors = actorRepository.getAll();
@@ -40,6 +40,11 @@ class ActorApiController @Inject()(actorRepository: ActorRepository, cc: Message
       case Some(a) => Ok(Json.toJson(a))
       case None => NotFound(Json.obj("message" -> "Actor does not exist"))
     }
+  }
+
+  def getMovies(id: String) = Action.async { implicit request =>
+    val movies = movieRepository.getForActor(id)
+    movies.map(movie => Ok(Json.toJson(movie)))
   }
 
   def create() = Action(parse.json) { implicit request =>

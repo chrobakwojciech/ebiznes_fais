@@ -8,7 +8,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import TextField from "@material-ui/core/TextField";
 import {Link, useHistory} from "react-router-dom";
-import {UserContext} from "../../context/UserContext";
+import {UserContext} from "../../context/userContext/UserContext";
 import {authApi} from "../../utils/api/auth.api";
 import Alert from "@material-ui/lab/Alert/Alert";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";

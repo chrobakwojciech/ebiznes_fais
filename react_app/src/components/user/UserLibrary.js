@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Box, Grid} from '@material-ui/core';
 import {movieApi} from "./../../utils/api/movie.api";
-import {UserContext} from "./../../context/UserContext";
+import {UserContext} from "../../context/userContext/UserContext";
 import LibraryItem from "./LibraryItem";
 
 export default function UserLibrary() {

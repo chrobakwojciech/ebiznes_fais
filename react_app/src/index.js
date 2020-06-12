@@ -11,31 +11,35 @@ import AuthLayout from "./layout/AuthLayout";
 import AppRoute from "./utils/AppRoute";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
-import UserContextProvider from "./context/UserContextProvider";
+import UserContextProvider from "./context/userContext/UserContextProvider";
 import GenreMovies from "./components/genres/GenreMovies";
 import UserLibrary from "./components/user/UserLibrary";
 import ActorMovies from "./components/actors/ActorMovies";
 import NotFound from "./layout/NotFound";
+import BasketContextProvider from "./context/basketContext/BasketContextProvider";
+import BasketDebug from "./components/basket/BasketDebug";
 
 const routing = (
     <ThemeProvider theme={theme}>
         <CssBaseline/>
         <UserContextProvider>
-            <BrowserRouter>
-                <Switch>
-                    <AppRoute exact path="/" component={MovieGrid} layout={BaseLayout}/>
-                    <AppRoute path="/gatunek/:genreName" component={GenreMovies} layout={BaseLayout}/>
-                    <AppRoute path="/filmy/:movieId" component={Movie} layout={BaseLayout}/>
-                    <AppRoute path="/aktor/:actorId" component={ActorMovies} layout={BaseLayout}/>
+            <BasketContextProvider>
+                <BrowserRouter>
+                    <Switch>
+                        <AppRoute exact path="/" component={MovieGrid} layout={BaseLayout}/>
+                        <AppRoute path="/gatunek/:genreName" component={GenreMovies} layout={BaseLayout}/>
+                        <AppRoute path="/filmy/:movieId" component={Movie} layout={BaseLayout}/>
+                        <AppRoute path="/aktor/:actorId" component={ActorMovies} layout={BaseLayout}/>
+                        <AppRoute path="/biblioteka" component={UserLibrary} layout={BaseLayout}/>
+                        <AppRoute path="/koszyk" component={BasketDebug} layout={BaseLayout}/>
 
-                    <AppRoute path="/biblioteka" component={UserLibrary} layout={BaseLayout}/>
-
-                    <AppRoute exact path="/logowanie" component={Login} layout={AuthLayout}/>
-                    <AppRoute exact path="/rejestracja" component={SignUp} layout={AuthLayout}/>
-                    <AppRoute exact path="/404" component={NotFound} layout={AuthLayout}/>
-                    <Redirect to="/404"/>
-                </Switch>
-            </BrowserRouter>
+                        <AppRoute exact path="/logowanie" component={Login} layout={AuthLayout}/>
+                        <AppRoute exact path="/rejestracja" component={SignUp} layout={AuthLayout}/>
+                        <AppRoute exact path="/404" component={NotFound} layout={AuthLayout}/>
+                        <Redirect to="/404"/>
+                    </Switch>
+                </BrowserRouter>
+            </BasketContextProvider>
         </UserContextProvider>
     </ThemeProvider>
 );

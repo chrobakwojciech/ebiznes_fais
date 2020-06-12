@@ -5,10 +5,13 @@ import Button from "@material-ui/core/Button";
 import {Link, useHistory} from "react-router-dom";
 import React, {useContext} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {UserContext} from "../../context/UserContext";
+import {UserContext} from "../../context/userContext/UserContext";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import MailIcon from '@material-ui/icons/Mail';
+import {BasketContext} from "../../context/basketContext/BasketContext";
+import {ShoppingCart} from "@material-ui/icons";
+import AppBarBasket from "./AppBarBasket";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 export default function MyAppBar() {
     const classes = useStyles();
     const {userCtx, setUserCtx} = useContext(UserContext);
+    const {getBasketMovies} = useContext(BasketContext);
+
     let history = useHistory();
 
     const logOutHandler = () => {
@@ -37,17 +42,16 @@ export default function MyAppBar() {
             return (
                 <>
                     <Typography variant="button">{userCtx.user.firstName} {userCtx.user.lastName}</Typography>
-                    <IconButton aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <MailIcon />
-                        </Badge>
-                    </IconButton>
+                    <AppBarBasket/>
                     <Button color="inherit" onClick={logOutHandler}>Wyloguj się</Button>
                 </>
             )
         } else {
             return (
-                <Button color="inherit" component={Link} to="/logowanie">Zaloguj się</Button>
+                <>
+                    <AppBarBasket/>
+                    <Button color="inherit" component={Link} to="/logowanie">Zaloguj się</Button>
+                </>
             )
         }
     };

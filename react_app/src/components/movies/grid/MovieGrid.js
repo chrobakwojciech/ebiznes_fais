@@ -5,7 +5,7 @@ import Button from "@material-ui/core/Button";
 import * as _ from 'lodash';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {movieApi} from "../../../utils/api/movie.api";
-import {UserContext} from "../../../context/UserContext";
+import {UserContext} from "../../../context/userContext/UserContext";
 
 export default function MovieGrid() {
     const [movies, setMovies] = useState([]);

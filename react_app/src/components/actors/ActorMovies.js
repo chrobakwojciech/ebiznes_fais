@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {actorApi} from "../../utils/api/actor.api";
 import {movieApi} from "../../utils/api/movie.api";
-import {UserContext} from "../../context/UserContext";
+import {UserContext} from "../../context/userContext/UserContext";
 
 export default function ActorMovies() {
     const [movies, setMovies] = useState([]);

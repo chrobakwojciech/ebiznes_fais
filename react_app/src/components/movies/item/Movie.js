@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import API from "../../../utils/api/API";
 import {useParams, useHistory} from "react-router-dom";
 import Box from "@material-ui/core/Box";
@@ -10,6 +10,7 @@ import MovieDirectors from "./MovieDirectors";
 import MovieActors from "./MovieActors";
 import MovieControl from "./MovieControl";
 import {movieApi} from "../../../utils/api/movie.api";
+import {BasketContext} from "../../../context/basketContext/BasketContext";
 
 export default function Movie(props) {
     const [movie, setMovie] = useState({});

@@ -9,7 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import Chip from "@material-ui/core/Chip";
 import API from "../../utils/api/API";
 import {movieApi} from "../../utils/api/movie.api";
-import {UserContext} from "../../context/UserContext";
+import {UserContext} from "../../context/userContext/UserContext";
 
 
 const useStyles = makeStyles({

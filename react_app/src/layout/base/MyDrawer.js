@@ -12,7 +12,7 @@ import Divider from "@material-ui/core/Divider";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Drawer from "@material-ui/core/Drawer/Drawer";
 import {genreApi} from "../../utils/api/genre.api";
-import {UserContext} from "../../context/UserContext";
+import {UserContext} from "../../context/userContext/UserContext";
 
 const drawerWidth = 240;
 
@@ -68,6 +68,10 @@ export default function MyDrawer() {
                         <ListItem button component={NavLink} exact={true} to="/biblioteka">
                             <ListItemIcon><VideoLibrary style={{ color: colors.common.white }}/></ListItemIcon>
                             <ListItemText primary="Biblioteka" />
+                        </ListItem>
+                        <ListItem button component={NavLink} exact={true} to="/koszyk">
+                            <ListItemIcon><VideoLibrary style={{ color: colors.common.white }}/></ListItemIcon>
+                            <ListItemText primary="Koszyk" />
                         </ListItem>
                     </List>
                 </>

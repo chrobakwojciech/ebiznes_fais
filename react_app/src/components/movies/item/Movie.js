@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import API from "../../../utils/api/API";
-import {useParams} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Rating from "@material-ui/lab/Rating/Rating";
@@ -8,6 +8,8 @@ import MovieComments from "./MovieComments";
 import MovieRatings from "./MovieRatings";
 import MovieDirectors from "./MovieDirectors";
 import MovieActors from "./MovieActors";
+import MovieControl from "./MovieControl";
+import {movieApi} from "../../../utils/api/movie.api";
 
 export default function Movie(props) {
     const [movie, setMovie] = useState({});
@@ -17,12 +19,20 @@ export default function Movie(props) {
 
     const urlParams = useParams();
     const movieId = urlParams.movieId;
+    let history = useHistory();
 
     useEffect(() => {
         const fetchData = async () => {
             const url = `/movies/${urlParams.movieId}`;
-            let res = await API.get(url);
-            setMovie(res.data);
+            let res;
+            try {
+                res = await movieApi.getById(movieId);
+                setMovie(res);
+            } catch (e) {
+                history.push('/');
+                return
+            }
+
 
             res = await API.get(`${url}/genres`);
             setGenres(res.data);
@@ -39,23 +49,8 @@ export default function Movie(props) {
         };
 
         fetchData();
-    }, [urlParams.movieId]);
+    }, [history, movieId, urlParams.movieId]);
 
-
-    const onRatingChange = async (event, value) => {
-        await API.post('/ratings', {
-            value: value,
-            user: '1',
-            movie: movie.id
-        });
-        let res = await API.get(`/movies/${movie.id}/ratings`);
-        let ratings = res.data;
-        setRatings(ratings);
-        if (ratings.length > 0) {
-            const sum = ratings.reduce((a, b) => +a + +b.value, 0);
-            setRating(sum/ratings.length)
-        }
-    };
 
     return (
         <Box>
@@ -67,10 +62,11 @@ export default function Movie(props) {
             >
                 <Grid item xs={3}>
                     <img width="100%" src={movie.img}/>
+                    <MovieControl movieId={movieId} movieTitle={movie.title}/>
                 </Grid>
                 <Grid item xs={5}>
                     <h1>{movie.title}</h1>
-                    <Rating onChange={onRatingChange} value={rating} max={10} size="small" />
+                    <Rating value={rating} max={10} readOnly/>
                     <p>{movie.description}</p>
                 </Grid>
                 <Grid item xs={4}>

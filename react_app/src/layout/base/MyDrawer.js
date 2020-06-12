@@ -5,7 +5,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon/ListItemIcon";
-import {Apps, VideoLibrary, Movie, ArrowForwardIos, AccountBox, ChevronRight} from "@material-ui/icons";
+import {AccountBox, Apps, ChevronRight, VideoLibrary} from "@material-ui/icons";
 import * as colors from "@material-ui/core/colors";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Divider from "@material-ui/core/Divider";

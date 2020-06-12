@@ -2,7 +2,7 @@ import AppBar from "@material-ui/core/AppBar/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import React, {useContext} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {UserContext} from "../../context/UserContext";
@@ -24,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
 export default function MyAppBar() {
     const classes = useStyles();
     const {userCtx, setUserCtx} = useContext(UserContext);
+    let history = useHistory();
 
     const logOutHandler = () => {
         setUserCtx({user: null, token: null});
         localStorage.removeItem('userCtx');
-        window.location.reload();
+        history.push('/');
     };
 
     const UserInfoPanel = () => {

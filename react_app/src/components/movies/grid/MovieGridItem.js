@@ -6,7 +6,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Link} from 'react-router-dom';
 import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
-import {AttachMoney, CheckCircle} from "@material-ui/icons"
+import {CheckCircle} from "@material-ui/icons"
 
 
 const useStyles = makeStyles({

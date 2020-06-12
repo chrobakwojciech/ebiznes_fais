@@ -13,6 +13,15 @@ class MovieApi {
         return movies;
     }
 
+    async getById(movieId) {
+        try {
+            const movie = await API.get(`/movies/${movieId}`);
+            return movie.data
+        } catch (e) {
+            throw new Error('nie ma')
+        }
+    }
+
     async getForUser() {
         let movies = [];
         try {
@@ -28,6 +37,17 @@ class MovieApi {
         let movies = [];
         try {
             movies = await API.get(`/genres/${genreId}/movies`);
+            movies = movies.data;
+        } catch (e) {
+            console.error(e);
+        }
+        return movies;
+    }
+
+    async getForActor(actorId) {
+        let movies = [];
+        try {
+            movies = await API.get(`/actors/${actorId}/movies`);
             movies = movies.data;
         } catch (e) {
             console.error(e);

@@ -12,7 +12,6 @@ import {UserContext} from "../../context/UserContext";
 import {authApi} from "../../utils/api/auth.api";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import API from "../../utils/api/API";
 
 const useStyles = makeStyles(theme => ({
     card: {

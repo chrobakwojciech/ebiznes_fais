@@ -4,6 +4,7 @@ import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import React, {useEffect, useState} from "react";
 import {movieApi} from "../../../utils/api/movie.api";
+import {NavLink} from "react-router-dom";
 
 export default function MovieActors({movieId}) {
     const [actors, setActors] = useState([]);
@@ -19,7 +20,7 @@ export default function MovieActors({movieId}) {
         <>
             <h3>Obsada</h3>
             {actors.map(actor => (
-                <ListItem button>
+                <ListItem button component={NavLink} exact={true} to={`/aktor/${actor.id}`}>
                     <ListItemAvatar>
                         <Avatar
                             alt={`${actor.firstName} ${actor.lastName}`}

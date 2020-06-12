@@ -65,6 +65,7 @@ export default function LibraryItem(props) {
     const [genres, setGenres] = useState([]);
     const [actors, setActors] = useState([]);
     const [directors, setDirectors] = useState([]);
+    const [rating, setRating] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,15 +75,34 @@ export default function LibraryItem(props) {
             if (userCtx.user) {
                 const ratings = await movieApi.getMovieRatings(movie.id);
                 const userRatings = ratings.filter(rating => rating.user.id === userCtx.user.id);
-                movie.rating = userRatings[0] || null;
+                if (userRatings.length > 0) {
+                    setRating(userRatings[0].value)
+                }
             }
         };
 
         fetchData();
-    }, []);
+    }, [rating]);
 
     const handleGenreClick = (genreName) => {
         history.push(`/gatunek/${genreName.toLowerCase()}`);
+    };
+
+    const handleActorClick = (actorId) => {
+        history.push(`/aktor/${actorId}`);
+    };
+
+    const handleDirectorClick = (directorId) => {
+        history.push(`/rezyser/${directorId}`);
+    };
+
+
+    const onRatingChange = async (event, value) => {
+        await API.post('/ratings', {
+            value: value,
+            movie: movie.id
+        });
+        setRating(value)
     };
 
     return (
@@ -90,7 +110,10 @@ export default function LibraryItem(props) {
             <Paper elevation={0} className={classes.gridItem}>
                 <Grid container spacing={3}>
                     <Grid item xs={2}>
-                        <img className={classes.movieImg} src={movie.img} alt={movie.title}/>
+                        <Link to={{ pathname: `/filmy/${movie.id}`}}>
+                            <img className={classes.movieImg} src={movie.img} alt={movie.title}/>
+                        </Link>
+
                     </Grid>
                     <Grid item xs={6}>
                         <Box>
@@ -101,27 +124,27 @@ export default function LibraryItem(props) {
                                     <Typography component="span" className={classes.movieProductionYear} variant="subtitle1">{movie.productionYear}</Typography>
                                     <Box component="span" className={classes.genres}>
                                         {genres.map(genre => (
-                                            <Chip size="small" onClick={() => handleGenreClick(genre.name)} className={classes.genre} variant="outlined" color="secondary" label={genre.name} />
+                                            <Chip size="small" key={genre.id} onClick={() => handleGenreClick(genre.name)} className={classes.genre} variant="outlined" color="secondary" label={genre.name} />
                                         ))}
                                     </Box>
                                 </Box>
                                 <Box>
-                                    <Rating defaultValue={movie.rating} max={10} readOnly />
+                                    <Rating name={movie.title} onChange={onRatingChange} value={rating}  defaultValue={2} max={10} />
                                 </Box>
                             </Box>
                             <Box>
-                                <Typography className={classes.movieDescription} component="p" variant="p">{movie.description}</Typography>
+                                <Typography className={classes.movieDescription}>{movie.description}</Typography>
                                 <Divider />
                                 <Box className={classes.directors}>
                                     <Typography component="span" variant="subtitle2">Reżyseria: </Typography>
                                     {directors.map(director => (
-                                        <Chip onClick={() => handleGenreClick('1')} className={classes.director} variant="outlined" label={`${director.firstName} ${director.lastName}`} />
+                                        <Chip key={director.id} onClick={() => handleDirectorClick(director.id)} className={classes.director} variant="outlined" label={`${director.firstName} ${director.lastName}`} />
                                     ))}
                                 </Box>
                                 <Box className={classes.actors}>
                                     <Typography component="span" variant="subtitle2">Obsada: </Typography>
                                     {actors.map(actor => (
-                                        <Chip onClick={() => handleGenreClick('1')} className={classes.actor} variant="outlined" label={`${actor.firstName} ${actor.lastName}`} />
+                                        <Chip key={actor.id} onClick={() => handleActorClick(actor.id)} className={classes.actor} variant="outlined" label={`${actor.firstName} ${actor.lastName}`} />
                                     ))}
                                 </Box>
                             </Box>

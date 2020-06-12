@@ -1,9 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Box, Grid} from '@material-ui/core';
-import MovieGridItem from "./../movies/grid/MovieGridItem";
-import Button from "@material-ui/core/Button";
-import * as _ from 'lodash';
-import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {movieApi} from "./../../utils/api/movie.api";
 import {UserContext} from "./../../context/UserContext";
 import LibraryItem from "./LibraryItem";
@@ -23,7 +19,7 @@ export default function UserLibrary() {
         };
 
         fetchData();
-    }, []);
+    }, [userCtx.user]);
 
 
     return (

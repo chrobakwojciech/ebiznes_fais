@@ -1,6 +1,4 @@
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import React, {useEffect, useState} from "react";
 import Typography from "@material-ui/core/Typography";
@@ -8,26 +6,34 @@ import {movieApi} from "../../../utils/api/movie.api";
 import {AccountCircle} from "@material-ui/icons";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import * as colors from "@material-ui/core/colors";
+import * as _ from 'lodash'
+import AddMovieComment from "./AddMovieComment";
 
 
 export default function MovieComments({movieId}) {
     const [comments, setComments] = useState([]);
 
+    const fetchData = async () => {
+        let comments = await movieApi.getMovieComments(movieId);
+        setComments(_.reverse(comments));
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            let comments = await movieApi.getMovieComments(movieId);
-            setComments(comments);
-        };
         fetchData();
-    }, [movieId]);
+    }, []);
+
     if (comments.length === 0) {
         return (
-            <h3>Brak komentarzy</h3>
+            <>
+                <h3>Brak komentarzy</h3>
+                <AddMovieComment movieId={movieId} refreshHandler={fetchData}/>
+            </>
         )
     } else {
         return (
             <>
                 <h3>Komentarze</h3>
+                <AddMovieComment movieId={movieId} refreshHandler={fetchData}/>
                 {comments.map(comment => (
                     <ListItem>
                         <ListItemIcon>

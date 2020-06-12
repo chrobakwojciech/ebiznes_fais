@@ -1,14 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Box, Grid} from '@material-ui/core';
 import MovieGridItem from "./../movies/grid/MovieGridItem";
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import * as _ from 'lodash';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {genreApi} from "../../utils/api/genre.api";
 import {movieApi} from "../../utils/api/movie.api";
 import {UserContext} from "../../context/UserContext";
-import {useHistory} from "react-router-dom";
 
 export default function GenreMovies() {
     const [movies, setMovies] = useState([]);
@@ -23,17 +22,17 @@ export default function GenreMovies() {
             const genre = genres.find(genre => genre.name.toLowerCase() === urlParams.genreName);
 
             if (!genre) {
-                history.push('/')
-            } else {
-                let movies = await movieApi.getForGenre(genre.id);
-                setGridTitle(genre.name);
-
-                await movieApi.addRatings(movies);
-                if (userCtx.user) {
-                    await movieApi.addUserInfo(movies)
-                }
-                setMovies(movies);
+                history.push('/');
+                return
             }
+            let movies = await movieApi.getForGenre(genre.id);
+            setGridTitle(genre.name);
+
+            await movieApi.addRatings(movies);
+            if (userCtx.user) {
+                await movieApi.addUserInfo(movies)
+            }
+            setMovies(movies);
         };
 
         fetchData();

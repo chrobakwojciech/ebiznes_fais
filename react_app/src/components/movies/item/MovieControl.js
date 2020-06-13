@@ -11,6 +11,8 @@ import {createMuiTheme} from "@material-ui/core";
 import {ThemeProvider} from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import {blue, red} from "@material-ui/core/colors";
+import {NavLink} from "react-router-dom";
+import ListItem from "@material-ui/core/ListItem";
 
 const basketButtonTheme = createMuiTheme({
     palette: {
@@ -57,7 +59,7 @@ export default function MovieControl({movieId, movieTitle}) {
                             <Button onClick={() => removeMovieFromBasket(movieId)} startIcon={<DeleteForever />} fullWidth variant="contained" color="secondary">Usuń</Button>
                         </Grid>
                         <Grid item xs={9}>
-                            <Button startIcon={<LibraryAddCheck />} fullWidth variant="contained" color="primary">
+                            <Button startIcon={<LibraryAddCheck />} fullWidth variant="contained" color="primary" component={NavLink} exact={true} to="/koszyk">
                                 Przejdź do koszyka
                             </Button>
                         </Grid>

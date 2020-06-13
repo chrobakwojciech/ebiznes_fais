@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 const initialBasketCtx = JSON.parse(localStorage.getItem('basketCtx')) || {
     movies: [],
-    payment: null
+    payment: "1"
 };
 
 export default function BasketContextProvider({children}) {
@@ -30,6 +30,15 @@ export default function BasketContextProvider({children}) {
             setBasket(val);
             setLocalStorage(val);
         }
+    };
+
+    const removeAllMoviesFromBasket = () => {
+        const val = {
+            payment: '1',
+            movies: []
+        };
+        setBasket(val);
+        setLocalStorage(val);
     };
 
     const setPayment = (paymentId) => {
@@ -58,7 +67,8 @@ export default function BasketContextProvider({children}) {
         addMovieToBasket,
         removeMovieFromBasket,
         setPayment,
-        isMovieAlreadyAdded
+        isMovieAlreadyAdded,
+        removeAllMoviesFromBasket
     };
 
     return (

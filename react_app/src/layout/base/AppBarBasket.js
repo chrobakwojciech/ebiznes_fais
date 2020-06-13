@@ -49,7 +49,7 @@ export default function AppBarBasket() {
             for (let movie of movies) {
                 sum += +(movie.price);
             }
-            setBasketPrice(sum);
+            setBasketPrice(sum.toFixed(2));
             setBasketMovies(movies);
         };
         fetchData();
@@ -94,9 +94,9 @@ export default function AppBarBasket() {
                         </Box>
                     </ListItem>
                 ))}
-                <ListItem style={{width: '320px'}} role={undefined} dense button >
+                <ListItem style={{width: '320px'}} role={undefined} dense button component={NavLink} exact={true} to={`/koszyk`}>
 
-                    <ListItemText primary="Podsumowanie" />
+                    <ListItemText primary="Podsumowanie"/>
                     <Chip color="primary" label={`${basketPrice} zł`} />
                 </ListItem>
             </StyledMenu>

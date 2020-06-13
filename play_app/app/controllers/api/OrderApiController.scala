@@ -1,16 +1,17 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
 import models.{Order, Payment, User}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
+import utils.auth.{JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-case class CreateOrder(user: String,
-                       payment: String,
+case class CreateOrder(payment: String,
                        movies: Seq[String])
 
 object CreateOrder {
@@ -31,7 +32,9 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
                                    movieRepository: MovieRepository,
                                    userRepository: UserRepository,
                                    paymentRepository: PaymentRepository,
-                                   cc: MessagesControllerComponents
+                                   cc: MessagesControllerComponents,
+                                   errorHandler: JsonErrorHandler,
+                                   silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
@@ -58,12 +61,12 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
     }
   }
 
-  def create() = Action(parse.json) { request =>
+  def create() = silhouette.SecuredAction(errorHandler).async(parse.json) { request =>
     val body = request.body
 
     body.validate[CreateOrder].fold(
       errors => {
-        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
       order => {
         var invalidMovies: Seq[String] = Seq()
@@ -72,21 +75,21 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
             invalidMovies = invalidMovies :+ m
           }
         }
-        val isUserExist: Boolean = Await.result(userRepository.isExist(order.user), Duration.Inf)
+        val isUserExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
         val isPaymentExist: Boolean = Await.result(paymentRepository.isExist(order.payment), Duration.Inf)
 
         val valid: Boolean = invalidMovies.isEmpty && isUserExist && isPaymentExist
         if (!valid) {
           if (!isUserExist) {
-            BadRequest(Json.obj("message" -> "User does not exist"))
+            Future.successful(BadRequest(Json.obj("message" -> "User does not exist")))
           } else if (!isPaymentExist) {
-            BadRequest(Json.obj("message" -> "Payment does not exist"))
+            Future.successful(BadRequest(Json.obj("message" -> "Payment does not exist")))
           } else {
-            BadRequest(Json.obj("invalid_movies" -> invalidMovies))
+            Future.successful(BadRequest(Json.obj("invalid_movies" -> invalidMovies)))
           }
         } else {
-          orderRepository.create(order.user, order.payment, order.movies)
-          Ok(Json.obj("message" -> "Order created"))
+          orderRepository.create(request.identity.id, order.payment, order.movies)
+          Future.successful(Ok(Json.obj("message" -> "Order created")))
         }
       }
     )

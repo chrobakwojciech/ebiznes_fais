@@ -2,11 +2,11 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Order, Payment, User}
+import models.{Order, Payment, User, UserRoles}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
-import utils.auth.{JsonErrorHandler, JwtEnv}
+import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -37,7 +37,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
                                    silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
-  def getAll: Action[AnyContent] = Action.async { implicit request =>
+  def getAll: Action[AnyContent] = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     val orders: Future[Seq[(Order, Payment, User, Double)]] = orderRepository.getAllWithPaymentAndUser()
     orders.map(orders => {
       val newOrder = orders.map {
@@ -47,7 +47,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
     })
   }
 
-  def get(id: String) = Action.async { implicit request =>
+  def get(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     orderRepository.getByIdWithUserAndPayment(id) map {
       case Some(order) => {
         val orderItems = Await.result(orderRepository.getOrderItemsWithMovie(id), Duration.Inf)
@@ -96,7 +96,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
   }
 
 
-  def update(id: String) = Action.async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async(parse.json) { implicit request =>
     orderRepository.getById(id) map {
       case Some(o) => {
         val body = request.body
@@ -140,7 +140,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
     }
   }
 
-  def delete(id: String) = Action.async { implicit request =>
+  def delete(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     orderRepository.getById(id) map {
       case Some(o) => {
         orderRepository.delete(id)

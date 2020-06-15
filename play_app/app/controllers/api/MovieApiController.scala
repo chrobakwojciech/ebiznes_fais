@@ -97,8 +97,8 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
     })
   }
 
-  def create() = Action(parse.json) { request =>
-    val body = request.body
+  def create() = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)) { request =>
+    val body = request.body.asJson.get
 
     body.validate[CreateMovie].fold(
       errors => {
@@ -136,7 +136,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
     )
   }
 
-  def update(id: String) = Action.async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async(parse.json) { implicit request =>
     movieRepository.getById(id) map {
       case Some(m) => {
         val body = request.body
@@ -200,7 +200,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
     }
   }
 
-  def delete(id: String) = Action.async { implicit request =>
+  def delete(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     movieRepository.getById(id) map {
       case Some(m) => {
         movieRepository.delete(id)

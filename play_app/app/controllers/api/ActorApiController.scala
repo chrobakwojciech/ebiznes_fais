@@ -1,9 +1,12 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
+import models.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{ActorRepository, MovieRepository}
+import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.ExecutionContext
 
@@ -28,7 +31,13 @@ object UpdateActor {
 
 
 @Singleton
-class ActorApiController @Inject()(actorRepository: ActorRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class ActorApiController @Inject()(
+                                    actorRepository: ActorRepository,
+                                    movieRepository: MovieRepository,
+                                    errorHandler: JsonErrorHandler,
+                                    silhouette: Silhouette[JwtEnv],
+                                    cc: MessagesControllerComponents
+                                  )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val actors = actorRepository.getAll();
@@ -47,8 +56,8 @@ class ActorApiController @Inject()(actorRepository: ActorRepository, movieReposi
     movies.map(movie => Ok(Json.toJson(movie)))
   }
 
-  def create() = Action(parse.json) { implicit request =>
-    val body = request.body
+  def create() = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)) { implicit request =>
+    val body = request.body.asJson.get
     body.validate[CreateActor].fold(
       errors => {
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
@@ -60,10 +69,10 @@ class ActorApiController @Inject()(actorRepository: ActorRepository, movieReposi
     )
   }
 
-  def update(id: String) = Action.async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     actorRepository.getById(id) map {
       case Some(u) => {
-        val body = request.body
+        val body = request.body.asJson.get
         body.validate[UpdateActor].fold(
           errors => {
             BadRequest(Json.obj("message" -> JsError.toJson(errors)))
@@ -78,7 +87,7 @@ class ActorApiController @Inject()(actorRepository: ActorRepository, movieReposi
     }
   }
 
-  def delete(id: String) = Action.async { implicit request =>
+  def delete(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     actorRepository.getById(id) map {
       case Some(u) => {
         actorRepository.delete(id)

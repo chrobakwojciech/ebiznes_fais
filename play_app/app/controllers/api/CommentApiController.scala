@@ -2,11 +2,11 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Comment, Movie, User}
+import models.{Comment, Movie, User, UserRoles}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{CommentRepository, MovieRepository, UserRepository}
-import utils.auth.{JsonErrorHandler, JwtEnv}
+import utils.auth.{JsonErrorHandler, JwtEnv, RoleCookieAuthorization, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -28,9 +28,13 @@ object UpdateComment {
 
 
 @Singleton
-class CommentApiController @Inject()(commentRepository: CommentRepository, userRepository: UserRepository, movieRepository: MovieRepository,
+class CommentApiController @Inject()(commentRepository: CommentRepository,
+                                     userRepository: UserRepository,
+                                     movieRepository: MovieRepository,
                                      errorHandler: JsonErrorHandler,
-                                     silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+                                     silhouette: Silhouette[JwtEnv],
+                                     cc: MessagesControllerComponents
+                                    )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val comments: Future[Seq[(Comment, Movie, User)]] = commentRepository.getAllWithMovieAndUser()
@@ -49,31 +53,31 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, userR
     }
   }
 
-  def create() = silhouette.SecuredAction(errorHandler).async(parse.json) { implicit request =>
-    val body = request.body
+  def create() = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.User)) { implicit request =>
+    val body = request.body.asJson.get
     body.validate[CreateComment].fold(
       errors => {
-        Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       comment => {
         // @FIXME
         val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
         if (!userExist) {
-          Future.successful(BadRequest(Json.obj("message" -> "User does not exist")))
+          BadRequest(Json.obj("message" -> "User does not exist"))
         } else {
           val movieExist: Boolean = Await.result(movieRepository.isExist(comment.movie), Duration.Inf)
           if (!movieExist) {
-            Future.successful(BadRequest(Json.obj("message" -> "Movie does not exist")))
+            BadRequest(Json.obj("message" -> "Movie does not exist"))
           } else {
             commentRepository.create(comment.content, request.identity.id, comment.movie)
-            Future.successful(Ok(Json.obj("message" -> "Comment created")))
+            Ok(Json.obj("message" -> "Comment created"))
           }
         }
       }
     )
   }
 
-  def update(id: String) = silhouette.SecuredAction(errorHandler).async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.User)).async(parse.json) { implicit request =>
     commentRepository.getById(id) map {
       case Some(c) => {
         val body = request.body
@@ -102,7 +106,7 @@ class CommentApiController @Inject()(commentRepository: CommentRepository, userR
     }
   }
 
-  def delete(id: String) = Action.async { implicit request =>
+  def delete(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     commentRepository.getById(id) map {
       case Some(c) => {
         commentRepository.delete(id)

@@ -2,11 +2,11 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Rating, User}
+import models.{Movie, Rating, User, UserRoles}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{MovieRepository, RatingRepository, UserRepository}
-import utils.auth.{JsonErrorHandler, JwtEnv}
+import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -65,7 +65,7 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepo
     )
   }
 
-  def delete(id: String) = Action.async { implicit request =>
+  def delete(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     ratingRepository.getById(id) map {
       case Some(r) => {
         ratingRepository.delete(id)

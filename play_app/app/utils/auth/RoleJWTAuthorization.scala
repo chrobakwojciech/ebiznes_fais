@@ -1,6 +1,5 @@
 package utils.auth
 
-import com.atlassian.jwt.core.http.auth.JwtAuthenticator
 import com.mohiva.play.silhouette.api.{Authenticator, Authorization}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, JWTAuthenticator}
 import models.{User, UserRoles}

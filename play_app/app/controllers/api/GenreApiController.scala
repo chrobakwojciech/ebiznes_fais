@@ -1,9 +1,12 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
+import models.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{GenreRepository, MovieRepository}
+import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.ExecutionContext
 
@@ -22,7 +25,13 @@ object UpdateGenre {
 
 
 @Singleton
-class GenreApiController @Inject()(genreRepository: GenreRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class GenreApiController @Inject()(
+                                    genreRepository: GenreRepository,
+                                    movieRepository: MovieRepository,
+                                    errorHandler: JsonErrorHandler,
+                                    silhouette: Silhouette[JwtEnv],
+                                    cc: MessagesControllerComponents
+                                  )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val genres = genreRepository.getAll()
@@ -41,8 +50,8 @@ class GenreApiController @Inject()(genreRepository: GenreRepository, movieReposi
     }
   }
 
-  def create() = Action(parse.json) { implicit request =>
-    val body = request.body
+  def create() = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)) { implicit request =>
+    val body = request.body.asJson.get
     body.validate[CreateGenre].fold(
       errors => {
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
@@ -54,7 +63,7 @@ class GenreApiController @Inject()(genreRepository: GenreRepository, movieReposi
     )
   }
 
-  def update(id: String) = Action.async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async(parse.json) { implicit request =>
     genreRepository.getById(id) map {
       case Some(g) => {
         val body = request.body
@@ -72,7 +81,7 @@ class GenreApiController @Inject()(genreRepository: GenreRepository, movieReposi
     }
   }
 
-  def delete(id: String) = Action.async { implicit request =>
+  def delete(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     genreRepository.getById(id) map {
       case Some(g) => {
         genreRepository.delete(id)

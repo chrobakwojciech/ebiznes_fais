@@ -1,9 +1,12 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
+import models.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.DirectorRepository
+import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.ExecutionContext
 
@@ -28,7 +31,11 @@ object UpdateDirector {
 
 
 @Singleton
-class DirectorApiController @Inject()(directorRepository: DirectorRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class DirectorApiController @Inject()(
+                                       directorRepository: DirectorRepository,
+                                       errorHandler: JsonErrorHandler,
+                                       silhouette: Silhouette[JwtEnv],
+                                       cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val directors = directorRepository.getAll()
@@ -42,8 +49,8 @@ class DirectorApiController @Inject()(directorRepository: DirectorRepository, cc
     }
   }
 
-  def create() = Action(parse.json) { implicit request =>
-    val body = request.body
+  def create() = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)) { implicit request =>
+    val body = request.body.asJson.get
     body.validate[CreateDirector].fold(
       errors => {
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
@@ -55,10 +62,10 @@ class DirectorApiController @Inject()(directorRepository: DirectorRepository, cc
     )
   }
 
-  def update(id: String) = Action.async(parse.json) { implicit request =>
+  def update(id: String) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     directorRepository.getById(id) map {
       case Some(d) => {
-        val body = request.body
+        val body = request.body.asJson.get
         body.validate[UpdateDirector].fold(
           errors => {
             BadRequest(Json.obj("message" -> JsError.toJson(errors)))

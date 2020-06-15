@@ -11,8 +11,11 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 ##### API #########
 # Auth
++nocsrf
 POST        /api/auth/signup                controllers.api.AuthenticationApiController.signUp
++nocsrf
 POST        /api/auth/signin                controllers.api.AuthenticationApiController.signIn
++nocsrf
 GET         /api/auth/me                    controllers.api.AuthenticationApiController.me
 
 # User

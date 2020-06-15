@@ -37,16 +37,14 @@ object SignIn {
 class AuthenticationApiController @Inject()(cc: ControllerComponents,
                                             userRepository: UserRepository,
                                             errorHandler: JsonErrorHandler,
-                                            silhouetteCookie: Silhouette[CookieEnv],
                                             silhouetteJwt: Silhouette[JwtEnv],
                                             credentialsProvider: CredentialsProvider)
                                            (implicit ec: ExecutionContext)
   extends AbstractController(cc) {
 
-  val cookieAuthService: AuthenticatorService[CookieAuthenticator] = silhouetteCookie.env.authenticatorService
   val jwtAuthService: AuthenticatorService[JWTAuthenticator] = silhouetteJwt.env.authenticatorService
 
-  def signUp() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
+  def signUp() = Action(parse.json).async { implicit request =>
     val body = request.body
     body.validate[SignUp].fold(
       errors => {
@@ -67,7 +65,7 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
     )
   }
 
-  def signIn() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
+  def signIn() = Action(parse.json).async { implicit request =>
     val body = request.body
     body.validate[SignIn].fold(
       errors => {

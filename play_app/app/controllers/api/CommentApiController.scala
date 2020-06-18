@@ -62,7 +62,6 @@ class CommentApiController @Inject()(commentRepository: CommentRepository,
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       comment => {
-        // @FIXME
         val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
         if (!userExist) {
           BadRequest(Json.obj("message" -> "User does not exist"))
@@ -88,7 +87,6 @@ class CommentApiController @Inject()(commentRepository: CommentRepository,
             BadRequest(Json.obj("message" -> JsError.toJson(errors)))
           },
           comment => {
-            // @FIXME
             val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
             if (!userExist) {
               BadRequest(Json.obj("message" -> "User does not exist"))

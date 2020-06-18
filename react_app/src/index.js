@@ -18,6 +18,7 @@ import ActorMovies from "./components/actors/ActorMovies";
 import NotFound from "./layout/NotFound";
 import BasketContextProvider from "./context/basketContext/BasketContextProvider";
 import Basket from "./components/basket/Basket";
+import UserProfile from "./components/user/UserProfile";
 
 const routing = (
     <ThemeProvider theme={theme}>
@@ -32,6 +33,7 @@ const routing = (
                         <AppRoute path="/aktor/:actorId" component={ActorMovies} layout={BaseLayout}/>
                         <AppRoute path="/biblioteka" component={UserLibrary} layout={BaseLayout}/>
                         <AppRoute path="/koszyk" component={Basket} layout={BaseLayout}/>
+                        <AppRoute path="/profil" component={UserProfile} layout={BaseLayout}/>
 
                         <AppRoute exact path="/logowanie" component={Login} layout={AuthLayout}/>
                         <AppRoute exact path="/rejestracja" component={SignUp} layout={AuthLayout}/>

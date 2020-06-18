@@ -21,6 +21,15 @@ class AuthApi {
         const res = await API.post('/auth/signup', body);
         return res.data
     }
+
+    async edit(data) {
+        const body = {
+            firstName: data.firstName,
+            lastName: data.lastName
+        };
+        const res = await API.post('/user/edit', body);
+        return res.data
+    }
 }
 
 export const authApi = new AuthApi();

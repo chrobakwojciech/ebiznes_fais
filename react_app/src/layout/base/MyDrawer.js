@@ -61,7 +61,7 @@ export default function MyDrawer() {
                         <ListSubheader component="div" >
                             <h4 className={classes.drawerSubtitle}>Moje konto</h4>
                         </ListSubheader>
-                        <ListItem button >
+                        <ListItem button component={NavLink} exact={true} to="/profil" >
                             <ListItemIcon><AccountBox style={{ color: colors.common.white }}/></ListItemIcon>
                             <ListItemText primary="Profil" />
                         </ListItem>

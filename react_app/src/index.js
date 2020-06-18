@@ -4,7 +4,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {ThemeProvider} from '@material-ui/core/styles';
 import theme from './theme';
 import {BrowserRouter, Redirect, Switch} from "react-router-dom";
-import MovieGrid from "./components/movies/grid/MovieGrid";
 import Movie from "./components/movies/item/Movie";
 import BaseLayout from "./layout/base/BaseLayout";
 import AuthLayout from "./layout/AuthLayout";

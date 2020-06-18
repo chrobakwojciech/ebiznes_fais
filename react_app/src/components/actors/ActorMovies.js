@@ -1,8 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory, useParams} from "react-router-dom";
 import {actorApi} from "../../utils/api/actor.api";
 import {movieApi} from "../../utils/api/movie.api";
-import {UserContext} from "../../context/userContext/UserContext";
 import MovieGrid from "../movies/grid/MovieGrid";
 
 export default function ActorMovies() {

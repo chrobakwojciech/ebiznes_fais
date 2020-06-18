@@ -1,11 +1,9 @@
-import React, {useContext, useEffect} from 'react';
+import React from 'react';
 import {Box, Grid} from '@material-ui/core';
 import MovieGridItem from "./MovieGridItem";
 import Button from "@material-ui/core/Button";
 import * as _ from 'lodash';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import {movieApi} from "../../../utils/api/movie.api";
-import {UserContext} from "../../../context/userContext/UserContext";
 
 export default function MovieGrid({movies, setMovies, title}) {
     const sort = (field, dir) => {

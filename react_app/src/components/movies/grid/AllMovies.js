@@ -1,6 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {movieApi} from "../../../utils/api/movie.api";
-import {UserContext} from "../../../context/userContext/UserContext";
 import MovieGrid from "./MovieGrid";
 
 export default function AllMovies() {

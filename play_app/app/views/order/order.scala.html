@@ -3,7 +3,7 @@
 @(order: (Order, Payment, User), orderItems: Seq[(OrderItem, Movie)], sum: Double)
 
 @main("Zamówienie #" + order._1.id) {
-    <table class="table">
+    <table class="table" summary="Zamowienie - filmy">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
@@ -24,7 +24,7 @@
             </tr>
         }
             <tr>
-                <th></th>
+                <th scope="col"></th>
                 <td></td>
                 <td></td>
                 <td></td>

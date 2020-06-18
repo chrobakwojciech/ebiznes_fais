@@ -4,12 +4,12 @@
 @(genres: Seq[Genre])(implicit flash: Flash)
 @main("Gatunki") {
     @alerts(flash)
-    <table class="table">
+    <table class="table" summary="Gatunki">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Nazwa</th>
-                <th></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

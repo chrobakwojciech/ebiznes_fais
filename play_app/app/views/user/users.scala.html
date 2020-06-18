@@ -3,14 +3,14 @@
 @(users: Seq[User])(implicit flash: Flash)
 @main("Użytkownicy") {
     @alerts(flash)
-    <table class="table">
+    <table class="table" summary="Uzytkownicy">
         <thead>
             <tr>
                 <th style="width: 10%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">E-mail</th>
                 <th scope="col">Typ</th>
-                <th></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

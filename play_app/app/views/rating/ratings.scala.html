@@ -3,14 +3,14 @@
 @(ratings: Seq[(Rating, Movie, User)])(implicit flash: Flash)
 @main("Oceny") {
     @alerts(flash)
-    <table class="table">
+    <table class="table" summary="Oceny">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Użytkownik</th>
                 <th scope="col">Film</th>
                 <th scope="col">Ocena</th>
-                <th></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

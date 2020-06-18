@@ -3,7 +3,7 @@
 @(orders: Seq[(Order, Payment, User, Double)])(implicit flash: Flash)
 @main("Zamówienia") {
     @alerts(flash)
-    <table class="table">
+    <table class="table" summary="Zamowienia">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>

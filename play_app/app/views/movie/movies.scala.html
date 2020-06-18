@@ -3,14 +3,14 @@
 @(movies: Seq[Movie])(implicit flash: Flash)
 @main("Filmy") {
     @alerts(flash)
-    <table class="table">
+    <table class="table" summary="Filmy">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Tytul</th>
                 <th scope="col">Cena</th>
                 <th scope="col">Rok produkcji</th>
-                <th></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

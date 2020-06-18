@@ -4,14 +4,14 @@
 @(comments: Seq[(Comment, Movie, User)])(implicit flash: Flash)
     @main("Komentarze") {
         @alerts(flash)
-        <table class="table">
+        <table class="table" summary="Komentarze">
             <thead>
                 <tr>
                     <th style="width: 5%" scope="col">#</th>
                     <th scope="col">Użytkownik</th>
                     <th scope="col">Film</th>
                     <th scope="col">Komentarz</th>
-                    <th></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>

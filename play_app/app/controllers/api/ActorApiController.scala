@@ -39,6 +39,8 @@ class ActorApiController @Inject()(
                                     cc: MessagesControllerComponents
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val actorNotFound = NotFound(Json.obj("message" -> "Actor does not exist"));
+
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val actors = actorRepository.getAll();
     actors.map(actor => Ok(Json.toJson(actor)))
@@ -47,7 +49,7 @@ class ActorApiController @Inject()(
   def get(id: String) = Action.async { implicit request =>
     actorRepository.getById(id) map {
       case Some(a) => Ok(Json.toJson(a))
-      case None => NotFound(Json.obj("message" -> "Actor does not exist"))
+      case None => actorNotFound
     }
   }
 
@@ -83,7 +85,7 @@ class ActorApiController @Inject()(
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Actor does not exist"))
+      case None => actorNotFound
     }
   }
 
@@ -93,7 +95,7 @@ class ActorApiController @Inject()(
         actorRepository.delete(id)
         Ok(Json.obj("message" -> "Actor deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Actor does not exist"))
+      case None => actorNotFound
     }
   }
 

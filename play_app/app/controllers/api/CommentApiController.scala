@@ -36,6 +36,8 @@ class CommentApiController @Inject()(commentRepository: CommentRepository,
                                      cc: MessagesControllerComponents
                                     )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val commentNotFound = NotFound(Json.obj("message" -> "Comment does not exist"))
+
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val comments: Future[Seq[(Comment, Movie, User)]] = commentRepository.getAllWithMovieAndUser()
     comments.map(comment => {
@@ -49,7 +51,7 @@ class CommentApiController @Inject()(commentRepository: CommentRepository,
   def get(id: String) = Action.async { implicit request =>
     commentRepository.getByIdWithMovieAndUser(id) map {
       case Some(c) => Ok(Json.toJson(Json.obj("id" -> c._1.id, "content" -> c._1.content, "movie" -> c._2, "user" -> c._3)))
-      case None => NotFound(Json.obj("message" -> "Comment does not exist"))
+      case None => commentNotFound
     }
   }
 
@@ -102,7 +104,7 @@ class CommentApiController @Inject()(commentRepository: CommentRepository,
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Comment does not exist"))
+      case None => commentNotFound
     }
   }
 
@@ -112,7 +114,7 @@ class CommentApiController @Inject()(commentRepository: CommentRepository,
         commentRepository.delete(id)
         Ok(Json.obj("message" -> "Comment deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Comment does not exist"))
+      case None => commentNotFound
     }
   }
 

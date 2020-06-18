@@ -5,7 +5,7 @@ import javax.inject.{Inject, Singleton}
 import models.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.DirectorRepository
+import repositories.{DirectorRepository, MovieRepository}
 import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.ExecutionContext
@@ -34,6 +34,7 @@ object UpdateDirector {
 class DirectorApiController @Inject()(
                                        directorRepository: DirectorRepository,
                                        errorHandler: JsonErrorHandler,
+                                       movieRepository: MovieRepository,
                                        silhouette: Silhouette[JwtEnv],
                                        cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
@@ -47,6 +48,11 @@ class DirectorApiController @Inject()(
       case Some(d) => Ok(Json.toJson(d))
       case None => NotFound(Json.obj("message" -> "Director does not exist"))
     }
+  }
+
+  def getMovies(id: String) = Action.async { implicit request =>
+    val movies = movieRepository.getForDirector(id)
+    movies.map(movie => Ok(Json.toJson(movie)))
   }
 
   def create() = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)) { implicit request =>

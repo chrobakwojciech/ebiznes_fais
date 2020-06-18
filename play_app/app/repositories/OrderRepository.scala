@@ -32,6 +32,13 @@ class OrderRepository @Inject()(movieRepository: MovieRepository, dbConfigProvid
     }.result
   }
 
+  def getForUser(userId: String) = db.run {
+    _order
+      .filter(_.user === userId)
+      .join(_payment).on(_.payment === _.id)
+      .result
+  }
+
   def getById(orderId: String): Future[Option[Order]] = db.run {
     _order.filter(_.id === orderId).result.headOption
   }

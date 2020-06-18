@@ -20,6 +20,8 @@ GET         /api/auth/me                    controllers.api.AuthenticationApiCon
 
 # User
 GET         /api/user/movies                controllers.api.UserApiController.getMovies
+GET         /api/user/orders                controllers.api.UserApiController.getOrders
+POST        /api/user/edit                  controllers.api.UserApiController.updateUser
 
 # Actors
 GET         /api/actors                     controllers.api.ActorApiController.getAll
@@ -32,6 +34,7 @@ DELETE      /api/actors/:actorId            controllers.api.ActorApiController.d
 # Directors
 GET         /api/directors                  controllers.api.DirectorApiController.getAll
 GET         /api/directors/:directorId      controllers.api.DirectorApiController.get(directorId: String)
+GET         /api/directors/:directorId/movies     controllers.api.DirectorApiController.getMovies(directorId: String)
 POST        /api/directors                  controllers.api.DirectorApiController.create
 PUT         /api/directors/:directorId      controllers.api.DirectorApiController.update(directorId: String)
 DELETE      /api/directors/:directorId      controllers.api.DirectorApiController.delete(directorId: String)

@@ -4,13 +4,13 @@
 @(actors: Seq[Actor])(implicit flash: Flash)
 @main("Aktorzy") {
     @alerts(flash)
-    <table class="table">
+    <table class="table" summary="Aktorzy">
         <thead>
             <tr>
                 <th style="width: 5%" scope="col">#</th>
                 <th scope="col">Imie i nazwisko</th>
                 <th scope="col">img</th>
-                <th></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

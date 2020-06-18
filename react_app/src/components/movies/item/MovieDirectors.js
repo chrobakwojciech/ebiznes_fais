@@ -4,6 +4,7 @@ import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import React, {useEffect, useState} from "react";
 import {movieApi} from "../../../utils/api/movie.api";
+import {NavLink} from "react-router-dom";
 
 export default function MovieDirectors({movieId}) {
     const [directors, setDirectors] = useState([]);
@@ -19,7 +20,7 @@ export default function MovieDirectors({movieId}) {
         <>
             <h3>Reżyseria</h3>
             {directors.map(director => (
-                <ListItem button>
+                <ListItem button component={NavLink} exact={true} to={`/rezyser/${director.id}`}>
                     <ListItemAvatar>
                         <Avatar
                             alt={`${director.firstName} ${director.lastName}`}

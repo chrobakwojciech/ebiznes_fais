@@ -55,6 +55,17 @@ class MovieApi {
         return movies;
     }
 
+    async getForDirector(directorId) {
+        let movies = [];
+        try {
+            movies = await API.get(`/directors/${directorId}/movies`);
+            movies = movies.data;
+        } catch (e) {
+            console.error(e);
+        }
+        return movies;
+    }
+
     async getMovieGenre(movieId) {
         let genres = [];
         try {

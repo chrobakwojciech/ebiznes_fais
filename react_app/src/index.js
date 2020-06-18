@@ -19,6 +19,7 @@ import NotFound from "./layout/NotFound";
 import BasketContextProvider from "./context/basketContext/BasketContextProvider";
 import Basket from "./components/basket/Basket";
 import UserProfile from "./components/user/UserProfile";
+import DirectorMovies from "./components/directors/DirectorMovies";
 
 const routing = (
     <ThemeProvider theme={theme}>
@@ -31,6 +32,7 @@ const routing = (
                         <AppRoute path="/gatunek/:genreName" component={GenreMovies} layout={BaseLayout}/>
                         <AppRoute path="/filmy/:movieId" component={Movie} layout={BaseLayout}/>
                         <AppRoute path="/aktor/:actorId" component={ActorMovies} layout={BaseLayout}/>
+                        <AppRoute path="/rezyser/:directorId" component={DirectorMovies} layout={BaseLayout}/>
                         <AppRoute path="/biblioteka" component={UserLibrary} layout={BaseLayout}/>
                         <AppRoute path="/koszyk" component={Basket} layout={BaseLayout}/>
                         <AppRoute path="/profil" component={UserProfile} layout={BaseLayout}/>

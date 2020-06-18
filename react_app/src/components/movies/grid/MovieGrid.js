@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Box, Grid} from '@material-ui/core';
 import MovieGridItem from "./MovieGridItem";
 import Button from "@material-ui/core/Button";
@@ -7,12 +7,12 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {movieApi} from "../../../utils/api/movie.api";
 import {UserContext} from "../../../context/userContext/UserContext";
 
-export default function MovieGrid() {
-    const [movies, setMovies] = useState([]);
+export default function MovieGrid({movies, setMovies, title}) {
+
     const {userCtx} = useContext(UserContext);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const prepareData = async () => {
             let movies = await movieApi.getAll();
             await movieApi.addRatings(movies);
             if (userCtx.user) {
@@ -21,8 +21,8 @@ export default function MovieGrid() {
             setMovies(movies);
         };
 
-        fetchData();
-    }, []);
+        prepareData();
+    }, [movies]);
 
     const sort = (field, dir) => {
         const sortedFields = field === 'title' ? ['title'] : [field, 'title'];
@@ -33,6 +33,7 @@ export default function MovieGrid() {
 
     return (
         <Box m={2}>
+            {title ? <h3>{title}</h3> : null}
             <Box mb={2}>
                 <ButtonGroup aria-label="outlined button group">
                     <Button variant="outlined" onClick={() => sort('rating')}>Najlepiej oceniane</Button>

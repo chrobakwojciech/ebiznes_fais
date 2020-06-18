@@ -12,7 +12,6 @@ import {ThemeProvider} from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import {blue, red} from "@material-ui/core/colors";
 import {NavLink} from "react-router-dom";
-import ListItem from "@material-ui/core/ListItem";
 
 const basketButtonTheme = createMuiTheme({
     palette: {

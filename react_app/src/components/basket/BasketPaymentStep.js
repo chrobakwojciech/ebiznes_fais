@@ -1,15 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import StepLabel from "@material-ui/core/StepLabel/StepLabel";
 import StepContent from "@material-ui/core/StepContent/StepContent";
-import Grid from "@material-ui/core/Grid";
-import BasketMovieItem from "./BasketMovieItem";
 import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Step from "@material-ui/core/Step/Step";
-import {movieApi} from "../../utils/api/movie.api";
 import {orderApi} from "../../utils/api/order.api";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";

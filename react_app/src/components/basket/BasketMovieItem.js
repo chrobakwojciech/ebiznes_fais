@@ -1,17 +1,11 @@
-import StepLabel from "@material-ui/core/StepLabel/StepLabel";
-import StepContent from "@material-ui/core/StepContent/StepContent";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Step from "@material-ui/core/Step/Step";
 import React, {useContext} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Paper} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
-import Rating from "@material-ui/lab/Rating/Rating";
-import {Link} from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
 import {CheckCircle} from "@material-ui/icons";
-import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {BasketContext} from "../../context/basketContext/BasketContext";
 

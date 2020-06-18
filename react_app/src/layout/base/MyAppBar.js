@@ -6,11 +6,7 @@ import {Link, useHistory} from "react-router-dom";
 import React, {useContext} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {UserContext} from "../../context/userContext/UserContext";
-import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
-import MailIcon from '@material-ui/icons/Mail';
 import {BasketContext} from "../../context/basketContext/BasketContext";
-import {ShoppingCart} from "@material-ui/icons";
 import AppBarBasket from "./AppBarBasket";
 
 

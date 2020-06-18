@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import {UserContext} from "../../context/userContext/UserContext";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";

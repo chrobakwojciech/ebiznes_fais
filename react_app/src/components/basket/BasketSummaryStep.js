@@ -1,7 +1,6 @@
 import React, {useContext, useState} from "react";
 import StepLabel from "@material-ui/core/StepLabel/StepLabel";
 import StepContent from "@material-ui/core/StepContent/StepContent";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Step from "@material-ui/core/Step/Step";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -13,7 +12,7 @@ import Paper from "@material-ui/core/Paper";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Chip from "@material-ui/core/Chip";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {orderApi} from "../../utils/api/order.api";
 import Alert from "@material-ui/lab/Alert";
 import {BasketContext} from "../../context/basketContext/BasketContext";

@@ -3,8 +3,6 @@ import React, {useEffect, useState} from "react";
 import {orderApi} from "../../utils/api/order.api";
 import UserOrders from "./UserOrders";
 import Grid from "@material-ui/core/Grid";
-import MovieRatings from "../movies/item/MovieRatings";
-import MovieComments from "../movies/item/MovieComments";
 import EditUser from "./EditUser";
 import UserInfo from "./UserInfo";
 

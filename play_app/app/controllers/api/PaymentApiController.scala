@@ -32,6 +32,8 @@ class PaymentApiController @Inject()(
                                       cc: MessagesControllerComponents
                                     )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val paymentNotFound = NotFound(Json.obj("message" -> "Payment does not exist"))
+
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val payments = paymentRepository.getAll()
     payments.map(payment => Ok(Json.toJson(payment)))
@@ -40,7 +42,7 @@ class PaymentApiController @Inject()(
   def get(id: String) = Action.async { implicit request =>
     paymentRepository.getById(id) map {
       case Some(p) => Ok(Json.toJson(p))
-      case None => NotFound(Json.obj("message" -> "Payment does not exist"))
+      case None => paymentNotFound
     }
   }
 
@@ -71,7 +73,7 @@ class PaymentApiController @Inject()(
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Payment does not exist"))
+      case None => paymentNotFound
     }
   }
 
@@ -81,7 +83,7 @@ class PaymentApiController @Inject()(
         paymentRepository.delete(id)
         Ok(Json.obj("message" -> "Payment deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Payment does not exist"))
+      case None => paymentNotFound
     }
   }
 

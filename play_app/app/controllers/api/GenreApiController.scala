@@ -33,6 +33,8 @@ class GenreApiController @Inject()(
                                     cc: MessagesControllerComponents
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val genreNotFound = NotFound(Json.obj("message" -> "Genre does not exist"))
+
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val genres = genreRepository.getAll()
     genres.map(genre => Ok(Json.toJson(genre)))
@@ -46,7 +48,7 @@ class GenreApiController @Inject()(
   def get(id: String) = Action.async { implicit request =>
     genreRepository.getById(id) map {
       case Some(g) => Ok(Json.toJson(g))
-      case None => NotFound(Json.obj("message" -> "Genre does not exist"))
+      case None => genreNotFound
     }
   }
 
@@ -77,7 +79,7 @@ class GenreApiController @Inject()(
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Genre does not exist"))
+      case None => genreNotFound
     }
   }
 
@@ -87,7 +89,7 @@ class GenreApiController @Inject()(
         genreRepository.delete(id)
         Ok(Json.obj("message" -> "Genre deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Genre does not exist"))
+      case None => genreNotFound
     }
   }
 

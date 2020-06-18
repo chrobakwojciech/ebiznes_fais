@@ -37,6 +37,8 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
                                    silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+ val orderNotFound = NotFound(Json.obj("message" -> "Order does not exist"))
+
   def getAll: Action[AnyContent] = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async { implicit request =>
     val orders: Future[Seq[(Order, Payment, User, Double)]] = orderRepository.getAllWithPaymentAndUser()
     orders.map(orders => {
@@ -57,7 +59,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
         val value: Double = Await.result(orderRepository.getOrderValue(id), Duration.Inf)
         Ok(Json.obj("id" -> order._1.id, "payment" -> order._2, "user" -> order._3, "value" -> value, "items" -> orderItemsJson))
       }
-      case None => NotFound(Json.obj("message" -> "Order does not exist"))
+      case None => orderNotFound
     }
   }
 
@@ -136,7 +138,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Order does not exist"))
+      case None => orderNotFound
     }
   }
 
@@ -146,7 +148,7 @@ class OrderApiController @Inject()(orderRepository: OrderRepository,
         orderRepository.delete(id)
         Ok(Json.obj("message" -> "Order deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Order does not exist"))
+      case None => orderNotFound
     }
   }
 }

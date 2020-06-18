@@ -50,6 +50,8 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
                                    silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val movieNotFound = NotFound(Json.obj("message" -> "Movie does not exist"))
+
   def getAll = Action.async { implicit request =>
     val movies = movieRepository.getAll()
     movies.map(movie => Ok(Json.toJson(movie)))
@@ -58,7 +60,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
   def get(id: String) = Action.async { implicit request =>
     movieRepository.getById(id) map {
       case Some(m) => Ok(Json.toJson(m))
-      case None => NotFound(Json.obj("message" -> "Movie does not exist"))
+      case None => movieNotFound
     }
   }
 
@@ -196,7 +198,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Movie does not exist"))
+      case None => movieNotFound
     }
   }
 
@@ -206,7 +208,7 @@ class MovieApiController @Inject()(movieRepository: MovieRepository,
         movieRepository.delete(id)
         Ok(Json.obj("message" -> "Movie deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Movie does not exist"))
+      case None => movieNotFound
     }
   }
 

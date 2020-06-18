@@ -38,6 +38,8 @@ class DirectorApiController @Inject()(
                                        silhouette: Silhouette[JwtEnv],
                                        cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val directorNotFound = NotFound(Json.obj("message" -> "Director does not exist"))
+
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val directors = directorRepository.getAll()
     directors.map(director => Ok(Json.toJson(director)))
@@ -46,7 +48,7 @@ class DirectorApiController @Inject()(
   def get(id: String) = Action.async { implicit request =>
     directorRepository.getById(id) map {
       case Some(d) => Ok(Json.toJson(d))
-      case None => NotFound(Json.obj("message" -> "Director does not exist"))
+      case None => directorNotFound
     }
   }
 
@@ -82,7 +84,7 @@ class DirectorApiController @Inject()(
           }
         )
       }
-      case None => NotFound(Json.obj("message" -> "Director does not exist"))
+      case None => directorNotFound
     }
   }
 
@@ -92,7 +94,7 @@ class DirectorApiController @Inject()(
         directorRepository.delete(id)
         Ok(Json.obj("message" -> "Director deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Director does not exist"))
+      case None => directorNotFound
     }
   }
 

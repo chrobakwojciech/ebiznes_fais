@@ -24,6 +24,8 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepo
                                     errorHandler: JsonErrorHandler,
                                     silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val ratingNotFound = NotFound(Json.obj("message" -> "Rating does not exist"))
+
   def getAll: Action[AnyContent] = Action.async { implicit request =>
     val ratings: Future[Seq[(Rating, Movie, User)]] = ratingRepository.getAllWithMovieAndUser()
     ratings.map(rating => {
@@ -37,7 +39,7 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepo
   def get(id: String) = Action.async { implicit request =>
     ratingRepository.getByIdWithMovieAndUser(id) map {
       case Some(r) => Ok(Json.toJson(Json.obj("id" -> r._1.id, "value" -> r._1.value, "movie" -> r._2, "user" -> r._3)))
-      case None => NotFound(Json.obj("message" -> "Rating does not exist"))
+      case None => ratingNotFound
     }
   }
 
@@ -48,7 +50,6 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepo
         Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
       rating => {
-        // @FIXME
         val userExist: Boolean = Await.result(userRepository.isExist(request.identity.id), Duration.Inf)
         if (!userExist) {
           Future.successful(BadRequest(Json.obj("message" -> "User does not exist")))
@@ -71,7 +72,7 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepo
         ratingRepository.delete(id)
         Ok(Json.obj("message" -> "Rating deleted"))
       }
-      case None => NotFound(Json.obj("message" -> "Rating does not exist"))
+      case None => ratingNotFound
     }
   }
 

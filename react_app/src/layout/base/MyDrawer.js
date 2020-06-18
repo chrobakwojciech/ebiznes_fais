@@ -45,8 +45,8 @@ export default function MyDrawer() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const genres = await genreApi.getAll();
-            setGenres(genres);
+            const _genres = await genreApi.getAll();
+            setGenres(_genres);
         };
 
         fetchData();

@@ -46,13 +46,7 @@ const useStyles = makeStyles({
 });
 
 export default function BasketMovieItem({movie}) {
-    const {
-        getBasketMovies,
-        getBasketPayment,
-        addMovieToBasket,
-        removeMovieFromBasket,
-        setPayment
-    } = useContext(BasketContext);
+    const { removeMovieFromBasket } = useContext(BasketContext);
 
     const PosterOverlay = () => {
         if (movie.isBought) {

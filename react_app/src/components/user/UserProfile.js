@@ -11,8 +11,8 @@ export default function UserProfile() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const orders = await orderApi.getUserOrders();
-            setOrders(orders);
+            const _orders = await orderApi.getUserOrders();
+            setOrders(_orders);
         };
 
         fetchData();

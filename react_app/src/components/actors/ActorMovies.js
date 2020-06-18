@@ -14,14 +14,15 @@ export default function ActorMovies() {
     useEffect(() => {
         const fetchData = async () => {
             const actorId = urlParams.actorId;
-            const actor = await actorApi.get(actorId);
+            const _actor = await actorApi.get(actorId);
 
-            if (!actor) {
+            if (!_actor) {
                 history.push('/')
             } else {
-                let movies = await movieApi.getForActor(actorId)
-                setActor(actor);
-                setMovies(movies);
+                let _movies = await movieApi.getForActor(actorId)
+                setActor(_actor);
+
+                setMovies(_movies);
             }
         };
 

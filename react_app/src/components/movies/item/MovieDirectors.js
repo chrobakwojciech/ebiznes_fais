@@ -11,8 +11,8 @@ export default function MovieDirectors({movieId}) {
 
     useEffect(() => {
         const fetchData = async () => {
-            let directors = await movieApi.getMovieDirectors(movieId);
-            setDirectors(directors);
+            let _directors = await movieApi.getMovieDirectors(movieId);
+            setDirectors(_directors);
         };
         fetchData();
     }, [movieId]);

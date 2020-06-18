@@ -74,7 +74,7 @@ export default function LibraryItem(props) {
             setDirectors(await movieApi.getMovieDirectors(movie.id));
             if (userCtx.user) {
                 const ratings = await movieApi.getMovieRatings(movie.id);
-                const userRatings = ratings.filter(rating => rating.user.id === userCtx.user.id);
+                const userRatings = ratings.filter(_rating => _rating.user.id === userCtx.user.id);
                 if (userRatings.length > 0) {
                     setRating(userRatings[0].value)
                 }

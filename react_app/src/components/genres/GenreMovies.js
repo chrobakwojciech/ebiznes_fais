@@ -13,16 +13,16 @@ export default function GenreMovies() {
     useEffect(() => {
         const fetchData = async () => {
             const genres = await genreApi.getAll();
-            const genre = genres.find(genre => genre.name.toLowerCase() === urlParams.genreName);
+            const _genre = genres.find(genre => genre.name.toLowerCase() === urlParams.genreName);
 
-            if (!genre) {
+            if (!_genre) {
                 history.push('/');
                 return
             }
-            let movies = await movieApi.getForGenre(genre.id);
-            setGridTitle(genre.name);
+            let _movies = await movieApi.getForGenre(_genre.id);
+            setGridTitle(_genre.name);
 
-            setMovies(movies);
+            setMovies(_movies);
         };
 
         fetchData();

@@ -22,16 +22,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function BasketMovieStep({handleBack, handleNext, ...other}) {
+export default function BasketPaymentStep({handleBack, handleNext, ...other}) {
     const classes = useStyles();
     const [paymentMethods, setPaymentMethods] = useState([]);
-    const {
-        getBasketMovies,
-        getBasketPayment,
-        addMovieToBasket,
-        removeMovieFromBasket,
-        setPayment
-    } = useContext(BasketContext);
+    const { getBasketPayment, setPayment } = useContext(BasketContext);
     const [value, setValue] = useState(getBasketPayment);
 
     const handleChange = (event) => {

@@ -8,22 +8,6 @@ import {movieApi} from "../../../utils/api/movie.api";
 import {UserContext} from "../../../context/userContext/UserContext";
 
 export default function MovieGrid({movies, setMovies, title}) {
-
-    const {userCtx} = useContext(UserContext);
-
-    useEffect(() => {
-        const prepareData = async () => {
-            let movies = await movieApi.getAll();
-            await movieApi.addRatings(movies);
-            if (userCtx.user) {
-                await movieApi.addUserInfo(movies)
-            }
-            setMovies(movies);
-        };
-
-        prepareData();
-    }, [movies]);
-
     const sort = (field, dir) => {
         const sortedFields = field === 'title' ? ['title'] : [field, 'title'];
         const sortedMovies = _.sortBy(movies, sortedFields);

@@ -14,8 +14,8 @@ export default function MovieComments({movieId}) {
     const [comments, setComments] = useState([]);
 
     const fetchData = async () => {
-        let comments = await movieApi.getMovieComments(movieId);
-        setComments(_.reverse(comments));
+        let _comments = await movieApi.getMovieComments(movieId);
+        setComments(_.reverse(_comments));
     };
 
     useEffect(() => {

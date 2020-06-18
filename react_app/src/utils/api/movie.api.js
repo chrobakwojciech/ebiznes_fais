@@ -10,6 +10,10 @@ class MovieApi {
         } catch (e) {
             console.error(e);
         }
+        try {
+            await this.addRatings(movies);
+            await this.addUserInfo(movies);
+        } catch (e) {}
         return movies;
     }
 
@@ -41,6 +45,10 @@ class MovieApi {
         } catch (e) {
             console.error(e);
         }
+        try {
+            await this.addRatings(movies);
+            await this.addUserInfo(movies);
+        } catch (e) {}
         return movies;
     }
 
@@ -52,6 +60,11 @@ class MovieApi {
         } catch (e) {
             console.error(e);
         }
+
+        try {
+            await this.addRatings(movies);
+            await this.addUserInfo(movies);
+        } catch (e) {}
         return movies;
     }
 
@@ -63,6 +76,10 @@ class MovieApi {
         } catch (e) {
             console.error(e);
         }
+        try {
+            await this.addRatings(movies);
+            await this.addUserInfo(movies);
+        } catch (e) {}
         return movies;
     }
 

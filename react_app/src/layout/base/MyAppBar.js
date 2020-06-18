@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 export default function MyAppBar() {
     const classes = useStyles();
     const {userCtx, setUserCtx} = useContext(UserContext);
-    const {getBasketMovies} = useContext(BasketContext);
 
     let history = useHistory();
 

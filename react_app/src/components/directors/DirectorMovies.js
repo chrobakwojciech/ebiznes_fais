@@ -14,15 +14,15 @@ export default function DirectorMovies() {
     useEffect(() => {
         const fetchData = async () => {
             const directorId = urlParams.directorId;
-            const director = await directorApi.get(directorId);
+            const _director = await directorApi.get(directorId);
 
-            if (!director) {
+            if (!_director) {
                 history.push('/')
             } else {
-                let movies = await movieApi.getForDirector(directorId);
-                setDirector(director);
+                let _movies = await movieApi.getForDirector(directorId);
+                setDirector(_director);
 
-                setMovies(movies);
+                setMovies(_movies);
             }
         };
 

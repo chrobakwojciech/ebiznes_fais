@@ -10,12 +10,12 @@ export default function UserLibrary() {
 
     useEffect(() => {
         const fetchData = async () => {
-            let movies = await movieApi.getForUser();
-            await movieApi.addRatings(movies);
+            let _movies = await movieApi.getForUser();
+            await movieApi.addRatings(_movies);
             if (userCtx.user) {
-                await movieApi.addUserInfo(movies)
+                await movieApi.addUserInfo(_movies)
             }
-            setMovies(movies);
+            setMovies(_movies);
         };
 
         fetchData();

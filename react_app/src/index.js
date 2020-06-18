@@ -20,6 +20,7 @@ import BasketContextProvider from "./context/basketContext/BasketContextProvider
 import Basket from "./components/basket/Basket";
 import UserProfile from "./components/user/UserProfile";
 import DirectorMovies from "./components/directors/DirectorMovies";
+import AllMovies from "./components/movies/grid/AllMovies";
 
 const routing = (
     <ThemeProvider theme={theme}>
@@ -28,7 +29,7 @@ const routing = (
             <BasketContextProvider>
                 <BrowserRouter>
                     <Switch>
-                        <AppRoute exact path="/" component={MovieGrid} layout={BaseLayout}/>
+                        <AppRoute exact path="/" component={AllMovies} layout={BaseLayout}/>
                         <AppRoute path="/gatunek/:genreName" component={GenreMovies} layout={BaseLayout}/>
                         <AppRoute path="/filmy/:movieId" component={Movie} layout={BaseLayout}/>
                         <AppRoute path="/aktor/:actorId" component={ActorMovies} layout={BaseLayout}/>

@@ -27,16 +27,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Basket() {
-    const {
-        getBasketMovies,
-        getBasketPayment,
-        addMovieToBasket,
-        removeMovieFromBasket,
-        setPayment
-    } = useContext(BasketContext);
-
+    const { getBasketMovies, getBasketPayment } = useContext(BasketContext);
     const {userCtx} = useContext(UserContext);
-
 
     const [basketMovies, setBasketMovies] = useState([]);
     const [basketPrice, setBasketPrice] = useState(0);

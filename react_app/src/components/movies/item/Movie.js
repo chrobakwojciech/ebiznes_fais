@@ -38,12 +38,12 @@ export default function Movie(props) {
             setGenres(res.data);
 
             res = await API.get(`${url}/ratings`);
-            let ratings = res.data;
-            setRatings(ratings);
+            let _ratings = res.data;
+            setRatings(_ratings);
 
-            if (ratings.length > 0) {
-                const sum = ratings.reduce((a, b) => +a + +b.value, 0);
-                setRating(sum/ratings.length)
+            if (_ratings.length > 0) {
+                const sum = _ratings.reduce((a, b) => +a + +b.value, 0);
+                setRating(sum/_ratings.length)
             }
 
         };

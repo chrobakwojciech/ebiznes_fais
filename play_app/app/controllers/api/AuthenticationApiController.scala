@@ -116,7 +116,6 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
               loginInfoDAO.getAuthenticationProviders(profile.email.get).flatMap { providers =>
                 if (providers.contains(provider) || providers.isEmpty) {
                   for {
-
                     user <- userService.saveOrUpdate(profile.firstName.getOrElse(""), profile.lastName.getOrElse(""), profile.email.getOrElse(""), profile.loginInfo)
                     _ <- authInfoRepository.add(profile.loginInfo, authInfo)
                     authenticator <- jwtAuthService.create(profile.loginInfo)
@@ -126,8 +125,7 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
                     result
                   }
                 } else {
-                  val errorCode="XD403" // Email is bounded to other provider
-                  Future.successful(Redirect(s"http://localhost:3000/auth/failure?errorCode=$errorCode"))
+                  Future.successful(BadRequest(Json.obj("message" -> "User is already exist (email)")))
                 }
               }
             }
@@ -135,13 +133,8 @@ class AuthenticationApiController @Inject()(cc: ControllerComponents,
           }
         }
       }
-      case None => Future.successful(Status(BAD_REQUEST)(Json.obj("error" -> s"No '$provider' provider")))
-    }).recover {
-      case e: ProviderException => {
-        val errorCode = "XD500" // Unknown error
-        Redirect(s"http://localhost:3000/auth/failure?errorCode=$errorCode")
-      }
-    }
+      case None => Future.successful(BadRequest(Json.obj("message" -> s"No '$provider' provider")))
+    })
   }
 
   def me = silhouetteJwt.SecuredAction(errorHandler) { implicit request =>

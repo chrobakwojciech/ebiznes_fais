@@ -2,10 +2,12 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Rating, User, UserRoles}
+import models.auth.{User, UserRoles}
+import models.{Movie, Rating}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{MovieRepository, RatingRepository, UserRepository}
+import repositories.auth.UserService
+import repositories.{MovieRepository, RatingRepository}
 import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
@@ -20,7 +22,7 @@ object CreateRating {
 
 
 @Singleton
-class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository,
+class RatingApiController @Inject()(ratingRepository: RatingRepository, userRepository: UserService, movieRepository: MovieRepository,
                                     errorHandler: JsonErrorHandler,
                                     silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 

@@ -16,6 +16,7 @@ POST        /api/auth/signup                controllers.api.AuthenticationApiCon
 +nocsrf
 POST        /api/auth/signin                controllers.api.AuthenticationApiController.signIn
 +nocsrf
+GET         /api/auth/social/:provider      controllers.api.AuthenticationApiController.socialAuth(provider)
 GET         /api/auth/me                    controllers.api.AuthenticationApiController.me
 
 # User

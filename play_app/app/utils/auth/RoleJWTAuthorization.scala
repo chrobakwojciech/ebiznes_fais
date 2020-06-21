@@ -2,8 +2,8 @@ package utils.auth
 
 import com.mohiva.play.silhouette.api.{Authenticator, Authorization}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, JWTAuthenticator}
-import models.{User, UserRoles}
-import models.UserRoles.UserRole
+import models.auth.{User, UserRoles}
+import models.auth.UserRoles.UserRole
 import play.api.mvc.Request
 
 import scala.concurrent.Future

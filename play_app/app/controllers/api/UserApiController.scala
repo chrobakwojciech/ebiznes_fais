@@ -7,6 +7,7 @@ import models.{Order, Payment}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
+import repositories.auth.UserService
 import utils.auth.{JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.duration.Duration
@@ -22,16 +23,16 @@ object EditUser {
 
 @Singleton
 class UserApiController @Inject()(movieRepository: MovieRepository,
-                                   actorRepository: ActorRepository,
-                                   directorRepository: DirectorRepository,
-                                   genreRepository: GenreRepository,
-                                   commentRepository: CommentRepository,
-                                   orderRepository: OrderRepository,
-                                  userRepository: UserRepository,
-                                   ratingRepository: RatingRepository,
-                                   cc: MessagesControllerComponents,
-                                   errorHandler: JsonErrorHandler,
-                                   silhouette: Silhouette[JwtEnv]
+                                  actorRepository: ActorRepository,
+                                  directorRepository: DirectorRepository,
+                                  genreRepository: GenreRepository,
+                                  commentRepository: CommentRepository,
+                                  orderRepository: OrderRepository,
+                                  userRepository: UserService,
+                                  ratingRepository: RatingRepository,
+                                  cc: MessagesControllerComponents,
+                                  errorHandler: JsonErrorHandler,
+                                  silhouette: Silhouette[JwtEnv]
                                   )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getMovies = silhouette.SecuredAction(errorHandler).async { implicit request =>

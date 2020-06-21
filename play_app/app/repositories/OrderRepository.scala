@@ -4,6 +4,7 @@ import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
 import models._
+import models.auth.{User, UserTable}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

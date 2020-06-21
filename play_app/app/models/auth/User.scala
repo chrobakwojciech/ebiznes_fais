@@ -1,4 +1,4 @@
-package models
+package models.auth
 
 import com.mohiva.play.silhouette.api.Identity
 import play.api.libs.json.Json
@@ -14,9 +14,8 @@ case class User(id: String,
                 firstName: String,
                 lastName: String,
                 email: String,
-                role: UserRoles.UserRole,
-                providerId: String,
-                providerKey: String) extends Identity
+                role: UserRoles.UserRole
+               ) extends Identity
 
 class UserTable(tag: Tag) extends Table[User](tag, "user") {
   def id = column[String]("id", O.PrimaryKey)
@@ -29,25 +28,21 @@ class UserTable(tag: Tag) extends Table[User](tag, "user") {
 
   def role = column[String]("role")
 
-  def providerId = column[String]("providerId")
-
-  def providerKey = column[String]("providerKey")
-
-  def * = (id, firstName, lastName, email, role, providerId, providerKey) <> ((User.apply _).tupled, User.unapply)
+  def * = (id, firstName, lastName, email, role) <> ((User.apply _).tupled, User.unapply)
 }
 
 object User {
   implicit val userFormat = Json.format[User]
 }
 
-case class Password(key: String,
+case class Password(loginInfoId: String,
                     hasher: String,
                     hash: String,
                     salt: Option[String])
 
 
 class PasswordTable(tag: Tag) extends Table[Password](tag, "password") {
-  def key = column[String]("providerKey", O.PrimaryKey)
+  def loginInfoId = column[String]("loginInfoId", O.PrimaryKey)
 
   def hasher = column[String]("hasher")
 
@@ -55,7 +50,7 @@ class PasswordTable(tag: Tag) extends Table[Password](tag, "password") {
 
   def salt = column[Option[String]]("salt")
 
-  def * = (key, hasher, hash, salt) <> ((Password.apply _).tupled, Password.unapply)
+  def * = (loginInfoId, hasher, hash, salt) <> ((Password.apply _).tupled, Password.unapply)
 }
 
 object Password {

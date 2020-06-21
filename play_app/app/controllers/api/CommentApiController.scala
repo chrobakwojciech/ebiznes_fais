@@ -2,10 +2,12 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Comment, Movie, User, UserRoles}
+import models.auth.{User, UserRoles}
+import models.{Comment, Movie}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import repositories.{CommentRepository, MovieRepository, UserRepository}
+import repositories.auth.UserService
+import repositories.{CommentRepository, MovieRepository}
 import utils.auth.{JsonErrorHandler, JwtEnv, RoleCookieAuthorization, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
@@ -29,7 +31,7 @@ object UpdateComment {
 
 @Singleton
 class CommentApiController @Inject()(commentRepository: CommentRepository,
-                                     userRepository: UserRepository,
+                                     userRepository: UserService,
                                      movieRepository: MovieRepository,
                                      errorHandler: JsonErrorHandler,
                                      silhouette: Silhouette[JwtEnv],

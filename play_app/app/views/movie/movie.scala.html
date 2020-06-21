@@ -1,4 +1,5 @@
 @import models.Movie
+@import models.auth.User
 @(movie: Movie, comments: Seq[(Comment, User)], ratings: Seq[(Rating, User)], actors: Seq[Actor], directors: Seq[Director], genres: Seq[Genre])
 
 @main(movie.title) {

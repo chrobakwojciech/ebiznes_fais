@@ -3,7 +3,8 @@ package controllers
 import com.mohiva.play.silhouette.api.{HandlerResult, Silhouette}
 import com.mohiva.play.silhouette.api.actions.{SecuredErrorHandler, SecuredRequest, SecuredRequestHeader}
 import javax.inject.{Inject, Singleton}
-import models.{Actor, Movie, UserRoles}
+import models.auth.UserRoles
+import models.{Actor, Movie}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json

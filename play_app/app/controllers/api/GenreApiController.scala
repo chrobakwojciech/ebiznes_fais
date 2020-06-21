@@ -2,7 +2,7 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.UserRoles
+import models.auth.UserRoles
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories.{GenreRepository, MovieRepository}

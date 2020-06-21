@@ -2,18 +2,20 @@ package controllers
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Comment, Movie, User, UserRoles}
+import models.auth.{User, UserRoles}
+import models.{Comment, Movie}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-import repositories.{CommentRepository, MovieRepository, UserRepository}
+import repositories.auth.UserService
+import repositories.{CommentRepository, MovieRepository}
 import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class CommentController @Inject()(commentRepository: CommentRepository, userRepository: UserRepository, movieRepository: MovieRepository,
+class CommentController @Inject()(commentRepository: CommentRepository, userRepository: UserService, movieRepository: MovieRepository,
                                   silhouette: Silhouette[CookieEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
   val createCommentForm: Form[CreateCommentForm] = Form {
     mapping(

@@ -2,18 +2,18 @@ package controllers
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{User, UserRoles}
+import models.auth.{User, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-import repositories.UserRepository
+import repositories.auth.UserService
 import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class UserController @Inject()(userRepository: UserRepository, cc: MessagesControllerComponents,
+class UserController @Inject()(userRepository: UserService, cc: MessagesControllerComponents,
                                silhouette: Silhouette[CookieEnv])(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
     val createUserForm: Form[CreateUserForm] = Form {
       mapping(

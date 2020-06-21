@@ -3,6 +3,7 @@ package controllers
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
 import models._
+import models.auth.{User, UserRoles}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._

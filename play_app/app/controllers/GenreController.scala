@@ -2,7 +2,8 @@ package controllers
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Genre, Movie, UserRoles}
+import models.auth.UserRoles
+import models.{Genre, Movie}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._

@@ -1,6 +1,7 @@
 @import models.Comment
 @import views.html.bootstrap3._
 
+@import models.auth.User
 @(comments: Seq[(Comment, Movie, User)])(implicit flash: Flash)
     @main("Komentarze") {
         @alerts(flash)

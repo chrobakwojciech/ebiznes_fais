@@ -4,13 +4,15 @@ import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
 import models._
+import models.auth.{User, UserTable}
 import play.api.db.slick.DatabaseConfigProvider
+import repositories.auth.UserService
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, userRepository: UserRepository, movieRepository: MovieRepository)(implicit ec: ExecutionContext) {
+class CommentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, userRepository: UserService, movieRepository: MovieRepository)(implicit ec: ExecutionContext) {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._

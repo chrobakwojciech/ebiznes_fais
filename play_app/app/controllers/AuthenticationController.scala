@@ -2,19 +2,20 @@ package controllers
 
 import akka.event.EventBus
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.{AuthenticatorResult, AuthenticatorService}
-import com.mohiva.play.silhouette.api.util.Credentials
+import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasher}
 import com.mohiva.play.silhouette.api.{LoginEvent, LoginInfo, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, JWTAuthenticator}
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import javax.inject.{Inject, Singleton}
-import models.User
+import models.auth.User
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
-import repositories.UserRepository
+import repositories.auth.{PasswordDAO, UserService}
 import utils.auth.{CookieEnv, DashboardErrorHandler, JwtEnv}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,10 +34,12 @@ case class SignIn(email: String,
 
 @Singleton
 class AuthenticationController @Inject()(cc: MessagesControllerComponents,
-                                            userRepository: UserRepository,
-                                            errorHandler: DashboardErrorHandler,
-                                            silhouetteCookie: Silhouette[CookieEnv],
-                                            credentialsProvider: CredentialsProvider)
+                                         userService: UserService,
+                                         errorHandler: DashboardErrorHandler,
+                                         passwordHasher: PasswordHasher,
+                                         authInfoRepository: AuthInfoRepository,
+                                         silhouetteCookie: Silhouette[CookieEnv],
+                                         credentialsProvider: CredentialsProvider)
                                            (implicit ec: ExecutionContext)
   extends MessagesAbstractController(cc) {
 
@@ -75,17 +78,26 @@ class AuthenticationController @Inject()(cc: MessagesControllerComponents,
       }
     }
 
-    val successFunction = { user: SignUp =>
-      userRepository.retrieve(LoginInfo(CredentialsProvider.ID, user.email))
-        .flatMap((uo: Option[User]) =>
-          uo.fold({
-            userRepository.create(user.firstName, user.lastName, user.email, user.password).flatMap(cookieAuthService.create(_))
-              .flatMap(cookieAuthService.init(_))
-              .flatMap(cookieAuthService.embed(_, Redirect(routes.HomeController.index()).flashing("success" -> "Witamy!")))
-          })({ _ =>
-            Future.successful(AuthenticatorResult(Redirect(routes.AuthenticationController.signUp()).flashing("error" -> "Bład podczas rejestracji")))
-          })
-        )
+    val successFunction = { user: SignUp => {
+        val loginInfo = LoginInfo(CredentialsProvider.ID, user.email)
+        userService.retrieve(loginInfo).flatMap {
+          case Some(u) => Future {
+            Redirect(routes.AuthenticationController.signUp()).flashing("error" -> "Taki uzytkownik (email) juz istnieje!")
+          }
+          case None => {
+            for {
+              _ <- userService.saveOrUpdate(user.firstName, user.lastName, user.email, loginInfo)
+              authInfo = passwordHasher.hash(user.password)
+              _ <- authInfoRepository.add(loginInfo, authInfo)
+              authenticator <- cookieAuthService.create(loginInfo)
+              cookie <- cookieAuthService.init(authenticator)
+              result <- cookieAuthService.embed(cookie, Redirect(routes.HomeController.index()).flashing("success" -> "Witamy!"))
+            } yield {
+              result
+            }
+          }
+        }
+      }
     }
     signUpForm.bindFromRequest.fold(errorFunction, successFunction)
   }

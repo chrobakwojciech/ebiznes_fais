@@ -1,3 +1,4 @@
+@import models.auth.User
 @(order: Form[CreateOrderForm], users: Seq[User], payments: Seq[Payment], movies: Seq[Movie])(implicit request: Request[_], flash: Flash)
 
 @import views.html.bootstrap3._

@@ -2,19 +2,21 @@ package controllers
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Movie, Rating, User, UserRoles}
+import models.auth.{User, UserRoles}
+import models.{Movie, Rating}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._
 import play.api.mvc._
-import repositories.{MovieRepository, RatingRepository, UserRepository}
+import repositories.auth.UserService
+import repositories.{MovieRepository, RatingRepository}
 import utils.auth.{CookieEnv, RoleCookieAuthorization}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class RatingController @Inject()(ratingRepository: RatingRepository, userRepository: UserRepository, movieRepository: MovieRepository, cc: MessagesControllerComponents,
+class RatingController @Inject()(ratingRepository: RatingRepository, userRepository: UserService, movieRepository: MovieRepository, cc: MessagesControllerComponents,
                                  silhouette: Silhouette[CookieEnv])(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val createRatingForm: Form[CreateRatingForm] = Form {

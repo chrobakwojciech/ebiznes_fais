@@ -1,5 +1,6 @@
-@import models.{Movie, Order, OrderItem, Payment, User}
+@import models.{Movie, Order, OrderItem, Payment}
 
+@import models.auth.User
 @(order: (Order, Payment, User), orderItems: Seq[(OrderItem, Movie)], sum: Double)
 
 @main("Zamówienie #" + order._1.id) {

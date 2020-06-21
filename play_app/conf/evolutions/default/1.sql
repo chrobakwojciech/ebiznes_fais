@@ -75,16 +75,34 @@ CREATE TABLE "user" (
     "firstName" VARCHAR NOT NULL,
     "lastName" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
-    "role" VARCHAR NOT NULL,
+    "role" VARCHAR NOT NULL
+);
+
+CREATE TABLE "password" (
+    "loginInfoId" VARCHAR NOT NULL PRIMARY KEY,
+    "hasher" VARCHAR NOT NULL,
+    "hash" VARCHAR NOT NULL,
+    "salt" VARCHAR
+);
+
+CREATE TABLE "login_info" (
+    "id" VARCHAR NOT NULL PRIMARY KEY,
     "providerId" VARCHAR NOT NULL,
     "providerKey" VARCHAR NOT NULL
 );
 
-CREATE TABLE "password" (
-    "providerKey" VARCHAR NOT NULL PRIMARY KEY,
-    "hasher" VARCHAR NOT NULL,
-    "hash" VARCHAR NOT NULL,
-    "salt" VARCHAR
+CREATE TABLE "user_login_info" (
+    "userId" VARCHAR NOT NULL,
+    "loginInfoId" VARCHAR NOT NULL
+);
+
+CREATE TABLE "OAuth2Info" (
+    "id" VARCHAR NOT NULL PRIMARY KEY,
+    "accessToken" VARCHAR NOT NULL,
+    "tokenType" VARCHAR,
+    "expiresIn" INTEGER,
+    "refreshToken" VARCHAR,
+    "loginInfoId" VARCHAR NOT NULL
 );
 
 CREATE TABLE "movie_actor" (
@@ -111,12 +129,6 @@ CREATE TABLE "movie_genre" (
     FOREIGN KEY ("genre") REFERENCES genre("id") ON DELETE CASCADE
 );
 
-
-INSERT INTO [user] VALUES ('1', 'Super', 'Admin', 'admin@gmail.com', 'admin', 'credentials', 'admin@gmail.com');
-INSERT INTO [user] VALUES ('2', 'Basic', 'User', 'user@gmail.com', 'user', 'credentials', 'user@gmail.com');
-
-INSERT INTO password VALUES ('admin@gmail.com', 'bcrypt', '$2a$10$fS7iZrubBKLsvwM08XQgR.IbkU4.wjIEAohcC.Nwy/YqFym90U.lC', NULL);
-INSERT INTO password VALUES ('user@gmail.com', 'bcrypt', '$2a$10$fS7iZrubBKLsvwM08XQgR.IbkU4.wjIEAohcC.Nwy/YqFym90U.lC', NULL);
 
 INSERT INTO actor VALUES ('1', 'John', 'Travolta', 'http://via.placeholder.com/200x290');
 INSERT INTO actor VALUES ('2', 'Samuel', 'L. Jackson', 'http://via.placeholder.com/200x290');
@@ -295,40 +307,7 @@ INSERT INTO payment VALUES ('2', 'Karta Visa/MasterCard');
 INSERT INTO payment VALUES ('3', 'Przelew tradycyjny');
 INSERT INTO payment VALUES ('4', 'Kupon');
 
-INSERT INTO comment VALUES ('1', 'Komentarz 1', '1', '1');
-INSERT INTO comment VALUES ('2', 'Komentarz 2', '2', '2');
-INSERT INTO comment VALUES ('3', 'Komentarz 3', '2', '3');
-INSERT INTO comment VALUES ('4', 'Komentarz 4', '1', '4');
-INSERT INTO comment VALUES ('5', 'Komentarz 5', '1', '2');
-INSERT INTO comment VALUES ('6', 'Komentarz 6', '2', '1');
-INSERT INTO comment VALUES ('7', 'Komentarz 7', '1', '3');
 
-INSERT INTO [order] VALUES ('1', '1', '2');
-INSERT INTO [order] VALUES ('2', '2', '1');
-INSERT INTO [order] VALUES ('3', '1', '3');
-INSERT INTO [order] VALUES ('4', '2', '1');
-INSERT INTO [order] VALUES ('5', '2', '4');
-
-INSERT INTO orderItem VALUES ('1', '1', 9.99);
-INSERT INTO orderItem VALUES ('1', '2', 6.99);
-INSERT INTO orderItem VALUES ('1', '3', 9.99);
-INSERT INTO orderItem VALUES ('2', '4', 4.99);
-INSERT INTO orderItem VALUES ('2', '5', 12.99);
-INSERT INTO orderItem VALUES ('3', '6', 9.99);
-INSERT INTO orderItem VALUES ('4', '7', 9.99);
-INSERT INTO orderItem VALUES ('4', '8', 11.99);
-INSERT INTO orderItem VALUES ('5', '9', 10.99);
-INSERT INTO orderItem VALUES ('5', '10', 9.99);
-INSERT INTO orderItem VALUES ('1', '9', 18.99);
-INSERT INTO orderItem VALUES ('3', '1', 9.99);
-INSERT INTO orderItem VALUES ('4', '1', 4.99);
-INSERT INTO orderItem VALUES ('5', '4', 7.99);
-
-INSERT INTO rating VALUES ('1', '8', '1', '1');
-INSERT INTO rating VALUES ('2', '3', '2', '2');
-INSERT INTO rating VALUES ('3', '6', '1', '2');
-INSERT INTO rating VALUES ('4', '7', '1', '3');
-INSERT INTO rating VALUES ('5', '10', '2', '3');
 
 # --- !Downs
 
@@ -342,4 +321,7 @@ DROP TABLE orderItem;
 DROP TABLE payment;
 DROP TABLE rating;
 DROP TABLE [user];
-DROP TABLE password
+DROP TABLE password;
+DROP TABLE login_info;
+DROP TABLE user_login_info;
+DROP TABLE OAuth2Info;

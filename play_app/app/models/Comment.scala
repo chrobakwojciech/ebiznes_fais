@@ -1,5 +1,6 @@
 package models
 
+import models.auth.UserTable
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 

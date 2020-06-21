@@ -1,5 +1,6 @@
 @import models.Rating
 @import views.html.bootstrap3._
+@import models.auth.User
 @(ratings: Seq[(Rating, Movie, User)])(implicit flash: Flash)
 @main("Oceny") {
     @alerts(flash)

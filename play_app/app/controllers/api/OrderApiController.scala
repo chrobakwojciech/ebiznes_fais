@@ -2,10 +2,12 @@ package controllers.api
 
 import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.{Inject, Singleton}
-import models.{Order, Payment, User, UserRoles}
+import models.auth.{User, UserRoles}
+import models.{Order, Payment}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import repositories._
+import repositories.auth.UserService
 import utils.auth.{JsonErrorHandler, JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.duration.Duration
@@ -30,7 +32,7 @@ object UpdateOrder {
 @Singleton
 class OrderApiController @Inject()(orderRepository: OrderRepository,
                                    movieRepository: MovieRepository,
-                                   userRepository: UserRepository,
+                                   userRepository: UserService,
                                    paymentRepository: PaymentRepository,
                                    cc: MessagesControllerComponents,
                                    errorHandler: JsonErrorHandler,

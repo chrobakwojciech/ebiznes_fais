@@ -12,6 +12,12 @@ import {UserContext} from "../../context/userContext/UserContext";
 import {authApi} from "../../utils/api/auth.api";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import GoogleIcon from "./GoogleIcon";
+import {createMuiTheme, ThemeProvider } from "@material-ui/core";
+import * as colors from "@material-ui/core/colors";
+import * as URL from "url";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -47,6 +53,13 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+
+const googleTheme = createMuiTheme({
+    palette: {
+        primary: { main: colors.common.black, contrastText: colors.common.white },
+    }
+});
+
 export default function Login() {
     const classes = useStyles();
     let history = useHistory();
@@ -60,14 +73,42 @@ export default function Login() {
     const loginHandler = async () => {
        try {
            const token = await authApi.login(email, password);
-           const userMe = await authApi.me(token);
-           const ctx = { user: userMe, token: token };
-           localStorage.setItem('userCtx', JSON.stringify(ctx));
-           setUserCtx(ctx);
-           history.push('/');
+           await tokenHandler(token)
        } catch (e) {
            setError('Błąd podczas logowania, spróbuj jeszcze raz');
        }
+    };
+
+    const tokenHandler = async (token) => {
+        try {
+            const userMe = await authApi.me(token);
+            const ctx = { user: userMe, token: token };
+            localStorage.setItem('userCtx', JSON.stringify(ctx));
+            setUserCtx(ctx);
+            history.push('/');
+        } catch (e) {
+            setError('Błąd podczas logowania, spróbuj jeszcze raz');
+        }
+    };
+
+    const googleLoginHandler = async () => {
+        const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=200';
+        const popup = window.open("http://localhost:9000/api/auth/social/google", "E-biznes OAuth", strWindowFeatures);
+
+        const messagesInterval = setInterval(() => {
+            popup.postMessage("token request", "http://localhost:3000/oauth/google");
+        }, 1000);
+
+        window.addEventListener('message', async (event) => {
+            if (typeof event.data === 'string' || event.data instanceof String) {
+                if (event.data.startsWith('token')) {
+                    clearInterval(messagesInterval);
+                    const token = event.data.split('___')[1]
+                    await tokenHandler(token);
+                    popup.close()
+                }
+            }
+        }, false);
     };
 
     const handleClose = (event, reason) => {
@@ -88,6 +129,14 @@ export default function Login() {
             <Card className={classes.card} elevation={0}>
                 <CardHeader className={classes.cardHeader} title="Logowanie"/>
                 <CardContent className={classes.cardContent}>
+                    <ThemeProvider theme={googleTheme}>
+                        <Button onClick={googleLoginHandler} size="large" startIcon={<GoogleIcon />} variant="outlined" fullWidth color="primary">
+                            Log in with Google
+                        </Button>
+                    </ThemeProvider>
+                    <Box py={4}>
+                        <Divider/>
+                    </Box>
                     <form className={classes.form}>
                         <TextField
                             InputProps={{

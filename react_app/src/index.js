@@ -20,6 +20,7 @@ import Basket from "./components/basket/Basket";
 import UserProfile from "./components/user/UserProfile";
 import DirectorMovies from "./components/directors/DirectorMovies";
 import AllMovies from "./components/movies/grid/AllMovies";
+import GoogleAuth from "./components/auth/Google";
 
 const routing = (
     <ThemeProvider theme={theme}>
@@ -39,6 +40,7 @@ const routing = (
 
                         <AppRoute exact path="/logowanie" component={Login} layout={AuthLayout}/>
                         <AppRoute exact path="/rejestracja" component={SignUp} layout={AuthLayout}/>
+                        <AppRoute exact path="/oauth/google" component={GoogleAuth} layout={AuthLayout}/>
                         <AppRoute exact path="/404" component={NotFound} layout={AuthLayout}/>
                         <Redirect to="/404"/>
                     </Switch>
